@@ -75,66 +75,64 @@
     {
       "id": "p1",
       "estado": "vivo",
-      "minuto": "65'",
+      "minuto": "15'",
       "equipo1_id": "MEX",
-      "equipo1_goles": 1,
-      "equipo2_id": "RSA",
+      "equipo1_goles": 0,
+      "equipo2_id": "USA",
       "equipo2_goles": 0,
       "fecha": "04 de Junio",
-      "hora": "18:00"
-    },
-    {
-      "id": "p2",
-      "estado": "proximo",
-      "minuto": "",
-      "equipo1_id": "USA",
-      "equipo1_goles": 0,
-      "equipo2_id": "PAR",
-      "equipo2_goles": 0,
-      "fecha": "Mañana",
-      "hora": "20:00"
+      "hora": "21:00"
     }
   ],
   "equipos": {
-    "BEL": {
-      "nombres": { "es": "Bélgica", "en": "Belgium", "fr": "Belgique", "pt": "Bélgica", "de": "Belgien" },
-      "bandera": "img/banderas/bel.svg",
-      "proximos_partidos": [
-        { "rival_id": "CIV", "fecha": "14 de Junio", "hora": "18:00" },
-        { "rival_id": "CUW", "fecha": "20 de Junio", "hora": "19:00" }
-      ],
-      "titulares": [
-        { "dorsal": 1, "nombre": "T. COURTOIS", "posicion": "GK", "foto": "img/jugadores/bel_courtois.png" },
-        { "dorsal": 4, "nombre": "Z. DEBAST", "posicion": "CB", "foto": "img/jugadores/bel_debast.png" },
-        { "dorsal": 17, "nombre": "K. DE BRUYNE", "posicion": "CAM", "foto": "img/jugadores/bel_debruyne.png" },
-        { "dorsal": 9, "nombre": "R. LUKAKU", "posicion": "ST", "foto": "img/jugadores/bel_lukaku.png" }
-      ],
-      "suplentes": [
-        { "dorsal": 12, "nombre": "S. MIGNOLET", "posicion": "GK", "foto": "" },
-        { "dorsal": 20, "nombre": "L. OPDENDA", "posicion": "ST", "foto": "" }
-      ]
-    },
     "MEX": {
       "nombres": { "es": "México", "en": "Mexico", "fr": "Mexique", "pt": "México", "de": "Mexiko" },
       "bandera": "img/banderas/mex.svg",
-      "proximos_partidos": [],
-      "titulares": [],
+      "proximos_partidos": [
+        { "rival_id": "USA", "fecha": "04 de Junio", "hora": "21:00" }
+      ],
+      "titulares": [
+        { "dorsal": 13, "nombre": "G. OCHOA", "posicion": "GK", "foto": "" },
+        { "dorsal": 3, "nombre": "C. MONTES", "posicion": "CB", "foto": "" },
+        { "dorsal": 4, "nombre": "E. ÁLVAREZ", "posicion": "CM", "foto": "" },
+        { "dorsal": 11, "nombre": "S. GIMÉNEZ", "posicion": "ST", "foto": "" }
+      ],
       "suplentes": []
-    }
+    },
+    "USA": { "nombres": { "es": "Estados Unidos", "en": "USA", "fr": "États-Unis", "pt": "Estados Unidos", "de": "USA" }, "bandera": "img/banderas/usa.svg", "proximos_partidos": [], "titulares": [], "suplentes": [] },
+    "CAN": { "nombres": { "es": "Canadá", "en": "Canada", "fr": "Canada", "pt": "Canadá", "de": "Kanada" }, "bandera": "img/banderas/can.svg", "proximos_partidos": [], "titulares": [], "suplentes": [] },
+    "ARG": { "nombres": { "es": "Argentina", "en": "Argentina", "fr": "Argentine", "pt": "Argentina", "de": "Argentinien" }, "bandera": "img/banderas/arg.svg", "proximos_partidos": [], "titulares": [], "suplentes": [] },
+    "BRA": { "nombres": { "es": "Brasil", "en": "Brazil", "fr": "Brésil", "pt": "Brasil", "de": "Brasilien" }, "bandera": "img/banderas/bra.svg", "proximos_partidos": [], "titulares": [], "suplentes": [] },
+    "FRA": { "nombres": { "es": "Francia", "en": "France", "fr": "France", "pt": "França", "de": "Frankreich" }, "bandera": "img/banderas/fra.svg", "proximos_partidos": [], "titulares": [], "suplentes": [] },
+    "ENG": { "nombres": { "es": "Inglaterra", "en": "England", "fr": "Angleterre", "pt": "Inglaterra", "de": "England" }, "bandera": "img/banderas/eng.svg", "proximos_partidos": [], "titulares": [], "suplentes": [] },
+    "ESP": { "nombres": { "es": "España", "en": "Spain", "fr": "Espagne", "pt": "Espanha", "de": "Spanien" }, "bandera": "img/banderas/esp.svg", "proximos_partidos": [], "titulares": [], "suplentes": [] },
+    "GER": { "nombres": { "es": "Alemania", "en": "Germany", "fr": "Allemagne", "pt": "Alemanha", "de": "Deutschland" }, "bandera": "img/banderas/ger.svg", "proximos_partidos": [], "titulares": [], "suplentes": [] },
+    "ITA": { "nombres": { "es": "Italia", "en": "Italy", "fr": "Italie", "pt": "Itália", "de": "Italien" }, "bandera": "img/banderas/ita.svg", "proximos_partidos": [], "titulares": [], "suplentes": [] },
+    "BEL": {
+      "nombres": { "es": "Bélgica", "en": "Belgium", "fr": "Belgique", "pt": "Bélgica", "de": "Belgien" },
+      "bandera": "img/banderas/bel.svg",
+      "proximos_partidos": [],
+      "titulares": [
+        { "dorsal": 1, "nombre": "T. COURTOIS", "posicion": "GK", "foto": "img/jugadores/bel_courtois.png" },
+        { "dorsal": 17, "nombre": "K. DE BRUYNE", "posicion": "CAM", "foto": "img/jugadores/bel_debruyne.png" },
+        { "dorsal": 9, "nombre": "R. LUKAKU", "posicion": "ST", "foto": "img/jugadores/bel_lukaku.png" }
+      ],
+      "suplentes": []
+    },
+    "NED": { "nombres": { "es": "Países Bajos", "en": "Netherlands", "fr": "Pays-Bas", "pt": "Países Baixos", "de": "Niederlande" }, "bandera": "img/banderas/ned.svg", "proximos_partidos": [], "titulares": [], "suplentes": [] },
+    "POR": { "nombres": { "es": "Portugal", "en": "Portugal", "fr": "Portugal", "pt": "Portugal", "de": "Portugal" }, "bandera": "img/banderas/por.svg", "proximos_partidos": [], "titulares": [], "suplentes": [] },
+    "URU": { "nombres": { "es": "Uruguay", "en": "Uruguay", "fr": "Uruguay", "pt": "Uruguai", "de": "Uruguay" }, "bandera": "img/banderas/uru.svg", "proximos_partidos": [], "titulares": [], "suplentes": [] },
+    "COL": { "nombres": { "es": "Colombia", "en": "Colombia", "fr": "Colombie", "pt": "Colômbia", "de": "Kolumbien" }, "bandera": "img/banderas/col.svg", "proximos_partidos": [], "titulares": [], "suplentes": [] },
+    "MAR": { "nombres": { "es": "Marruecos", "en": "Morocco", "fr": "Maroc", "pt": "Marrocos", "de": "Marokko" }, "bandera": "img/banderas/mar.svg", "proximos_partidos": [], "titulares": [], "suplentes": [] }
   },
   "grupos": {
-    "A": {
-      "equipos": ["MEX", "RSA", "KOR", "CZE"],
-      "partidos": [
-        { "local": "MEX", "visitante": "RSA", "fecha": "11 Jun", "hora": "15:00", "resultado": "1-0" },
-        { "local": "KOR", "visitante": "CZE", "fecha": "11 Jun", "hora": "18:00", "resultado": "-:-" }
-      ]
-    }
+    "A": { "equipos": ["MEX", "USA", "CAN", "ARG"], "partidos": [{ "local": "MEX", "visitante": "USA", "fecha": "04 Jun", "hora": "21:00", "resultado": "0-0" }] },
+    "B": { "equipos": ["BRA", "FRA", "ENG", "ESP"], "partidos": [{ "local": "BRA", "visitante": "FRA", "fecha": "05 Jun", "hora": "15:00", "resultado": "-:-" }] },
+    "C": { "equipos": ["GER", "ITA", "BEL", "NED"], "partidos": [{ "local": "GER", "visitante": "ITA", "fecha": "06 Jun", "hora": "18:00", "resultado": "-:-" }] },
+    "D": { "equipos": ["POR", "URU", "COL", "MAR"], "partidos": [{ "local": "POR", "visitante": "URU", "fecha": "07 Jun", "hora": "20:00", "resultado": "-:-" }] }
   },
   "bracket": {
-    "dieciseisavos": [
-      { "id": "d1", "equipo1": "", "equipo2": "", "ganador": "" }
-    ],
+    "dieciseisavos": [],
     "octavos": [],
     "cuartos": [],
     "semis": [],
