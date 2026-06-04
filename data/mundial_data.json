@@ -1,0 +1,143 @@
+{
+  "ui_translations": {
+    "es": {
+      "title": "MUNDIAL 2026",
+      "live_matches": "EN VIVO",
+      "upcoming_matches": "PRÓXIMOS PARTIDOS",
+      "finished": "FINALIZADO",
+      "lineup_main": "Titulares (1)",
+      "lineup_subs": "Suplentes (2)",
+      "groups_title": "FASE DE GRUPOS",
+      "bracket_title": "FASE FINAL",
+      "donate_btn": "Apoya el proyecto ⚽",
+      "donate_modal_title": "Donar al Creador",
+      "donate_copy": "Copiar dirección",
+      "copied": "¡Copiado!"
+    },
+    "en": {
+      "title": "WORLD CUP 2026",
+      "live_matches": "LIVE NOW",
+      "upcoming_matches": "UPCOMING MATCHES",
+      "finished": "FINISHED",
+      "lineup_main": "Starting XI (1)",
+      "lineup_subs": "Substitutes (2)",
+      "groups_title": "GROUP STAGE",
+      "bracket_title": "KNOCKOUT STAGE",
+      "donate_btn": "Support the project ⚽",
+      "donate_modal_title": "Donate to Creator",
+      "donate_copy": "Copy address",
+      "copied": "Copied!"
+    },
+    "fr": {
+      "title": "COUPE DU MONDE 2026",
+      "live_matches": "EN DIRECT",
+      "upcoming_matches": "MATCHS À VENIR",
+      "finished": "TERMINÉ",
+      "lineup_main": "Titulaires (1)",
+      "lineup_subs": "Remplaçants (2)",
+      "groups_title": "PHASE DE GROUPES",
+      "bracket_title": "PHASE FINALE",
+      "donate_btn": "Soutenir le projet ⚽",
+      "donate_modal_title": "Faire un don",
+      "donate_copy": "Copier l'adresse",
+      "copied": "Copié !"
+    },
+    "pt": {
+      "title": "COPA DO MUNDO 2026",
+      "live_matches": "AO VIVO",
+      "upcoming_matches": "PRÓXIMOS JOGOS",
+      "finished": "ENCERRADO",
+      "lineup_main": "Titulares (1)",
+      "lineup_subs": "Suplentes (2)",
+      "groups_title": "FASE DE GRUPOS",
+      "bracket_title": "FASE FINAL",
+      "donate_btn": "Apoie o projeto ⚽",
+      "donate_modal_title": "Doar ao Criador",
+      "donate_copy": "Copiar endereço",
+      "copied": "Copiado!"
+    },
+    "de": {
+      "title": "WELTMEISTERSCHAFT 2026",
+      "live_matches": "LIVE",
+      "upcoming_matches": "ANSTEHENDE SPIELE",
+      "finished": "BEENDET",
+      "lineup_main": "Startelf (1)",
+      "lineup_subs": "Ersatzbank (2)",
+      "groups_title": "GRUPPENPHASE",
+      "bracket_title": "K.O.-RUNDE",
+      "donate_btn": "Projekt unterstützen ⚽",
+      "donate_modal_title": "Spenden",
+      "donate_copy": "Adresse kopieren",
+      "copied": "Kopiert!"
+    }
+  },
+  "partidos": [
+    {
+      "id": "p1",
+      "estado": "vivo",
+      "minuto": "65'",
+      "equipo1_id": "MEX",
+      "equipo1_goles": 1,
+      "equipo2_id": "RSA",
+      "equipo2_goles": 0,
+      "fecha": "04 de Junio",
+      "hora": "18:00"
+    },
+    {
+      "id": "p2",
+      "estado": "proximo",
+      "minuto": "",
+      "equipo1_id": "USA",
+      "equipo1_goles": 0,
+      "equipo2_id": "PAR",
+      "equipo2_goles": 0,
+      "fecha": "Mañana",
+      "hora": "20:00"
+    }
+  ],
+  "equipos": {
+    "BEL": {
+      "nombres": { "es": "Bélgica", "en": "Belgium", "fr": "Belgique", "pt": "Bélgica", "de": "Belgien" },
+      "bandera": "img/banderas/bel.svg",
+      "proximos_partidos": [
+        { "rival_id": "CIV", "fecha": "14 de Junio", "hora": "18:00" },
+        { "rival_id": "CUW", "fecha": "20 de Junio", "hora": "19:00" }
+      ],
+      "titulares": [
+        { "dorsal": 1, "nombre": "T. COURTOIS", "posicion": "GK", "foto": "img/jugadores/bel_courtois.png" },
+        { "dorsal": 4, "nombre": "Z. DEBAST", "posicion": "CB", "foto": "img/jugadores/bel_debast.png" },
+        { "dorsal": 17, "nombre": "K. DE BRUYNE", "posicion": "CAM", "foto": "img/jugadores/bel_debruyne.png" },
+        { "dorsal": 9, "nombre": "R. LUKAKU", "posicion": "ST", "foto": "img/jugadores/bel_lukaku.png" }
+      ],
+      "suplentes": [
+        { "dorsal": 12, "nombre": "S. MIGNOLET", "posicion": "GK", "foto": "" },
+        { "dorsal": 20, "nombre": "L. OPDENDA", "posicion": "ST", "foto": "" }
+      ]
+    },
+    "MEX": {
+      "nombres": { "es": "México", "en": "Mexico", "fr": "Mexique", "pt": "México", "de": "Mexiko" },
+      "bandera": "img/banderas/mex.svg",
+      "proximos_partidos": [],
+      "titulares": [],
+      "suplentes": []
+    }
+  },
+  "grupos": {
+    "A": {
+      "equipos": ["MEX", "RSA", "KOR", "CZE"],
+      "partidos": [
+        { "local": "MEX", "visitante": "RSA", "fecha": "11 Jun", "hora": "15:00", "resultado": "1-0" },
+        { "local": "KOR", "visitante": "CZE", "fecha": "11 Jun", "hora": "18:00", "resultado": "-:-" }
+      ]
+    }
+  },
+  "bracket": {
+    "dieciseisavos": [
+      { "id": "d1", "equipo1": "", "equipo2": "", "ganador": "" }
+    ],
+    "octavos": [],
+    "cuartos": [],
+    "semis": [],
+    "final": { "equipo1": "", "equipo2": "", "ganador": "" }
+  }
+}

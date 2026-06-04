@@ -1,0 +1,510 @@
+/* ==========================================================================
+   RESET & VARIABLES GENERALES
+   ========================================================================== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+:root {
+    --bg-main: #0d1117;
+    --bg-card: #161b22;
+    --bg-card-hover: #21262d;
+    --border-color: #30363d;
+    --text-primary: #f0f6fc;
+    --text-secondary: #8b949e;
+    --accent-neon: #2ea44f; /* Verde deportivo */
+    --live-led: #238636;
+    --final-led: #da3633;
+}
+
+body {
+    background-color: var(--bg-main);
+    color: var(--text-primary);
+    overflow-x: hidden;
+    /* EFECTO PARALLAX: El fondo se queda fijo y el contenido se mueve sobre él */
+    background-image: linear-gradient(to bottom, rgba(13, 17, 23, 0.85), rgba(22, 27, 34, 0.95)), 
+                      url('https://images.unsplash.com/photo-1508098682722-e99c43a406b2?q=80&w=1920');
+    background-attachment: fixed;
+    background-size: cover;
+    background-position: center;
+}
+
+/* ==========================================================================
+   BARRA SUPERIOR (HEADER)
+   ========================================================================== */
+.header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 4%;
+    border-bottom: 1px solid var(--border-color);
+    background-color: rgba(13, 17, 23, 0.8);
+    backdrop-filter: blur(10px);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.header-top h1 {
+    font-size: 1.8rem;
+    font-weight: 800;
+    letter-spacing: 2px;
+    background: linear-gradient(45deg, #fff, var(--text-secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.language-selector select {
+    background-color: var(--bg-card);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+/* CONTAINER PRINCIPAL */
+.main-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 40px 2%;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+}
+
+.section-title {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+    letter-spacing: 1px;
+    border-left: 4px solid var(--accent-neon);
+    padding-left: 10px;
+}
+
+/* ==========================================================================
+   1. BRACKETS / FASE FINAL
+   ========================================================================== */
+.bracket-section {
+    background: rgba(22, 27, 34, 0.6);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 25px;
+    backdrop-filter: blur(5px);
+}
+
+/* ==========================================================================
+   2. SECCIÓN PARTIDOS (EN VIVO / PRÓXIMOS)
+   ========================================================================== */
+.matches-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+@media (max-width: 768px) {
+    .matches-section { grid-template-columns: 1fr; }
+}
+
+.matches-column {
+    background: rgba(22, 27, 34, 0.6);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 20px;
+    backdrop-filter: blur(5px);
+}
+
+.column-title {
+    font-size: 1.2rem;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Tarjetas de partidos individuales */
+.match-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    transition: transform 0.2s, border-color 0.2s;
+}
+
+.match-card:hover {
+    transform: translateY(-2px);
+    border-color: var(--text-secondary);
+}
+
+.match-team {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 35%;
+}
+
+.match-team.team-right { justify-content: flex-end; }
+
+.match-score-center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 30%;
+}
+
+.score-display {
+    font-size: 1.4rem;
+    font-weight: 700;
+    letter-spacing: 5px;
+    background: #21262d;
+    padding: 4px 12px;
+    border-radius: 6px;
+}
+
+/* LEDs de estado dinámicos */
+.led-indicator {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.led-indicator.live {
+    background-color: #2ea44f;
+    box-shadow: 0 0 8px #2ea44f;
+    animation: pulse 1.5s infinite;
+}
+
+.led-indicator.finished { background-color: var(--final-led); }
+.led-indicator.upcoming { background-color: var(--text-secondary); }
+
+@keyframes pulse {
+    0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(46, 164, 79, 0.7); }
+    70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(46, 164, 79, 0); }
+    100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(46, 164, 79, 0); }
+}
+
+/* Mini banderas globales */
+.flag-circle {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid var(--border-color);
+}
+
+/* ==========================================================================
+   3. SECCIÓN INTERACTIVA (48 EQUIPOS + CANCHA)
+   ========================================================================== */
+.teams-interactive-section {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    gap: 20px;
+    height: 650px;
+}
+
+@media (max-width: 900px) {
+    .teams-interactive-section { grid-template-columns: 1fr; height: auto; }
+}
+
+/* Lista vertical de 48 equipos */
+.teams-sidebar {
+    background: rgba(22, 27, 34, 0.6);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 15px;
+    overflow-y: auto; /* Barra de scroll interna */
+}
+
+.team-row-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-bottom: 6px;
+    transition: background 0.2s;
+}
+
+.team-row-item:hover, .team-row-item.active {
+    background-color: var(--bg-card-hover);
+    border-left: 4px solid var(--accent-neon);
+}
+
+/* Panel de detalles (Derecha) */
+.team-details-panel {
+    background: rgba(22, 27, 34, 0.8);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 25px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+}
+
+.panel-placeholder {
+    text-align: center;
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+}
+
+.hidden { display: none !important; }
+
+/* Cabecera del Panel */
+.team-panel-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.flag-large {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+/* Botones alineación 1 y 2 */
+.lineup-buttons {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.btn-lineup {
+    background: var(--bg-card);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.2s;
+}
+
+.btn-lineup.active {
+    background: var(--accent-neon);
+    border-color: var(--accent-neon);
+}
+
+/* LA CANCHA DE FÚTBOL TÁCTICA */
+.soccer-field {
+    background: linear-gradient(135deg, #1e4620, #112e12);
+    border: 3px solid #ffffff30;
+    border-radius: 8px;
+    height: 350px;
+    position: relative;
+    overflow: hidden;
+    padding: 20px;
+}
+
+.field-line.center-circle {
+    width: 100px;
+    height: 100px;
+    border: 2px solid #ffffff15;
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+#players-field-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    height: 100%;
+    align-items: center;
+    justify-items: center;
+}
+
+/* Ficha del Jugador en la Cancha */
+.player-card-field {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.player-img-wrapper {
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    background-color: #21262d;
+    border: 2px solid var(--accent-neon);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.player-img-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.player-img-wrapper i {
+    font-size: 1.5rem;
+    color: var(--text-secondary);
+}
+
+.player-name-lbl {
+    font-size: 0.75rem;
+    font-weight: 700;
+    background: rgba(0,0,0,0.7);
+    padding: 2px 6px;
+    border-radius: 4px;
+    margin-top: 5px;
+    white-space: nowrap;
+}
+
+/* ==========================================================================
+   4. FASE DE GRUPOS (ACORDEÓN COLAPSABLE)
+   ========================================================================== */
+.groups-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+.group-card {
+    background: rgba(22, 27, 34, 0.6);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.group-header-btn {
+    width: 100%;
+    background: var(--bg-card);
+    border: none;
+    color: var(--text-primary);
+    padding: 15px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    text-align: left;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.group-header-btn:hover { background: var(--bg-card-hover); }
+
+.group-content {
+    padding: 15px;
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* ==========================================================================
+   5. BOTÓN FLOTANTE CRYPTO (GLASSMORPHISM)
+   ========================================================================== */
+.crypto-donation-box {
+    position: fixed;
+    bottom: 25px;
+    right: 25px;
+    z-index: 999;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 10px;
+}
+
+.donation-trigger {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 12px 20px;
+    border-radius: 30px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    transition: transform 0.3s, background 0.3s;
+}
+
+.donation-trigger:hover {
+    transform: scale(1.05);
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.heart-pulse {
+    color: #e25555;
+    animation: heartBeat 1.2s infinite;
+}
+
+@keyframes heartBeat {
+    0% { transform: scale(1); }
+    14% { transform: scale(1.1); }
+    28% { transform: scale(1); }
+    42% { transform: scale(1.1); }
+    70% { transform: scale(1); }
+}
+
+/* Ventana emergente del menú de wallets */
+.donation-modal {
+    background: rgba(22, 27, 34, 0.85);
+    backdrop-filter: blur(15px);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 20px;
+    width: 350px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+}
+
+.donation-modal h3 {
+    font-size: 1.1rem;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.wallet-item {
+    margin-bottom: 12px;
+}
+
+.coin-name {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    display: block;
+    margin-bottom: 4px;
+}
+
+.copy-row {
+    display: flex;
+    gap: 5px;
+}
+
+.copy-row input {
+    flex: 1;
+    background: #0d1117;
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+}
+
+.btn-copy {
+    background: var(--bg-card-hover);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    padding: 6px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.btn-copy:hover { background: var(--accent-neon); }

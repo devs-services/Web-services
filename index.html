@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mundial 2026 - En Vivo</title>
+    <!-- Aquí conectamos el archivo de estilos que crearemos después -->
+    <link rel="stylesheet" href="css/styles.css">
+    <!-- Iconos para las billeteras crypto -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <!-- BARRA SUPERIOR: Idioma y Título -->
+    <header class="header-top">
+        <h1 id="main-title">MUNDIAL 2026</h1>
+        <div class="language-selector">
+            <select id="lang-select">
+                <option value="es" selected>ES</option>
+                <option value="en">EN</option>
+                <option value="fr">FR</option>
+                <option value="pt">PT</option>
+                <option value="de">DE</option>
+            </select>
+        </div>
+    </header>
+
+    <!-- ANCLAJE GENERAL CON FONDO PARALLAX -->
+    <main class="main-container">
+
+        <!-- 1. SECCIÓN SUPERIOR: Árbol de Fase Final (Bracket) -->
+        <section class="bracket-section">
+            <h2 class="section-title" id="txt-bracket">FASE FINAL</h2>
+            <div class="bracket-container" id="bracket-display">
+                <!-- Se llenará automáticamente con JavaScript -->
+                <p style="color: #666; text-align: center;">Esperando clasificados de la fase de grupos...</p>
+            </div>
+        </section>
+
+        <!-- 2. SECCIÓN DIVIDIDA: Partidos en Vivo y Próximos -->
+        <section class="matches-section">
+            <!-- Columna Izquierda: En Vivo -->
+            <div class="matches-column">
+                <h2 class="column-title dynamic-live-title" id="txt-live">EN VIVO</h2>
+                <div class="matches-list" id="live-matches-container">
+                    <!-- Los partidos en vivo con el LED verde parpadeante aparecerán aquí -->
+                </div>
+            </div>
+            
+            <!-- Columna Derecha: Próximos Partidos -->
+            <div class="matches-column">
+                <h2 class="column-title" id="txt-upcoming">PRÓXIMOS PARTIDOS</h2>
+                <div class="matches-list" id="upcoming-matches-container">
+                    <!-- Los partidos agendados aparecerán aquí -->
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. SECCIÓN PRINCIPAL: Lista 48 Equipos + Cancha Táctica -->
+        <section class="teams-interactive-section">
+            <!-- Sub-columna Izquierda: Lista Vertical de los 48 Equipos -->
+            <div class="teams-sidebar">
+                <div class="teams-list-vertical" id="vertical-teams-container">
+                    <!-- Aquí se pintarán los 48 países con sus banderas -->
+                </div>
+            </div>
+
+            <!-- Sub-columna Derecha: El Visualizador de Detalles del Equipo -->
+            <div class="team-details-panel" id="details-panel">
+                <div class="panel-placeholder" id="panel-empty-msg">
+                    <p>Selecciona un equipo de la lista para ver sus convocados y fixture</p>
+                </div>
+                
+                <!-- Contenido oculto al inicio, aparece con transición al hacer clic -->
+                <div class="panel-content hidden" id="panel-real-content">
+                    <div class="team-panel-header">
+                        <img src="" id="panel-team-flag" class="flag-large" alt="Bandera">
+                        <h2 id="panel-team-name">Nombre País</h2>
+                    </div>
+
+                    <!-- Botones de Alineación 1 y 2 -->
+                    <div class="lineup-buttons">
+                        <button class="btn-lineup active" id="btn-titulares">Titulares (1)</button>
+                        <button class="btn-lineup" id="btn-suplentes">Suplentes (2)</button>
+                    </div>
+
+                    <!-- La Cancha de Fútbol Táctica -->
+                    <div class="soccer-field" id="soccer-field-canvas">
+                        <div class="field-line center-circle"></div>
+                        <div class="field-line penalty-area"></div>
+                        <div id="players-field-grid">
+                            <!-- Los rostros y nombres de los jugadores flotarán aquí -->
+                        </div>
+                    </div>
+
+                    <!-- Lista de Suplentes (Estilo banca) -->
+                    <div class="subs-list hidden" id="subs-clean-list">
+                        <!-- Aparecerá cuando se pulse el botón 2 -->
+                    </div>
+
+                    <!-- Próximos partidos del equipo seleccionado -->
+                    <div class="team-schedule">
+                        <h3 id="txt-team-schedule">Próximos Enfrentamientos</h3>
+                        <div id="team-matches-list"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. SECCIÓN INFERIOR: Fase de Grupos Colapsables (Acordeón) -->
+        <section class="groups-section">
+            <h2 class="section-title" id="txt-groups">FASE DE GRUPOS</h2>
+            <div class="groups-grid" id="groups-accordion-container">
+                <!-- Los 12 bloques de los grupos (A-L) aparecerán aquí -->
+            </div>
+        </section>
+
+    </main>
+
+    <!-- 5. BOTÓN FLOTANTE DE DONACIÓN CRYPTO (Efecto Cristal) -->
+    <div class="crypto-donation-box" id="donation-box">
+        <div class="donation-trigger" id="donation-btn">
+            <i class="fa-solid fa-heart heart-pulse"></i>
+            <span id="txt-donate-btn">Apoya el proyecto ⚽</span>
+        </div>
+        
+        <!-- Ventana de direcciones oculta que se despliega al hacer clic -->
+        <div class="donation-modal hidden" id="donation-modal">
+            <h3 id="txt-modal-title">Donar al Creador</h3>
+            <div class="wallets-list">
+                
+                <!-- Bitcoin -->
+                <div class="wallet-item">
+                    <span class="coin-name"><i class="fa-brands fa-bitcoin"></i> Bitcoin (BTC):</span>
+                    <div class="copy-row">
+                        <input type="text" readonly value="bc1qnnvmwm25kaf2tr3w7a98xkk4906rkq7qa7q9qs">
+                        <button class="btn-copy"><i class="fa-regular fa-copy"></i></button>
+                    </div>
+                </div>
+
+                <!-- Ethereum -->
+                <div class="wallet-item">
+                    <span class="coin-name"><i class="fa-brands fa-ethereum"></i> Ethereum (ETH/USDT/USDC):</span>
+                    <div class="copy-row">
+                        <input type="text" readonly value="0xfD6fC82fDfca02E531d9fe5B8630707430a9A8F1">
+                        <button class="btn-copy"><i class="fa-regular fa-copy"></i></button>
+                    </div>
+                </div>
+
+                <!-- Solana -->
+                <div class="wallet-item">
+                    <span class="coin-name"><i class="fa-solid fa-bolt"></i> Solana (SOL/USDC):</span>
+                    <div class="copy-row">
+                        <input type="text" readonly value="ArHSEF8vxAi31ziZBWZ6DHVvDVzBY3EZfhBSencYuiwR">
+                        <button class="btn-copy"><i class="fa-regular fa-copy"></i></button>
+                    </div>
+                </div>
+
+                <!-- BNB Chain -->
+                <div class="wallet-item">
+                    <span class="coin-name"><i class="fa-solid fa-cubes"></i> BNB Chain (BNB/USDT/USDC):</span>
+                    <div class="copy-row">
+                        <input type="text" readonly value="0xfD6fC82fDfca02E531d9fe5B8630707430a9A8F1">
+                        <button class="btn-copy"><i class="fa-regular fa-copy"></i></button>
+                    </div>
+                </div>
+
+                <!-- Arbitrum -->
+                <div class="wallet-item">
+                    <span class="coin-name"><i class="fa-solid fa-layer-group"></i> Arbitrum (USDC/USDT):</span>
+                    <div class="copy-row">
+                        <input type="text" readonly value="0xfD6fC82fDfca02E531d9fe5B8630707430a9A8F1">
+                        <button class="btn-copy"><i class="fa-regular fa-copy"></i></button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Conectamos la lógica inteligente al final para que maneje todo -->
+    <script src="js/main.js"></script>
+</body>
+</html>
