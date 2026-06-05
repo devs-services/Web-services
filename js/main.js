@@ -205,9 +205,7 @@ function renderizarCanchaOLista(equipo) {
         }
 
         equipo.titulares.forEach(jugador => {
-            const imgHtml = jugador.foto 
-                ? `<img src="${jugador.foto}" alt="${jugador.nombre}">` 
-                : `<i class="fa-solid fa-user"></i>`;
+            const imgHtml = `<img src="img/jugadores/silueta.png" alt="${jugador.nombre}">`;
 
             gridCancha.innerHTML += `
                 <div class="player-card-field">
