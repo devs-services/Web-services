@@ -108,7 +108,7 @@
       ],
       "suplentes": []
     },
-    "ZAF": { "nombres": { "es": "Sudáfrica", "en": "South Africa", "fr": "Afrique du Sud", "pt": "África do Sul", "de": "Südafrika" }, "bandera": "img/banderas/rsa.svg", "proximos_partidos": [], "titulares": [], "suplentes": [] },
+    "RSA": { "nombres": { "es": "Sudáfrica", "en": "South Africa", "fr": "Afrique du Sud", "pt": "África do Sul", "de": "Südafrika" }, "bandera": "img/banderas/rsa.svg", "proximos_partidos": [], "titulares": [], "suplentes": [] },
     "KOR": { "nombres": { "es": "Corea del Sur", "en": "Korea Republic", "fr": "Corée du Sud", "pt": "Coreia do Sul", "de": "Südkorea" }, "bandera": "img/banderas/kor.svg", "proximos_partidos": [], "titulares": [], "suplentes": [] },
     "CZE": { "nombres": { "es": "República Checa", "en": "Czechia", "fr": "Tchéquie", "pt": "Chéquia", "de": "Tschechien" }, "bandera": "img/banderas/cze.svg", "proximos_partidos": [], "titulares": [], "suplentes": [] },
     "CAN": { "nombres": { "es": "Canadá", "en": "Canada", "fr": "Canada", "pt": "Canadá", "de": "Kanada" }, "bandera": "img/banderas/can.svg", "proximos_partidos": [], "titulares": [], "suplentes": [] },
