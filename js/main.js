@@ -74,14 +74,20 @@ function renderizarPartidos() {
     upcomingContainer.innerHTML = '';
 
     mundialData.partidos.forEach(partido => {
-        // Conseguimos datos de traducción rápida o IDs
-        const eq1Name = mundialData.equipos[partido.equipo1_id]?.nombres[currentLanguage] || partido.equipo1_id;
-        const eq2Name = mundialData.equipos[partido.equipo2_id]?.nombres[currentLanguage] || partido.equipo2_id;
+        const eq1 = mundialData.equipos[partido.equipo1_id];
+        const eq2 = mundialData.equipos[partido.equipo2_id];
+        
+        const eq1Name = eq1?.nombres[currentLanguage] || partido.equipo1_id;
+        const eq2Name = eq2?.nombres[currentLanguage] || partido.equipo2_id;
+        
+        const eq1Flag = eq1?.bandera ? `<img src="${eq1.bandera}" class="flag-circle" alt="">` : '';
+        const eq2Flag = eq2?.bandera ? `<img src="${eq2.bandera}" class="flag-circle" alt="">` : '';
         
         const tarjetaHtml = `
             <div class="match-card">
                 <div class="match-team">
                     <span class="led-indicator ${partido.estado}"></span>
+                    ${eq1Flag}
                     <span class="match-team-name">${eq1Name}</span>
                 </div>
                 <div class="match-score-center">
@@ -94,6 +100,7 @@ function renderizarPartidos() {
                 </div>
                 <div class="match-team team-right">
                     <span class="match-team-name">${eq2Name}</span>
+                    ${eq2Flag}
                 </div>
             </div>
         `;
@@ -116,21 +123,22 @@ function renderizarListaEquipos() {
     Object.keys(mundialData.equipos).forEach(id => {
         const equipo = mundialData.equipos[id];
         const name = equipo.nombres[currentLanguage];
+        const flagHtml = equipo.bandera ? `<img src="${equipo.bandera}" class="flag-circle" alt="" onerror="this.style.display='none'">` : '';
 
         const row = document.createElement('div');
         row.className = `team-row-item ${selectedTeamId === id ? 'active' : ''}`;
         row.innerHTML = `
-            <span style="font-weight: bold; color: var(--text-secondary); width: 30px;">${id}</span>
+            ${flagHtml}
+            <span style="font-weight: bold; color: var(--text-secondary); width: 35px; margin-left: 5px;">${id}</span>
             <span>${name}</span>
         `;
         
         row.addEventListener('click', () => {
-            // Quitar clase activa al anterior y ponerla al nuevo
             document.querySelectorAll('.team-row-item').forEach(r => r.classList.remove('active'));
             row.classList.add('active');
             
             selectedTeamId = id;
-            currentLineupType = 'titulares'; // reset a titulares por defecto
+            currentLineupType = 'titulares';
             document.getElementById('btn-titulares').classList.add('active');
             document.getElementById('btn-suplentes').classList.remove('active');
             
@@ -151,6 +159,14 @@ function actualizarPanelDetalle(id) {
 
     const equipo = mundialData.equipos[id];
     document.getElementById('panel-team-name').textContent = equipo.nombres[currentLanguage];
+    
+    const flagImg = document.getElementById('panel-team-flag');
+    if (equipo.bandera) {
+        flagImg.src = equipo.bandera;
+        flagImg.classList.remove('hidden');
+    } else {
+        flagImg.classList.add('hidden');
+    }
     
     renderizarCanchaOLista(equipo);
     renderizarCalendarioEquipo(equipo);
@@ -183,13 +199,12 @@ function renderizarCanchaOLista(equipo) {
         canchaContenedor.classList.remove('hidden');
         listaSuplentes.classList.add('hidden');
 
-        if(equipo.titulares.length === 0) {
+        if(!equipo.titulares || equipo.titulares.length === 0) {
             gridCancha.innerHTML = '<p style="grid-column: span 4; color: var(--text-secondary);">Sin alineación disponible</p>';
             return;
         }
 
         equipo.titulares.forEach(jugador => {
-            // Validamos si tiene foto, si no ponemos icono de silueta
             const imgHtml = jugador.foto 
                 ? `<img src="${jugador.foto}" alt="${jugador.nombre}">` 
                 : `<i class="fa-solid fa-user"></i>`;
@@ -204,12 +219,11 @@ function renderizarCanchaOLista(equipo) {
             `;
         });
     } else {
-        // Modo suplentes en lista limpia tipo banca
         canchaContenedor.classList.add('hidden');
         listaSuplentes.classList.remove('hidden');
 
-        if(equipo.suplentes.length === 0) {
-            listaSuplentes.innerHTML = '<p style="color: var(--text-secondary);">Sin suplentes registrados</p>';
+        if(!equipo.suplentes || equipo.suplentes.length === 0) {
+            listaSuplentes.innerHTML = '<p style="color: var(--text-secondary); padding: 15px;">Sin suplentes registrados</p>';
             return;
         }
 
@@ -228,7 +242,7 @@ function renderizarCalendarioEquipo(equipo) {
     const list = document.getElementById('team-matches-list');
     list.innerHTML = '';
 
-    if (equipo.proximos_partidos.length === 0) {
+    if (!equipo.proximos_partidos || equipo.proximos_partidos.length === 0) {
         list.innerHTML = '<p style="color: var(--text-secondary); font-size: 0.9rem;">No hay partidos programados</p>';
         return;
     }
@@ -265,8 +279,10 @@ function renderizarGrupos() {
             <div class="group-content hidden">
                 <div class="group-table-mini" style="margin-bottom: 10px;">
                     ${grupo.equipos.map(eqId => {
-                        const name = mundialData.equipos[eqId]?.nombres[currentLanguage] || eqId;
-                        return `<div style="display: flex; gap: 10px; padding: 4px 0; font-size: 0.9rem;"><strong>${eqId}</strong> ${name}</div>`;
+                        const eqData = mundialData.equipos[eqId];
+                        const name = eqData?.nombres[currentLanguage] || eqId;
+                        const flag = eqData?.bandera ? `<img src="${eqData.bandera}" class="flag-circle" style="width:18px; height:18px; margin-right:5px;" alt="">` : '';
+                        return `<div style="display: flex; align-items: center; padding: 4px 0; font-size: 0.9rem;">${flag} <strong style="margin-right: 5px;">${eqId}</strong> ${name}</div>`;
                     }).join('')}
                 </div>
                 <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 8px 0;">
@@ -274,7 +290,7 @@ function renderizarGrupos() {
                     const loc = mundialData.equipos[partido.local]?.nombres[currentLanguage] || partido.local;
                     const vis = mundialData.equipos[partido.visitante]?.nombres[currentLanguage] || partido.visitante;
                     return `
-                        <div style="font-size: 0.8rem; display: flex; justify-content: space-between; color: var(--text-secondary);">
+                        <div style="font-size: 0.8rem; display: flex; justify-content: space-between; color: var(--text-secondary); margin-top: 4px;">
                             <span>${loc} vs ${vis}</span>
                             <span style="color: var(--text-primary); font-weight: bold;">${partido.resultado}</span>
                             <span>${partido.fecha}</span>
@@ -284,7 +300,6 @@ function renderizarGrupos() {
             </div>
         `;
 
-        // Lógica de Acordeón: Expandir/Colapsar al hacer clic
         const btn = card.querySelector('.group-header-btn');
         const content = card.querySelector('.group-content');
         const icon = btn.querySelector('i');
@@ -311,29 +326,25 @@ function configurarDonaciones() {
     const btnTrigger = document.getElementById('donation-btn');
     const modal = document.getElementById('donation-modal');
 
-    // Desplegar menú de wallets al hacer clic en el botón flotante
     btnTrigger.addEventListener('click', (e) => {
         e.stopPropagation();
         modal.classList.toggle('hidden');
     });
 
-    // Cerrar si se hace clic fuera del cuadro
     document.addEventListener('click', (e) => {
         if (!document.getElementById('donation-box').contains(e.target)) {
             modal.classList.add('hidden');
         }
     });
 
-    // Configurar el copiado automático al portapapeles
     document.querySelectorAll('.wallet-item').forEach(item => {
         const input = item.querySelector('input');
         const btnCopy = item.querySelector('.btn-copy');
 
         btnCopy.addEventListener('click', () => {
             input.select();
-            input.setSelectionRange(0, 99999); // Para móviles
+            input.setSelectionRange(0, 99999);
             navigator.clipboard.writeText(input.value).then(() => {
-                // Efecto visual temporal de copiado con éxito
                 const originalText = btnCopy.innerHTML;
                 const translatedCopied = mundialData.ui_translations[currentLanguage].copied;
                 btnCopy.innerHTML = `<span style="font-size: 0.75rem; font-weight: bold;">${translatedCopied}</span>`;
