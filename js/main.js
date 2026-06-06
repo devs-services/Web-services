@@ -253,23 +253,47 @@ function renderizarCalendarioEquipo(equipo) {
 }
 
 // ==========================================================================
-// 6. FASE DE GRUPOS COLAPSABLE (ACORDEÓN ESTRICTO - CORRECCIÓN DE CAJAS EXTRA)
+// 6. FASE DE GRUPOS - SISTEMA DE FILAS SIMÉTRICAS (4 EN 4)
 // ==========================================================================
 function renderizarGrupos() {
     const container = document.getElementById('groups-accordion-container');
     if (!container) return;
     container.innerHTML = '';
 
+    // Mapeo manual para saber a qué fila física pertenece cada grupo
+    const mapaFilas = {
+        'A': 1, 'B': 1, 'C': 1, 'D': 1,
+        'E': 2, 'F': 2, 'G': 2, 'H': 2,
+        'I': 3, 'J': 3, 'K': 3, 'L': 3
+    };
+
+    // 1. Creamos las 3 grandes filas físicas contenedoras en el HTML
+    for (let i = 1; i <= 3; i++) {
+        const filaDiv = document.createElement('div');
+        filaDiv.className = `group-row-block fila-${i}`;
+        filaDiv.id = `bloque-fila-${i}`;
+        // Estilo inline directo para asegurar que mantengan las 4 columnas estables
+        filaDiv.style.display = 'grid';
+        filaDiv.style.gridTemplateColumns = 'repeat(4, 1fr)';
+        filaDiv.style.gap = '20px';
+        filaDiv.style.marginBottom = '20px';
+        filaDiv.style.width = '100%';
+        container.appendChild(filaDiv);
+    }
+
+    // 2. Inyectamos cada grupo dentro de su fila correspondiente
     Object.keys(mundialData.grupos).forEach(grupoId => {
         const grupo = mundialData.grupos[grupoId];
+        const numeroFila = mapaFilas[grupoId] || 1;
+        const contenedorFila = document.getElementById(`bloque-fila-${numeroFila}`);
         
+        if (!contenedorFila) return;
+
         const card = document.createElement('div');
-        // IMPORTANTE: Le añadimos un ID único a la tarjeta completa (la caja gris)
         card.className = 'group-card';
-        card.id = `card-container-${grupoId}`;
         
         card.innerHTML = `
-            <button class="group-header-btn" data-grupo="${grupoId}">
+            <button class="group-header-btn" data-grupo="${grupoId}" data-fila="${numeroFila}">
                 <span>GRUPO ${grupoId}</span>
                 <i class="fa-solid fa-chevron-down"></i>
             </button>
@@ -291,22 +315,21 @@ function renderizarGrupos() {
             </div>
         `;
 
-        container.appendChild(card);
+        contenedorFila.appendChild(card);
     });
 
-    // Control estricto de clicks
-    const botones = container.querySelectorAll('.group-header-btn');
-    botones.forEach(btn => {
+    // 3. Lógica de interacción por Filas Completas
+    container.querySelectorAll('.group-header-btn').forEach(btn => {
         btn.addEventListener('click', (e) => {
             e.preventDefault();
-            const grupoIdActual = btn.getAttribute('data-grupo');
-            const contenidoActual = document.getElementById(`content-grupo-${grupoIdActual}`);
-            const iconoActual = btn.querySelector('i');
+            const filaSeleccionada = btn.getAttribute('data-fila');
             
-            // Comprobamos si el que tocamos ya estaba abierto
-            const yaEstaAbierto = !contenidoActual.classList.contains('hidden');
+            // Comprobamos si la fila cliqueada ya estaba abierta mirando uno de sus contenidos
+            const primerGrupoDeFila = container.querySelector(`[data-fila="${filaSeleccionada}"]`);
+            const idGrupo = primerGrupoDeFila.getAttribute('data-grupo');
+            const estaAbiertaActualmente = !document.getElementById(`content-grupo-${idGrupo}`).classList.contains('hidden');
 
-            // 1. PASO CLAVE: Cerramos TODOS los contenidos e iconos primero
+            // PASO A: Cerramos ABSOLUTAMENTE TODOS los contenidos e iconos del panel
             Object.keys(mundialData.grupos).forEach(id => {
                 const content = document.getElementById(`content-grupo-${id}`);
                 if (content) content.classList.add('hidden');
@@ -318,10 +341,20 @@ function renderizarGrupos() {
                 }
             });
 
-            // 2. Si NO estaba abierto, lo abrimos de forma exclusiva
-            if (!yaEstaAbierto) {
-                contenidoActual.classList.remove('hidden');
-                iconoActual.className = 'fa-solid fa-chevron-up';
+            // PASO B: Si la fila NO estaba abierta, abrimos los 4 grupos de esa fila al mismo tiempo
+            if (!estaAbiertaActualmente) {
+                Object.keys(mapaFilas).forEach(id => {
+                    if (mapaFilas[id] == filaSeleccionada) {
+                        const content = document.getElementById(`content-grupo-${id}`);
+                        if (content) content.classList.remove('hidden');
+                        
+                        const botonIndividual = container.querySelector(`[data-grupo="${id}"]`);
+                        if (botonIndividual) {
+                            const icon = botonIndividual.querySelector('i');
+                            if (icon) icon.className = 'fa-solid fa-chevron-up';
+                        }
+                    }
+                });
             }
         });
     });
