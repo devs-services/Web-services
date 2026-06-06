@@ -71,7 +71,7 @@
       "copied": "Kopiert!"
     }
   },
-  "proximos_partidos": [
+  "partidos": [
     {
       "id": "p1",
       "estado": "proximo",
@@ -82,22 +82,23 @@
       "fecha_utc": "2026-06-11T22:00:00Z"
     },
     {
-    "partidos_en_vivo": [
-     { 
       "id": "p2",
       "estado": "vivo",
       "equipo1_id": "ECU",
       "equipo1_goles": 0,
       "equipo2_id": "CIV",
       "equipo2_goles": 0,
-      "fecha_utc": "2026-06-14T22:00:00Z"
+      "fecha_utc": "2026-06-14T22:00:00Z",
+      "minuto": "45'"
     }
   ],
   "equipos": {
     "MEX": {
       "nombres": { "es": "México", "en": "Mexico", "fr": "Mexique", "pt": "México", "de": "Mexiko" },
       "bandera": "img/banderas/mex.svg",
-      "proximos_partidos": [{ "rival_id": "RSA", "fecha": "05 de Junio", "hora": "15:00" }],
+      "proximos_partidos": [
+        { "rival_id": "RSA", "fecha_utc": "2026-06-11T22:00:00Z" }
+      ],
       "titulares": [
         { "dorsal": 13, "nombre": "G. OCHOA", "posicion": "GK", "foto": "" },
         { "dorsal": 3, "nombre": "C. MONTES", "posicion": "CB", "foto": "" },
@@ -114,7 +115,7 @@
     "QAT": { "nombres": { "es": "Catar", "en": "Qatar", "fr": "Qatar", "pt": "Catar", "de": "Katar" }, "bandera": "img/banderas/qat.svg", "proximos_partidos": [], "titulares": [], "suplentes": [] },
     "SUI": { "nombres": { "es": "Suiza", "en": "Switzerland", "fr": "Suisse", "pt": "Suíça", "de": "Schweiz" }, "bandera": "img/banderas/sui.svg", "proximos_partidos": [], "titulares": [], "suplentes": [] },
     "BRA": { "nombres": { "es": "Brasil", "en": "Brazil", "fr": "Brésil", "pt": "Brasil", "de": "Brasilien" }, "bandera": "img/banderas/bra.svg", "proximos_partidos": [], "titulares": [], "suplentes": [] },
-    "MAR": { "nombres": { "es": "Marruecos", "en": "Morocco", "fr": "Maroc", "pt": "Marrocos", "de": "Marokko" }, "bandera": "img/banderas/mar.svg", "proximos_partidos": [], "titulares": [], "suplentes": [] },
+    "MAR": { "nombres": { "es": "Marruecos", "en": "Morocco", "fr": "Morocco", "pt": "Marrocos", "de": "Marokko" }, "bandera": "img/banderas/mar.svg", "proximos_partidos": [], "titulares": [], "suplentes": [] },
     "HAI": { "nombres": { "es": "Haití", "en": "Haiti", "fr": "Haïti", "pt": "Haiti", "de": "Haiti" }, "bandera": "img/banderas/hai.svg", "proximos_partidos": [], "titulares": [], "suplentes": [] },
     "SCO": { "nombres": { "es": "Escocia", "en": "Scotland", "fr": "Écosse", "pt": "Escócia", "de": "Schottland" }, "bandera": "img/banderas/sco.svg", "proximos_partidos": [], "titulares": [], "suplentes": [] },
     "USA": { "nombres": { "es": "Estados Unidos", "en": "United States", "fr": "États-Unis", "pt": "Estados Unidos", "de": "USA" }, "bandera": "img/banderas/usa.svg", "proximos_partidos": [], "titulares": [], "suplentes": [] },
@@ -123,12 +124,28 @@
     "TUR": { "nombres": { "es": "Turquía", "en": "Türkiye", "fr": "Turquie", "pt": "Turquia", "de": "Türkei" }, "bandera": "img/banderas/tur.svg", "proximos_partidos": [], "titulares": [], "suplentes": [] },
     "GER": { "nombres": { "es": "Alemania", "en": "Germany", "fr": "Allemagne", "pt": "Alemanha", "de": "Deutschland" }, "bandera": "img/banderas/ger.svg", "proximos_partidos": [], "titulares": [], "suplentes": [] },
     "CUW": { "nombres": { "es": "Curazao", "en": "Curaçao", "fr": "Curaçao", "pt": "Curaçao", "de": "Curaçao" }, "bandera": "img/banderas/cuw.svg", "proximos_partidos": [], "titulares": [], "suplentes": [] },
-    "CIV": { "nombres": { "es": "Costa de Marfil", "en": "Côte d'Ivoire", "fr": "Côte d'Ivoire", "pt": "Costa do Marfim", "de": "Elfenbeinküste" }, "bandera": "img/banderas/civ.svg", "proximos_partidos": [{ "rival_id": "ECU", "fecha": "14 de Junio", "hora": "18:00" }], "titulares": [], "suplentes": [] },
-    "ECU": { "nombres": { "es": "Ecuador", "en": "Ecuador", "fr": "Équateur", "pt": "Equador", "de": "Ecuador" }, "bandera": "img/banderas/ecu.svg", "proximos_partidos": [{ "rival_id": "CIV", "fecha": "14 de Junio", "hora": "18:00" }], "titulares": [], "suplentes": [] },
+    "CIV": { 
+      "nombres": { "es": "Costa de Marfil", "en": "Côte d'Ivoire", "fr": "Côte d'Ivoire", "pt": "Costa do Marfim", "de": "Elfenbeinküste" }, 
+      "bandera": "img/banderas/civ.svg", 
+      "proximos_partidos": [
+        { "rival_id": "ECU", "fecha_utc": "2026-06-14T22:00:00Z" }
+      ], 
+      "titulares": [], 
+      "suplentes": [] 
+    },
+    "ECU": { 
+      "nombres": { "es": "Ecuador", "en": "Ecuador", "fr": "Équateur", "pt": "Equador", "de": "Ecuador" }, 
+      "bandera": "img/banderas/ecu.svg", 
+      "proximos_partidos": [
+        { "rival_id": "CIV", "fecha_utc": "2026-06-14T22:00:00Z" }
+      ], 
+      "titulares": [], 
+      "suplentes": [] 
+    },
     "NED": { "nombres": { "es": "Países Bajos", "en": "Netherlands", "fr": "Pays-Bas", "pt": "Países Baixos", "de": "Niederlande" }, "bandera": "img/banderas/ned.svg", "proximos_partidos": [], "titulares": [], "suplentes": [] },
     "JPN": { "nombres": { "es": "Japón", "en": "Japan", "fr": "Japon", "pt": "Japão", "de": "Japan" }, "bandera": "img/banderas/jpn.svg", "proximos_partidos": [], "titulares": [], "suplentes": [] },
     "SWE": { "nombres": { "es": "Suecia", "en": "Sweden", "fr": "Suède", "pt": "Suécia", "de": "Schweden" }, "bandera": "img/banderas/swe.svg", "proximos_partidos": [], "titulares": [], "suplentes": [] },
-    "TUN": { "nombres": { "es": "Túnez", "en": "Tunisia", "fr": "Tunisie", "pt": "Tunísia", "de": "Tunesien" }, "bandera": "img/banderas/tun.svg", "proximos_partidos": [], "titulares": [], "suplentes": [] },
+    "TUN": { "nombres": { "es": "Túnez", "en": "Tunisia", "fr": "Tunisie", "pt": "Tunisia", "de": "Tunesien" }, "bandera": "img/banderas/tun.svg", "proximos_partidos": [], "titulares": [], "suplentes": [] },
     "BEL": {
       "nombres": { "es": "Bélgica", "en": "Belgium", "fr": "Belgique", "pt": "Bélgica", "de": "Belgien" },
       "bandera": "img/banderas/bel.svg",
@@ -166,7 +183,7 @@
     "POR": { "nombres": { "es": "Portugal", "en": "Portugal", "fr": "Portugal", "pt": "Portugal", "de": "Portugal" }, "bandera": "img/banderas/por.svg", "proximos_partidos": [], "titulares": [], "suplentes": [] },
     "COD": { "nombres": { "es": "R.D. Congo", "en": "DR Congo", "fr": "RD Congo", "pt": "RD Congo", "de": "DR Kongo" }, "bandera": "img/banderas/cod.svg", "proximos_partidos": [], "titulares": [], "suplentes": [] },
     "UZB": { "nombres": { "es": "Uzbekistán", "en": "Uzbekistan", "fr": "Ouzbékistan", "pt": "Uzbequistão", "de": "Usbekistan" }, "bandera": "img/banderas/uzb.svg", "proximos_partidos": [], "titulares": [], "suplentes": [] },
-    "COL": { "nombres": { "es": "Colombia", "en": "Colombia", "fr": "Colombie", "pt": "Colômbia", "de": "Kolumbien" }, "bandera": "img/banderas/col.svg", "proximos_partidos": [], "titulares": [], "suplentes": [] },
+    "COL": { "nombres": { "es": "Colombia", "en": "Colombia", "fr": "Colombie", "pt": "Colúmbia", "de": "Kolumbien" }, "bandera": "img/banderas/col.svg", "proximos_partidos": [], "titulares": [], "suplentes": [] },
     "ENG": { "nombres": { "es": "Inglaterra", "en": "England", "fr": "Angleterre", "pt": "Inglaterra", "de": "England" }, "bandera": "img/banderas/eng.svg", "proximos_partidos": [], "titulares": [], "suplentes": [] },
     "CRO": { "nombres": { "es": "Croacia", "en": "Croatia", "fr": "Croatie", "pt": "Croácia", "de": "Kroatien" }, "bandera": "img/banderas/cro.svg", "proximos_partidos": [], "titulares": [], "suplentes": [] },
     "GHA": { "nombres": { "es": "Ghana", "en": "Ghana", "fr": "Ghana", "pt": "Gana", "de": "Ghana" }, "bandera": "img/banderas/gha.svg", "proximos_partidos": [], "titulares": [], "suplentes": [] },
