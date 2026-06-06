@@ -71,7 +71,7 @@
       "copied": "Kopiert!"
     }
   },
-  "partidos": [
+  "proximos_partidos": [
     {
       "id": "p1",
       "estado": "proximo",
@@ -80,12 +80,13 @@
       "equipo1_goles": 0,
       "equipo2_id": "RSA",
       "equipo2_goles": 0,
-      "fecha": "11 de Junio",
-      "hora": "15:00"
+      "fecha_utc": "2026-06-11T22:00:00Z"
     },
     {
+    "partidos_en_vivo": [
+     { 
       "id": "p2",
-      "estado": "proximo",
+      "estado": "vivo",
       "minuto": "",
       "equipo1_id": "ECU",
       "equipo1_goles": 0,
