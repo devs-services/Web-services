@@ -75,7 +75,6 @@
     {
       "id": "p1",
       "estado": "proximo",
-      "minuto": " '",
       "equipo1_id": "MEX",
       "equipo1_goles": 0,
       "equipo2_id": "RSA",
@@ -87,13 +86,11 @@
      { 
       "id": "p2",
       "estado": "vivo",
-      "minuto": "",
       "equipo1_id": "ECU",
       "equipo1_goles": 0,
       "equipo2_id": "CIV",
       "equipo2_goles": 0,
-      "fecha": "14 de Junio",
-      "hora": "18:00"
+      "fecha_utc": "2026-06-14T22:00:00Z"
     }
   ],
   "equipos": {
