@@ -25,10 +25,9 @@ body {
     color: var(--text-primary);
     overflow-x: hidden;
     
-    /* IMAGEN DE FONDO GENERAL: Arte y Colores de Lanzamiento de FIFA 2026 */
-    /* Totalmente nítido y visible al ojo (filtro suavizado a 0.3) */
-    background-image: linear-gradient(to bottom, rgba(13, 17, 23, 0.3), rgba(22, 27, 34, 0.5)), 
-                      url('https://images.unsplash.com/photo-1624880351055-1f9f2dd06114?q=80&w=1920');
+    /* TU IMAGEN PROPIA DEL MUNDIAL DE TU CARPETA IMG */
+    background-image: linear-gradient(to bottom, rgba(13, 17, 23, 0.4), rgba(22, 27, 34, 0.6)), 
+                      url('../img/fondo_mundial.jpg');
     background-attachment: fixed;
     background-size: cover;
     background-position: center;
