@@ -334,13 +334,15 @@ body {
 }
 
 .player-squad-avatar {
-    width: 30px;
-    height: 30px;
+    width: 28px;
+    height: 28px;
     object-fit: contain;
-    border-radius: 50%;
-    background: #21262d;
-    padding: 4px;
+    background: transparent !important;
+    border-radius: 0 !important;
+    padding: 0 !important;
+    margin: 0 4px;
     flex-shrink: 0;
+    filter: drop-shadow(0px 2px 4px rgba(0,0,0,0.5));
 }
 
 .player-squad-name {
