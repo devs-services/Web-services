@@ -442,3 +442,28 @@ body {
 .copy-row input { flex: 1; background: #0d1117; border: 1px solid var(--border-color); color: var(--text-secondary); padding: 6px 10px; border-radius: 6px; font-size: 0.8rem; }
 .btn-copy { background: var(--bg-card-hover); border: 1px solid var(--border-color); color: var(--text-primary); padding: 6px 10px; border-radius: 6px; cursor: pointer; }
 .btn-copy:hover { background: var(--accent-neon); }
+
+/* BOTÓN MOSTRAR MÁS / MENOS */
+.toggle-matches-container {
+    text-align: center;
+    margin: 20px 0;
+    width: 100%;
+}
+
+.btn-toggle-matches {
+    background: #21262d;
+    color: var(--text-main);
+    border: 1px solid var(--border-color);
+    padding: 10px 24px;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-toggle-matches:hover {
+    background: transparent;
+    border-color: var(--accent-neon);
+    box-shadow: 0 0 12px rgba(0, 242, 254, 0.3);
+    color: var(--accent-neon);
+}
