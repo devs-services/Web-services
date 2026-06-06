@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mundial 2026 - En Vivo</title>
-    <!-- Aquí conectamos el archivo de estilos que crearemos después -->
+    <!-- Conectamos el archivo de estilos -->
     <link rel="stylesheet" href="css/styles.css">
     <!-- Iconos para las billeteras crypto -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -32,7 +32,6 @@
         <section class="bracket-section">
             <h2 class="section-title" id="txt-bracket">FASE FINAL</h2>
             <div class="bracket-container" id="bracket-display">
-                <!-- Se llenará automáticamente con JavaScript -->
                 <p style="color: #666; text-align: center;">Esperando clasificados de la fase de grupos...</p>
             </div>
         </section>
@@ -43,7 +42,7 @@
             <div class="matches-column">
                 <h2 class="column-title dynamic-live-title" id="txt-live">EN VIVO</h2>
                 <div class="matches-list" id="live-matches-container">
-                    <!-- Los partidos en vivo con el LED verde parpadeante aparecerán aquí -->
+                    <!-- Los partidos en vivo aparecerán aquí -->
                 </div>
             </div>
             
@@ -56,7 +55,7 @@
             </div>
         </section>
 
-        <!-- 3. SECCIÓN PRINCIPAL: Lista 48 Equipos + Cancha Táctica -->
+        <!-- 3. SECCIÓN PRINCIPAL: Lista 48 Equipos + Panel Estadio Convocados -->
         <section class="teams-interactive-section">
             <!-- Sub-columna Izquierda: Lista Vertical de los 48 Equipos -->
             <div class="teams-sidebar">
@@ -65,34 +64,36 @@
                 </div>
             </div>
 
-            <!-- Sub-columna Derecha: El Visualizador de Detalles del Equipo -->
+            <!-- Sub-columna Derecha: El Visualizador del Estadio con Convocados -->
             <div class="team-details-panel" id="details-panel">
                 <div class="panel-placeholder" id="panel-empty-msg">
                     <p>Selecciona un equipo de la lista para ver sus convocados y fixture</p>
                 </div>
                 
-                <!-- Contenido del Panel del Equipo Seleccionado -->
-<div class="panel-content hidden" id="panel-real-content">
-    <div class="team-panel-header">
-        <img src="" id="panel-team-flag" class="flag-large" alt="Bandera">
-        <h2 id="panel-team-name">Nombre País</h2>
-    </div>
+                <!-- Contenido con transiciones -->
+                <div class="panel-content hidden" id="panel-real-content">
+                    <div class="team-panel-header">
+                        <img src="" id="panel-team-flag" class="flag-large" alt="Bandera">
+                        <h2 id="panel-team-name">Nombre País</h2>
+                    </div>
 
-    <!-- EL NUEVO CONTENEDOR CON LA IMAGEN DEL ESTADIO DE FONDO -->
-    <div class="squad-stadium-container" id="stadium-squad-panel">
-        <!-- Bloques de posiciones que se llenarán con JavaScript -->
-        <div class="position-group" id="group-GK"></div>
-        <div class="position-group" id="group-DF"></div>
-        <div class="position-group" id="group-MD"></div>
-        <div class="position-group" id="group-FW"></div>
-    </div>
+                    <!-- EL NUEVO CONTENEDOR CON LA IMAGEN DEL ESTADIO DE FONDO -->
+                    <div class="squad-stadium-container" id="stadium-squad-panel">
+                        <!-- Bloques de posiciones que se llenarán con JavaScript -->
+                        <div class="position-group" id="group-GK"></div>
+                        <div class="position-group" id="group-DF"></div>
+                        <div class="position-group" id="group-MD"></div>
+                        <div class="position-group" id="group-FW"></div>
+                    </div>
 
-    <!-- Próximos partidos del equipo seleccionado -->
-    <div class="team-schedule">
-        <h3 id="txt-team-schedule">Próximos Enfrentamientos</h3>
-        <div id="team-matches-list"></div>
-    </div>
-</div>
+                    <!-- Próximos partidos del equipo seleccionado -->
+                    <div class="team-schedule">
+                        <h3 id="txt-team-schedule">Próximos Enfrentamientos</h3>
+                        <div id="team-matches-list"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
 
         <!-- 4. SECCIÓN INFERIOR: Fase de Grupos Colapsables (Acordeón) -->
         <section class="groups-section">
@@ -104,18 +105,16 @@
 
     </main>
 
-    <!-- 5. BOTÓN FLOTANTE DE DONACIÓN CRYPTO (Efecto Cristal) -->
+    <!-- 5. BOTÓN FLOTANTE DE DONACIÓN CRYPTO -->
     <div class="crypto-donation-box" id="donation-box">
         <div class="donation-trigger" id="donation-btn">
             <i class="fa-solid fa-heart heart-pulse"></i>
             <span id="txt-donate-btn">Apoya el proyecto ⚽</span>
         </div>
         
-        <!-- Ventana de direcciones oculta que se despliega al hacer clic -->
         <div class="donation-modal hidden" id="donation-modal">
             <h3 id="txt-modal-title">Donar al Creador</h3>
             <div class="wallets-list">
-                
                 <!-- Bitcoin -->
                 <div class="wallet-item">
                     <span class="coin-name"><i class="fa-brands fa-bitcoin"></i> Bitcoin (BTC):</span>
@@ -124,7 +123,6 @@
                         <button class="btn-copy"><i class="fa-regular fa-copy"></i></button>
                     </div>
                 </div>
-
                 <!-- Ethereum -->
                 <div class="wallet-item">
                     <span class="coin-name"><i class="fa-brands fa-ethereum"></i> Ethereum (ETH/USDT/USDC):</span>
@@ -133,7 +131,6 @@
                         <button class="btn-copy"><i class="fa-regular fa-copy"></i></button>
                     </div>
                 </div>
-
                 <!-- Solana -->
                 <div class="wallet-item">
                     <span class="coin-name"><i class="fa-solid fa-bolt"></i> Solana (SOL/USDC):</span>
@@ -142,7 +139,6 @@
                         <button class="btn-copy"><i class="fa-regular fa-copy"></i></button>
                     </div>
                 </div>
-
                 <!-- BNB Chain -->
                 <div class="wallet-item">
                     <span class="coin-name"><i class="fa-solid fa-cubes"></i> BNB Chain (BNB/USDT/USDC):</span>
@@ -151,7 +147,6 @@
                         <button class="btn-copy"><i class="fa-regular fa-copy"></i></button>
                     </div>
                 </div>
-
                 <!-- Arbitrum -->
                 <div class="wallet-item">
                     <span class="coin-name"><i class="fa-solid fa-layer-group"></i> Arbitrum (USDC/USDT):</span>
@@ -160,12 +155,11 @@
                         <button class="btn-copy"><i class="fa-regular fa-copy"></i></button>
                     </div>
                 </div>
-
             </div>
         </div>
     </div>
 
-    <!-- Conectamos la lógica inteligente al final para que maneje todo -->
+    <!-- Conectamos la lógica inteligente al final -->
     <script src="js/main.js"></script>
 </body>
 </html>
