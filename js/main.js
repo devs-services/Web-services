@@ -172,87 +172,65 @@ function actualizarPanelDetalle(id) {
     renderizarCalendarioEquipo(equipo);
 }
 
-// Alternar botones de Titulares / Suplentes
-document.getElementById('btn-titulares').addEventListener('click', () => {
-    document.getElementById('btn-titulares').classList.add('active');
-    document.getElementById('btn-suplentes').classList.remove('active');
-    currentLineupType = 'titulares';
-    if(selectedTeamId) renderizarCanchaOLista(mundialData.equipos[selectedTeamId]);
-});
-
-document.getElementById('btn-suplentes').addEventListener('click', () => {
-    document.getElementById('btn-suplentes').classList.add('active');
-    document.getElementById('btn-titulares').classList.remove('active');
-    currentLineupType = 'suplentes';
-    if(selectedTeamId) renderizarCanchaOLista(mundialData.equipos[selectedTeamId]);
-});
-
 function renderizarCanchaOLista(equipo) {
-    const gridCancha = document.getElementById('players-field-grid');
-    const listaSuplentes = document.getElementById('subs-clean-list');
-    const canchaContenedor = document.getElementById('soccer-field-canvas');
+    // Conseguimos los contenedores de las 4 categorías principales
+    const gkContainer = document.getElementById('group-GK');
+    const dfContainer = document.getElementById('group-DF');
+    const mdContainer = document.getElementById('group-MD');
+    const fwContainer = document.getElementById('group-FW');
 
-    gridCancha.innerHTML = '';
-    listaSuplentes.innerHTML = '';
+    // Títulos traducidos de forma limpia según el idioma seleccionado
+    const titulosPosiciones = {
+        es: { gk: "Porteros", df: "Defensas", md: "Mediocampistas", fw: "Delanteros" },
+        en: { gk: "Goalkeepers", df: "Defenders", md: "Midfielders", fw: "Forwards" },
+        fr: { gk: "Gardiens", df: "Défenseurs", md: "Milieux", fw: "Attaquants" },
+        pt: { gk: "Goleiros", df: "Defensores", md: "Meias", fw: "Atacantes" },
+        de: { gk: "Torhüter", df: "Verteidiger", md: "Mittelfeld", fw: "Stürmer" }
+    };
 
-    if (currentLineupType === 'titulares') {
-        canchaContenedor.classList.remove('hidden');
-        listaSuplentes.classList.add('hidden');
+    const currentTitles = titulosPosiciones[currentLanguage] || titulosPosiciones['es'];
 
-        if(!equipo.titulares || equipo.titulares.length === 0) {
-            gridCancha.innerHTML = '<p style="grid-column: span 4; color: var(--text-secondary);">Sin alineación disponible</p>';
-            return;
-        }
+    // Inicializamos los títulos en los cuadros
+    gkContainer.innerHTML = `<div class="position-title"><span>🧤 ${currentTitles.gk}</span></div>`;
+    dfContainer.innerHTML = `<div class="position-title"><span>🛡️ ${currentTitles.df}</span></div>`;
+    mdContainer.innerHTML = `<div class="position-title"><span>🎯 ${currentTitles.md}</span></div>`;
+    fwContainer.innerHTML = `<div class="position-title"><span>⚽ ${currentTitles.fw}</span></div>`;
 
-        equipo.titulares.forEach(jugador => {
-            const imgHtml = `<img src="img/jugadores/silueta.png" alt="${jugador.nombre}">`;
+    // Unimos todos los jugadores en una sola gran lista unificada (titulares y suplentes)
+    const todosLosJugadores = [...(equipo.titulares || []), ...(equipo.suplentes || [])];
 
-            gridCancha.innerHTML += `
-                <div class="player-card-field">
-                    <div class="player-img-wrapper">
-                        ${imgHtml}
-                    </div>
-                    <span class="player-name-lbl">${jugador.dorsal}. ${jugador.nombre}</span>
-                </div>
-            `;
-        });
-    } else {
-        canchaContenedor.classList.add('hidden');
-        listaSuplentes.classList.remove('hidden');
-
-        if(!equipo.suplentes || equipo.suplentes.length === 0) {
-            listaSuplentes.innerHTML = '<p style="color: var(--text-secondary); padding: 15px;">Sin suplentes registrados</p>';
-            return;
-        }
-
-        equipo.suplentes.forEach(jugador => {
-            listaSuplentes.innerHTML += `
-                <div style="padding: 8px 15px; background: var(--bg-card); border-radius: 6px; margin-bottom: 5px; display: flex; justify-content: space-between;">
-                    <span><strong>${jugador.dorsal}</strong>. ${jugador.nombre}</span>
-                    <span style="color: var(--text-secondary); font-size: 0.85rem;">${jugador.posicion}</span>
-                </div>
-            `;
-        });
-    }
-}
-
-function renderizarCalendarioEquipo(equipo) {
-    const list = document.getElementById('team-matches-list');
-    list.innerHTML = '';
-
-    if (!equipo.proximos_partidos || equipo.proximos_partidos.length === 0) {
-        list.innerHTML = '<p style="color: var(--text-secondary); font-size: 0.9rem;">No hay partidos programados</p>';
+    if (todosLosJugadores.length === 0) {
+        document.getElementById('stadium-squad-panel').style.display = 'block';
+        gkContainer.innerHTML = `<p style="color: var(--text-secondary); text-align:center; padding:20px;">No hay jugadores registrados para este equipo.</p>`;
+        dfContainer.innerHTML = ''; mdContainer.innerHTML = ''; fwContainer.innerHTML = '';
         return;
+    } else {
+        document.getElementById('stadium-squad-panel').style.display = 'grid';
     }
 
-    equipo.proximos_partidos.forEach(partido => {
-        const rivalName = mundialData.equipos[partido.rival_id]?.nombres[currentLanguage] || partido.rival_id;
-        list.innerHTML += `
-            <div style="display: flex; justify-content: space-between; background: #21262d; padding: 10px; border-radius: 6px; margin-top: 8px; font-size: 0.9rem;">
-                <span>VS ${rivalName}</span>
-                <span style="color: var(--accent-neon); font-weight: 600;">${partido.fecha} - ${partido.hora}</span>
+    // Clasificamos y pintamos a cada jugador en su división correspondiente
+    todosLosJugadores.forEach(jugador => {
+        const filaHtml = `
+            <div class="player-squad-row">
+                <div class="player-squad-number">${jugador.dorsal}</div>
+                <img src="img/jugadores/silueta.png" class="player-squad-avatar" alt="">
+                <span class="player-squad-name">${jugador.nombre}</span>
             </div>
         `;
+
+        const pos = (jugador.posicion || '').toUpperCase();
+
+        // Filtro inteligente por siglas de fútbol internacional
+        if (pos === 'GK' || pos === 'POR' || pos === 'ARQ') {
+            gkContainer.innerHTML += filaHtml;
+        } else if (pos === 'CB' || pos === 'LB' || pos === 'RB' || pos === 'DF' || pos === 'DTD' || pos === 'DTI') {
+            dfContainer.innerHTML += filaHtml;
+        } else if (pos === 'CM' || pos === 'CDM' || pos === 'CAM' || pos === 'LM' || pos === 'RM' || pos === 'MC' || pos === 'MCO' || pos === 'MCD') {
+            mdContainer.innerHTML += filaHtml;
+        } else {
+            // Delanteros (ST, CF, LW, RW, DC, EI, ED)
+            fwContainer.innerHTML += filaHtml;
+        }
     });
 }
 
