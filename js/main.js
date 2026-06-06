@@ -65,8 +65,9 @@ function traducirInterfaz(lang) {
 // ==========================================================================
 // 3. SECCIÓN PARTIDOS (EN VIVO / PRÓXIMOS AUTOMATIZADOS POR HORA LOCAL)
 // ==========================================================================
-// Variable global para controlar si el usuario quiere ver todos los partidos
-let matchesExpanded = false;
+// Contadores globales para controlar cuántos partidos mostrar (empiezan en 4)
+let visibleLiveCount = 4;
+let visibleUpcomingCount = 4;
 
 function renderizarPartidos() {
     const liveContainer = document.getElementById('live-matches-container');
@@ -74,20 +75,21 @@ function renderizarPartidos() {
     
     if (!liveContainer || !upcomingContainer) return;
     
+    // Limpiamos los contenedores de tarjetas
     liveContainer.innerHTML = '';
     upcomingContainer.innerHTML = '';
 
-    // Diccionario de traducciones para el botón
+    // Diccionario de traducciones para los botones dinámicos
     const toggleTexts = {
-        es: { showMore: "Mostrar más 🔽", showLess: "Mostrar menos 🔼" },
-        en: { showMore: "Show more 🔽", showLess: "Show less 🔼" },
-        fr: { showMore: "Voir plus 🔽", showLess: "Voir moins 🔼" },
-        pt: { showMore: "Mostrar mais 🔽", showLess: "Mostrar menos 🔼" },
-        de: { showMore: "Mehr anzeigen 🔽", showLess: "Weniger anzeigen 🔼" }
+        es: { showMore: "Mostrar más 🔽" },
+        en: { showMore: "Show more 🔽" },
+        fr: { showMore: "Voir plus 🔽" },
+        pt: { showMore: "Mostrar mais 🔽" },
+        de: { showMore: "Mehr anzeigen 🔽" }
     };
     const currentToggleText = toggleTexts[currentLanguage] || toggleTexts['es'];
 
-    // Listas temporales para separar los partidos procesados
+    // Listas para almacenar el HTML de cada tarjeta generada
     let partidosVivoHtml = [];
     let partidosProximosHtml = [];
 
@@ -141,43 +143,54 @@ function renderizarPartidos() {
         }
     });
 
-    // 1. Renderizar los partidos EN VIVO
-    liveContainer.innerHTML = partidosVivoHtml.join('');
+    // ==========================================
+    // SECCIÓN A: RENDERIZAR EN VIVO (DE 4 EN 4)
+    // ==========================================
+    const totalVivo = partidosVivoHtml.length;
+    const mostrarVivo = partidosVivoHtml.slice(0, visibleLiveCount);
+    liveContainer.innerHTML = mostrarVivo.join('');
 
-    // 2. Controlar el límite de PRÓXIMOS PARTIDOS (Mostrar solo 4 si no está expandido)
-    const limiteInicial = 4;
-    const tieneExcedente = partidosProximosHtml.length > limiteInicial;
-    
-    let partidosA_Mostrar = [];
-    if (tieneExcedente && !matchesExpanded) {
-        partidosA_Mostrar = partidosProximosHtml.slice(0, limiteInicial);
-    } else {
-        partidosA_Mostrar = partidosProximosHtml;
+    // Control del botón de "Mostrar más" para EN VIVO
+    let existingLiveToggle = liveContainer.nextElementSibling;
+    if (existingLiveToggle && existingLiveToggle.classList.contains('toggle-live-container')) {
+        existingLiveToggle.remove();
     }
 
-    upcomingContainer.innerHTML = partidosA_Mostrar.join('');
-
-    // 3. Crear o actualizar el botón dinámico de "Mostrar más" abajo del contenedor
-    let existingToggle = upcomingContainer.nextElementSibling;
-    if (existingToggle && existingToggle.classList.contains('toggle-matches-container')) {
-        existingToggle.remove();
-    }
-
-    if (tieneExcedente) {
-        const btnContainer = document.createElement('div');
-        btnContainer.className = 'toggle-matches-container';
-        btnContainer.innerHTML = `
-            <button class="btn-toggle-matches" id="btn-toggle-matches-trigger">
-                ${matchesExpanded ? currentToggleText.showLess : currentToggleText.showMore}
-            </button>
-        `;
+    // El botón solo aparece si el total de partidos en vivo supera los que estamos mostrando actualmente
+    if (totalVivo > visibleLiveCount) {
+        const btnContainerLive = document.createElement('div');
+        btnContainerLive.className = 'toggle-matches-container toggle-live-container';
+        btnContainerLive.innerHTML = `<button class="btn-toggle-matches">${currentToggleText.showMore}</button>`;
         
-        upcomingContainer.parentNode.insertBefore(btnContainer, upcomingContainer.nextSibling);
+        liveContainer.parentNode.insertBefore(btnContainerLive, liveContainer.nextSibling);
+        btnContainerLive.querySelector('button').addEventListener('click', () => {
+            visibleLiveCount += 4; // Aumentamos 4 más a la cuenta
+            renderizarPartidos();  // Re-renderizamos de inmediato
+        });
+    }
 
-        // Evento de click para expandir o colapsar
-        document.getElementById('btn-toggle-matches-trigger').addEventListener('click', () => {
-            matchesExpanded = !matchesExpanded;
-            renderizarPartidos(); // Re-renderizar con el nuevo estado
+    // ==========================================
+    // SECCIÓN B: RENDERIZAR PRÓXIMOS (DE 4 EN 4)
+    // ==========================================
+    const totalProximos = partidosProximosHtml.length;
+    const mostrarProximos = partidosProximosHtml.slice(0, visibleUpcomingCount);
+    upcomingContainer.innerHTML = mostrarProximos.join('');
+
+    // Control del botón de "Mostrar más" para PRÓXIMOS
+    let existingUpcomingToggle = upcomingContainer.nextElementSibling;
+    if (existingUpcomingToggle && existingUpcomingToggle.classList.contains('toggle-upcoming-container')) {
+        existingUpcomingToggle.remove();
+    }
+
+    if (totalProximos > visibleUpcomingCount) {
+        const btnContainerUpcoming = document.createElement('div');
+        btnContainerUpcoming.className = 'toggle-matches-container toggle-upcoming-container';
+        btnContainerUpcoming.innerHTML = `<button class="btn-toggle-matches">${currentToggleText.showMore}</button>`;
+        
+        upcomingContainer.parentNode.insertBefore(btnContainerUpcoming, upcomingContainer.nextSibling);
+        btnContainerUpcoming.querySelector('button').addEventListener('click', () => {
+            visibleUpcomingCount += 4; // Aumentamos 4 más a la cuenta
+            renderizarPartidos();      // Re-renderizamos de inmediato
         });
     }
 }
