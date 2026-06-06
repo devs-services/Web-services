@@ -256,20 +256,6 @@ function renderizarCalendarioEquipo(equipo) {
     });
 }
 
-¡Claro que sí! Ese comportamiento en el que todos los grupos se abren al mismo tiempo y la presencia de los partidos "VS" abajo resulta bastante molesto y satura la pantalla de información de forma innecesaria. Lo ideal para una experiencia de usuario limpia y profesional es un sistema tipo Acordeón Estricto: al hacer clic en un grupo (por ejemplo, el Grupo A), este se despliega, y si decides abrir otro (como el Grupo B), el anterior se cierra de forma automática para mantener el orden.
-
-Para lograr esto y dejar los cuadros de los grupos completamente limpios (solo con los cuatro países y sus banderas correspondientes), modificaremos únicamente la lógica en tu archivo de JavaScript (js/main.js). No necesitas tocar ni tu archivo HTML ni tu archivo CSS.
-
-Paso Único: Actualizar la función en js/main.js
-Entra a tu repositorio en la web de GitHub.
-
-Abre la carpeta js, selecciona el archivo main.js y haz clic en el icono del lápiz arriba a la derecha para editarlo.
-
-Baja en el código hasta encontrar el bloque de la fase de grupos. Vas a buscar y borrar por completo la función antigua llamada function renderizarGrupos().
-
-En su lugar, pega esta nueva versión optimizada que elimina los partidos "VS" y obliga a que se abra un solo grupo a la vez:
-
-JavaScript
 // ==========================================================================
 // 6. FASE DE GRUPOS COLAPSABLE (ACORDEÓN ESTRICTO - 1 A LA VEZ Y LIMPIO)
 // ==========================================================================
@@ -284,7 +270,7 @@ function renderizarGrupos() {
         const card = document.createElement('div');
         card.className = 'group-card';
         
-        // Diseñamos el cuadro limpio: se eliminó por completo la sección inferior de partidos "VS"
+        // Estructura limpia sin la zona inferior de partidos VS
         card.innerHTML = `
             <button class="group-header-btn" data-grupo="${grupoId}">
                 <span>GRUPO ${grupoId}</span>
@@ -311,7 +297,7 @@ function renderizarGrupos() {
         container.appendChild(card);
     });
 
-    // Delegación de eventos para lograr el efecto Acordeón Estricto
+    // Manejo exclusivo del acordeón (cierra los demás al abrir uno nuevo)
     container.querySelectorAll('.group-header-btn').forEach(btn => {
         btn.addEventListener('click', (e) => {
             const grupoIdActual = btn.getAttribute('data-grupo');
@@ -319,7 +305,7 @@ function renderizarGrupos() {
             const iconoActual = btn.querySelector('i');
             const estaOculto = contenidoActual.classList.contains('hidden');
 
-            // 1. Cerramos absolutamente todos los demás grupos abiertos antes de abrir el nuevo
+            // 1. Ocultar todos los cuadros abiertos
             container.querySelectorAll('.group-content').forEach(content => {
                 content.classList.add('hidden');
             });
@@ -327,7 +313,7 @@ function renderizarGrupos() {
                 icon.className = 'fa-solid fa-chevron-down';
             });
 
-            // 2. Si el grupo al que se le hizo clic estaba cerrado, lo abrimos de forma exclusiva
+            // 2. Desplegar únicamente el grupo seleccionado
             if (estaOculto) {
                 contenidoActual.classList.remove('hidden');
                 iconoActual.className = 'fa-solid fa-chevron-up';
