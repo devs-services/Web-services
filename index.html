@@ -71,41 +71,28 @@
                     <p>Selecciona un equipo de la lista para ver sus convocados y fixture</p>
                 </div>
                 
-                <!-- Contenido oculto al inicio, aparece con transición al hacer clic -->
-                <div class="panel-content hidden" id="panel-real-content">
-                    <div class="team-panel-header">
-                        <img src="" id="panel-team-flag" class="flag-large" alt="Bandera">
-                        <h2 id="panel-team-name">Nombre País</h2>
-                    </div>
+                <!-- Contenido del Panel del Equipo Seleccionado -->
+<div class="panel-content hidden" id="panel-real-content">
+    <div class="team-panel-header">
+        <img src="" id="panel-team-flag" class="flag-large" alt="Bandera">
+        <h2 id="panel-team-name">Nombre País</h2>
+    </div>
 
-                    <!-- Botones de Alineación 1 y 2 -->
-                    <div class="lineup-buttons">
-                        <button class="btn-lineup active" id="btn-titulares">Titulares (1)</button>
-                        <button class="btn-lineup" id="btn-suplentes">Suplentes (2)</button>
-                    </div>
+    <!-- EL NUEVO CONTENEDOR CON LA IMAGEN DEL ESTADIO DE FONDO -->
+    <div class="squad-stadium-container" id="stadium-squad-panel">
+        <!-- Bloques de posiciones que se llenarán con JavaScript -->
+        <div class="position-group" id="group-GK"></div>
+        <div class="position-group" id="group-DF"></div>
+        <div class="position-group" id="group-MD"></div>
+        <div class="position-group" id="group-FW"></div>
+    </div>
 
-                    <!-- La Cancha de Fútbol Táctica -->
-                    <div class="soccer-field" id="soccer-field-canvas">
-                        <div class="field-line center-circle"></div>
-                        <div class="field-line penalty-area"></div>
-                        <div id="players-field-grid">
-                            <!-- Los rostros y nombres de los jugadores flotarán aquí -->
-                        </div>
-                    </div>
-
-                    <!-- Lista de Suplentes (Estilo banca) -->
-                    <div class="subs-list hidden" id="subs-clean-list">
-                        <!-- Aparecerá cuando se pulse el botón 2 -->
-                    </div>
-
-                    <!-- Próximos partidos del equipo seleccionado -->
-                    <div class="team-schedule">
-                        <h3 id="txt-team-schedule">Próximos Enfrentamientos</h3>
-                        <div id="team-matches-list"></div>
-                    </div>
-                </div>
-            </div>
-        </section>
+    <!-- Próximos partidos del equipo seleccionado -->
+    <div class="team-schedule">
+        <h3 id="txt-team-schedule">Próximos Enfrentamientos</h3>
+        <div id="team-matches-list"></div>
+    </div>
+</div>
 
         <!-- 4. SECCIÓN INFERIOR: Fase de Grupos Colapsables (Acordeón) -->
         <section class="groups-section">
