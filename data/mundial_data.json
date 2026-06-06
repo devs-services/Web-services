@@ -74,13 +74,13 @@
   "partidos": [
     {
       "id": "p1",
-      "estado": "vivo",
-      "minuto": "32'",
+      "estado": "proximo",
+      "minuto": " '",
       "equipo1_id": "MEX",
-      "equipo1_goles": 1,
+      "equipo1_goles": 0,
       "equipo2_id": "RSA",
       "equipo2_goles": 0,
-      "fecha": "05 de Junio",
+      "fecha": "11 de Junio",
       "hora": "15:00"
     },
     {
