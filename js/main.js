@@ -65,6 +65,9 @@ function traducirInterfaz(lang) {
 // ==========================================================================
 // 3. SECCIÓN PARTIDOS (EN VIVO / PRÓXIMOS AUTOMATIZADOS POR HORA LOCAL)
 // ==========================================================================
+// Variable global para controlar si el usuario quiere ver todos los partidos
+let matchesExpanded = false;
+
 function renderizarPartidos() {
     const liveContainer = document.getElementById('live-matches-container');
     const upcomingContainer = document.getElementById('upcoming-matches-container');
@@ -73,6 +76,20 @@ function renderizarPartidos() {
     
     liveContainer.innerHTML = '';
     upcomingContainer.innerHTML = '';
+
+    // Diccionario de traducciones para el botón
+    const toggleTexts = {
+        es: { showMore: "Mostrar más 🔽", showLess: "Mostrar menos 🔼" },
+        en: { showMore: "Show more 🔽", showLess: "Show less 🔼" },
+        fr: { showMore: "Voir plus 🔽", showLess: "Voir moins 🔼" },
+        pt: { showMore: "Mostrar mais 🔽", showLess: "Mostrar menos 🔼" },
+        de: { showMore: "Mehr anzeigen 🔽", showLess: "Weniger anzeigen 🔼" }
+    };
+    const currentToggleText = toggleTexts[currentLanguage] || toggleTexts['es'];
+
+    // Listas temporales para separar los partidos procesados
+    let partidosVivoHtml = [];
+    let partidosProximosHtml = [];
 
     mundialData.partidos.forEach(partido => {
         const eq1 = mundialData.equipos[partido.equipo1_id];
@@ -84,7 +101,6 @@ function renderizarPartidos() {
         const eq1Flag = eq1?.bandera ? `<img src="${eq1.bandera}" class="flag-circle" alt="">` : '';
         const eq2Flag = eq2?.bandera ? `<img src="${eq2.bandera}" class="flag-circle" alt="">` : '';
         
-        // Transformación automática al huso horario del usuario
         let horaFormateada = "";
         if (partido.fecha_utc) {
             const fechaLocal = new Date(partido.fecha_utc);
@@ -119,11 +135,53 @@ function renderizarPartidos() {
         `;
 
         if (partido.estado === 'vivo') {
-            liveContainer.innerHTML += tarjetaHtml;
+            partidosVivoHtml.push(tarjetaHtml);
         } else {
-            upcomingContainer.innerHTML += tarjetaHtml;
+            partidosProximosHtml.push(tarjetaHtml);
         }
     });
+
+    // 1. Renderizar los partidos EN VIVO (esos siempre se muestran completos)
+    liveContainer.innerHTML = partidosVivoHtml.join('');
+
+    // 2. Controlar el límite de PRÓXIMOS PARTIDOS (Mostrar solo 4 si no está expandido)
+    const limiteInicial = 4;
+    const tieneExcedente = partidosProximosHtml.length > limiteInicial;
+    
+    let partidosA_Mostrar = [];
+    if (hasExcedente && !matchesExpanded) {
+        partidosA_Mostrar = partidosProximosHtml.slice(0, limiteInicial);
+    } else {
+        partidosA_Mostrar = partidosProximosHtml;
+    }
+
+    upcomingContainer.innerHTML = partidosA_Mostrar.join('');
+
+    // 3. Crear o actualizar el botón dinámico de "Mostrar más" abajo del contenedor
+    // Buscamos si ya existe el botón anterior para no duplicarlo
+    let existingToggle = upcomingContainer.nextElementSibling;
+    if (existingToggle && existingToggle.classList.contains('toggle-matches-container')) {
+        existingToggle.remove();
+    }
+
+    if (tieneExcedente) {
+        const btnContainer = document.createElement('div');
+        btnContainer.className = 'toggle-matches-container';
+        btnContainer.innerHTML = `
+            <button class="btn-toggle-matches" id="btn-toggle-matches-trigger">
+                ${matchesExpanded ? currentToggleText.showLess : currentToggleText.showMore}
+            </button>
+        `;
+        
+        // Lo insertamos exactamente abajo de la lista de próximos partidos
+        upcomingContainer.parentNode.insertBefore(btnContainer, upcomingContainer.nextSibling);
+
+        // Evento de click para expandir o colapsar
+        document.getElementById('btn-toggle-matches-trigger').addEventListener('click', () => {
+            matchesExpanded = !matchesExpanded;
+            renderizarPartidos(); // Volvemos a renderizar con el nuevo estado
+        });
+    }
 }
 
 // ==========================================================================
