@@ -472,58 +472,50 @@ body {
    CORRECCIÓN DEFINITIVA: PARTIDOS HACIA ABAJO CON TAMAÑO ORIGINAL FIJO
    ========================================================================== */
 
-/* Forzamos que las columnas de los partidos crezcan hacia abajo de forma vertical */
+/* Wrapper global que sostiene las dos columnas juntas en PC */
+.matches-section-wrapper {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)) !important;
+    gap: 25px !important;
+    align-items: start !important; /* CLAVE: Evita que las cajas se estiren juntas */
+    width: 100% !important;
+    margin-top: 20px !important;
+}
+
+/* Cada columna es una caja flotante independiente con su propio fondo */
+.match-column-box {
+    background: rgba(21, 23, 27, 0.7) !important; /* Tu fondo gris oscuro/translúcido */
+    backdrop-filter: blur(8px) !important;
+    border: 1px solid rgba(48, 54, 61, 0.6) !important; /* Tu borde personalizado */
+    border-radius: 12px !important;
+    padding: 20px !important;
+    height: fit-content !important; /* Obliga a la caja a medir solo lo necesario */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* Contenedores internos verticales de tarjetas */
 #live-matches-container, 
 #upcoming-matches-container {
     display: flex !important;
-    flex-direction: column !important; /* Obliga a los partidos a ir hacia abajo */
-    gap: 15px !important;              /* Separación simétrica vertical */
-    width: 100% !important;
-    height: fit-content !important;
-}
-
-/* Evitamos que las tarjetas colapsen o pierdan sus dimensiones grandes originales */
-#live-matches-container .match-card,
-#upcoming-matches-container .match-card {
-    width: 100% !important;
-    min-height: 85px !important;       /* Altura original de las tarjetas */
-    flex-shrink: 0 !important;         /* Bloquea que el navegador las aplaste */
-}
-
-/* El contenedor global mantiene las dos columnas separadas e independientes */
-.matches-grid,
-.matches-section-wrapper,
-#matches-main-grid-container {
-    display: grid !important;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)) !important; /* Estructura PC perfecta de 2 columnas */
-    align-items: start !important;     /* Independencia total: no se arrastran hacia abajo */
-    gap: 25px !important;
-    width: 100% !important;
-}
-
-/* Espaciado limpio para los botones de paginación */
-.toggle-matches-container {
-    width: 100% !important;
-    text-align: center !important;
-    margin: 15px 0 25px 0 !important;
-    clear: both !important;
-}
-/* ==========================================================================
-   INDEPENDENCIA ABSOLUTA PARA EL RECUADRO EN VIVO
-   ========================================================================== */
-
-/* Buscamos el bloque que envuelve la sección EN VIVO (ajusta el nombre si tu clase cambia) */
-.live-matches-block,
-.matches-grid > div:first-child,
-#live-section-box {
-    height: fit-content !important; /* Obliga al fondo gris a terminar donde acaban sus tarjetas */
-    align-self: start !important;   /* Evita que el navegador lo estire verticalmente */
-}
-
-/* Forzamos que el contenedor interno de tarjetas en vivo no herede alturas raras */
-#live-matches-container {
-    height: auto !important;
-    max-height: none !important;
-    display: flex !important;
     flex-direction: column !important;
+    gap: 15px !important;
+    width: 100% !important;
+}
+
+/* Forzamos que las tarjetas no se deformen bajo ninguna circunstancia */
+.match-card {
+    width: 100% !important;
+    min-height: 85px !important;
+    flex-shrink: 0 !important;
+}
+
+/* El título interno de cada recuadro */
+.matches-sidebar-title {
+    font-size: 1.1rem !important;
+    text-transform: uppercase !important;
+    letter-spacing: 1px !important;
+    margin-bottom: 15px !important;
+    color: var(--text-main, #ffffff) !important;
+    border-left: 3px solid var(--accent-neon, #00f2fe) !important;
+    padding-left: 10px !important;
 }
