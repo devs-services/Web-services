@@ -38,6 +38,7 @@ function configurarIdiomas() {
             traducirInterfaz(currentLanguage);
             renderizarListaEquipos(); // Recargar nombres de países en su idioma
             renderizarGrupos();       // Recargar nombres en los grupos
+            renderizarPartidos();     // Actualizar el formato de idioma de las fechas
             if (selectedTeamId) {
                 actualizarPanelDetalle(selectedTeamId);
             }
@@ -62,7 +63,7 @@ function traducirInterfaz(lang) {
 }
 
 // ==========================================================================
-// 3. SECCIÓN PARTIDOS (EN VIVO / PRÓXIMOS)
+// 3. SECCIÓN PARTIDOS (EN VIVO / PRÓXIMOS AUTOMATIZADOS POR HORA LOCAL)
 // ==========================================================================
 function renderizarPartidos() {
     const liveContainer = document.getElementById('live-matches-container');
@@ -83,6 +84,18 @@ function renderizarPartidos() {
         const eq1Flag = eq1?.bandera ? `<img src="${eq1.bandera}" class="flag-circle" alt="">` : '';
         const eq2Flag = eq2?.bandera ? `<img src="${eq2.bandera}" class="flag-circle" alt="">` : '';
         
+        // Transformación automática al huso horario del usuario
+        let horaFormateada = "";
+        if (partido.fecha_utc) {
+            const fechaLocal = new Date(partido.fecha_utc);
+            horaFormateada = fechaLocal.toLocaleString(currentLanguage, {
+                month: 'short',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
         const tarjetaHtml = `
             <div class="match-card">
                 <div class="match-team">
@@ -94,8 +107,8 @@ function renderizarPartidos() {
                     <div class="score-display">
                         ${partido.estado === 'proximo' ? 'VS' : `${partido.equipo1_goles} - ${partido.equipo2_goles}`}
                     </div>
-                    <small style="color: var(--text-secondary); margin-top: 4px;">
-                        ${partido.estado === 'vivo' ? partido.minuto : `${partido.fecha} ${partido.hora}`}
+                    <small style="color: var(--text-secondary); margin-top: 4px; font-weight: 600;">
+                        ${partido.estado === 'vivo' ? partido.minuto : horaFormateada}
                     </small>
                 </div>
                 <div class="match-team team-right">
@@ -147,7 +160,7 @@ function renderizarListaEquipos() {
 }
 
 // ==========================================================================
-// 5. DETALLE DEL EQUIPO (SQUAD DIVIDIDO POR POSICIONES SOBRE EL ESTADIO)
+// 5. DETALLE DEL EQUIPO (SQUAD CON 4 SILUETAS ASIGNADAS DINÁMICAMENTE)
 // ==========================================================================
 function actualizarPanelDetalle(id) {
     const emptyMsg = document.getElementById('panel-empty-msg');
@@ -211,8 +224,8 @@ function renderizarCanchaOLista(equipo) {
     todosLosJugadores.forEach(jugador => {
         const pos = (jugador.posicion || '').toUpperCase();
         
-        // Asignación dinámica de la silueta correspondiente según la posición táctica
-        let rutaSilueta = 'img/jugadores/silueta_fw.png'; // Por defecto delantero
+        // Mapeo dinámico de las 4 siluetas personalizadas cuadradas de 240px
+        let rutaSilueta = 'img/jugadores/silueta_fw.png';
         
         if (pos === 'GK' || pos === 'POR' || pos === 'ARQ') {
             rutaSilueta = 'img/jugadores/silueta_gk.png';
@@ -230,7 +243,6 @@ function renderizarCanchaOLista(equipo) {
             </div>
         `;
 
-        // Clasificación e inyección en los contenedores visuales correspondientes
         if (pos === 'GK' || pos === 'POR' || pos === 'ARQ') {
             gkContainer.innerHTML += filaHtml;
         } else if (pos === 'CB' || pos === 'LB' || pos === 'RB' || pos === 'DF' || pos === 'DTD' || pos === 'DTI') {
@@ -243,15 +255,48 @@ function renderizarCanchaOLista(equipo) {
     });
 }
 
+function renderizarCalendarioEquipo(equipo) {
+    const list = document.getElementById('team-matches-list');
+    if (!list) return;
+    list.innerHTML = '';
+
+    if (!equipo.proximos_partidos || equipo.proximos_partidos.length === 0) {
+        list.innerHTML = '<p style="color: var(--text-secondary); font-size: 0.9rem;">No hay partidos programados</p>';
+        return;
+    }
+
+    equipo.proximos_partidos.forEach(partido => {
+        const rivalName = mundialData.equipos[partido.rival_id]?.nombres[currentLanguage] || partido.rival_id;
+        
+        // Conversión del calendario individual a huso horario local
+        let horaFormateada = "";
+        if (partido.fecha_utc) {
+            const fechaLocal = new Date(partido.fecha_utc);
+            horaFormateada = fechaLocal.toLocaleString(currentLanguage, {
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        list.innerHTML += `
+            <div style="display: flex; justify-content: space-between; background: #21262d; padding: 10px; border-radius: 6px; margin-top: 8px; font-size: 0.9rem;">
+                <span>VS ${rivalName}</span>
+                <span style="color: var(--accent-neon); font-weight: 600;">${horaFormateada}</span>
+            </div>
+        `;
+    });
+}
+
 // ==========================================================================
-// 6. FASE DE GRUPOS - FILAS SIMÉTRICAS DE 4 CON TAMAÑO ORIGINAL FIJO
+// 6. FASE DE GRUPOS - SISTEMA DE FILAS SIMÉTRICAS ADAPTATIVAS (4 EN 4)
 // ==========================================================================
 function renderizarGrupos() {
     const container = document.getElementById('groups-accordion-container');
     if (!container) return;
     container.innerHTML = '';
 
-    // Aseguramos que el contenedor principal no interfiera rompiendo el tamaño
     container.style.display = 'block';
     container.style.width = '100%';
 
@@ -261,13 +306,11 @@ function renderizarGrupos() {
         'I': 3, 'J': 3, 'K': 3, 'L': 3
     };
 
-    // 1. Creamos las 3 filas con diseño adaptativo real para PC (4 columnas idénticas)
     for (let i = 1; i <= 3; i++) {
         const filaDiv = document.createElement('div');
         filaDiv.className = `group-row-block fila-${i}`;
         filaDiv.id = `bloque-fila-${i}`;
         
-        // Estilos CSS inline robustos para garantizar el tamaño idéntico de antes
         filaDiv.style.display = 'grid';
         filaDiv.style.gridTemplateColumns = 'repeat(auto-fill, minmax(280px, 1fr))';
         filaDiv.style.gap = '20px';
@@ -277,7 +320,6 @@ function renderizarGrupos() {
         container.appendChild(filaDiv);
     }
 
-    // 2. Inyectamos los grupos manteniendo sus clases estructurales intactas
     Object.keys(mundialData.grupos).forEach(grupoId => {
         const grupo = mundialData.grupos[grupoId];
         const numeroFila = mapaFilas[grupoId] || 1;
@@ -287,7 +329,7 @@ function renderizarGrupos() {
 
         const card = document.createElement('div');
         card.className = 'group-card';
-        card.style.width = '100%'; // Obliga a la tarjeta a usar todo el espacio de su columna
+        card.style.width = '100%';
         
         card.innerHTML = `
             <button class="group-header-btn" data-grupo="${grupoId}" data-fila="${numeroFila}">
@@ -315,18 +357,15 @@ function renderizarGrupos() {
         contenedorFila.appendChild(card);
     });
 
-    // 3. Sistema de apertura exclusiva por filas completas
     container.querySelectorAll('.group-header-btn').forEach(btn => {
         btn.addEventListener('click', (e) => {
             e.preventDefault();
             const filaSeleccionada = btn.getAttribute('data-fila');
             
-            // Verificamos si la fila actual ya está abierta
             const primerGrupoDeFila = container.querySelector(`[data-fila="${filaSeleccionada}"]`);
             const idGrupo = primerGrupoDeFila.getAttribute('data-grupo');
             const estaAbiertaActualmente = !document.getElementById(`content-grupo-${idGrupo}`).classList.contains('hidden');
 
-            // Cerrar absolutamente todos los contenidos del panel primero
             Object.keys(mundialData.grupos).forEach(id => {
                 const content = document.getElementById(`content-grupo-${id}`);
                 if (content) content.classList.add('hidden');
@@ -338,7 +377,6 @@ function renderizarGrupos() {
                 }
             });
 
-            // Si la fila estaba cerrada, desplegamos sus 4 grupos simultáneamente
             if (!estaAbiertaActualmente) {
                 Object.keys(mapaFilas).forEach(id => {
                     if (mapaFilas[id] == filaSeleccionada) {
