@@ -10,12 +10,12 @@
 
 :root {
     --bg-main: #0d1117;
-    --bg-card: rgba(22, 27, 34, 0.75); /* Más traslúcido para ver el fondo */
+    --bg-card: rgba(22, 27, 34, 0.75); 
     --bg-card-hover: rgba(33, 38, 45, 0.85);
     --border-color: rgba(240, 246, 252, 0.1);
     --text-primary: #f0f6fc;
     --text-secondary: #c9d1d9;
-    --accent-neon: #00df89; /* Verde brillante oficial 2026 */
+    --accent-neon: #00df89; /* Verde brillante oficial del Mundial 2026 */
     --live-led: #2ea44f;
     --final-led: #da3633;
 }
@@ -25,10 +25,10 @@ body {
     color: var(--text-primary);
     overflow-x: hidden;
     
-    /* FONDO PRINCIPAL: Arte y Estadios Oficiales del Mundial 2026 de la FIFA */
-    /* Modificado (de 0.85 a 0.4) para hacer el fondo un 50% más visible y nítido */
-    background-image: linear-gradient(to bottom, rgba(13, 17, 23, 0.4), rgba(22, 27, 34, 0.6)), 
-                      url('https://digitalhub.fifa.com/image/upload/v1684347719/assets/fwc2026_brand_launch_hero.jpg');
+    /* IMAGEN DE FONDO GENERAL: Arte y Colores de Lanzamiento de FIFA 2026 */
+    /* Totalmente nítido y visible al ojo (filtro suavizado a 0.3) */
+    background-image: linear-gradient(to bottom, rgba(13, 17, 23, 0.3), rgba(22, 27, 34, 0.5)), 
+                      url('https://images.unsplash.com/photo-1624880351055-1f9f2dd06114?q=80&w=1920');
     background-attachment: fixed;
     background-size: cover;
     background-position: center;
@@ -263,10 +263,10 @@ body {
     object-fit: cover;
 }
 
-/* FONDO INTERNO: Imagen Aérea Cenital del Estadio de la Final del Mundial 2026 (MetLife Stadium) */
+/* IMAGEN INTERNA: Macro Estadio Cenital de Máxima Seguridad para GitHub */
 .squad-stadium-container {
-    background-image: linear-gradient(to bottom, rgba(22, 27, 34, 0.75), rgba(13, 17, 23, 0.85)), 
-                      url('https://images.unsplash.com/photo-1510563800743-aed2364902b8?q=80&w=1200'); /* Vista aérea limpia de un macro estadio moderno */
+    background-image: linear-gradient(to bottom, rgba(22, 27, 34, 0.7), rgba(13, 17, 23, 0.8)), 
+                      url('https://images.unsplash.com/photo-1508098682722-e99c43a406b2?q=80&w=1200');
     background-size: cover;
     background-position: center;
     border: 1px solid var(--border-color);
