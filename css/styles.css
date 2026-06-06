@@ -15,7 +15,7 @@
     --border-color: #30363d;
     --text-primary: #f0f6fc;
     --text-secondary: #8b949e;
-    --accent-neon: #2ea44f; /* Verde deportivo neón */
+    --accent-neon: #2ea44f;
     --live-led: #238636;
     --final-led: #da3633;
 }
@@ -86,18 +86,7 @@ body {
 }
 
 /* ==========================================================================
-   1. BRACKETS / FASE FINAL
-   ========================================================================== */
-.bracket-section {
-    background: rgba(22, 27, 34, 0.6);
-    border: 1px solid var(--border-color);
-    border-radius: 12px;
-    padding: 25px;
-    backdrop-filter: blur(5px);
-}
-
-/* ==========================================================================
-   2. SECCIÓN PARTIDOS (EN VIVO / PRÓXIMOS)
+   SECCIÓN PARTIDOS (EN VIVO / PRÓXIMOS)
    ========================================================================== */
 .matches-section {
     display: grid;
@@ -125,7 +114,6 @@ body {
     gap: 10px;
 }
 
-/* Tarjetas de partidos */
 .match-card {
     background: var(--bg-card);
     border: 1px solid var(--border-color);
@@ -168,7 +156,6 @@ body {
     border-radius: 6px;
 }
 
-/* LEDs de estado dinámicos */
 .led-indicator {
     width: 10px;
     height: 10px;
@@ -191,7 +178,6 @@ body {
     100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(46, 164, 79, 0); }
 }
 
-/* Mini banderas globales */
 .flag-circle {
     width: 24px;
     height: 24px;
@@ -201,7 +187,7 @@ body {
 }
 
 /* ==========================================================================
-   3. SECCIÓN INTERACTIVA (48 EQUIPOS + PANEL DE CONVOCADOS ESTADIO)
+   SECCIÓN INTERACTIVA (48 EQUIPOS + PANEL ESTADIO)
    ========================================================================== */
 .teams-interactive-section {
     display: grid;
@@ -214,7 +200,6 @@ body {
     .teams-interactive-section { grid-template-columns: 1fr; height: auto; }
 }
 
-/* Lista vertical de 48 equipos */
 .teams-sidebar {
     background: rgba(22, 27, 34, 0.6);
     border: 1px solid var(--border-color);
@@ -239,7 +224,6 @@ body {
     border-left: 4px solid var(--accent-neon);
 }
 
-/* Panel de detalles (Derecha) */
 .team-details-panel {
     background: rgba(22, 27, 34, 0.8);
     border: 1px solid var(--border-color);
@@ -259,7 +243,6 @@ body {
 
 .hidden { display: none !important; }
 
-/* Cabecera del Panel */
 .team-panel-header {
     display: flex;
     align-items: center;
@@ -274,7 +257,7 @@ body {
     object-fit: cover;
 }
 
-/* NUEVA SECCIÓN: PANEL CON IMAGEN DE ESTADIO DESDE EL ALTO CON ESTILO DARK/NEÓN */
+/* PANEL CON IMAGEN DE ESTADIO CENITAL NEÓN DESDE ARRIBA */
 .squad-stadium-container {
     background-image: linear-gradient(to bottom, rgba(22, 27, 34, 0.88), rgba(13, 17, 23, 0.93)), 
                       url('https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?q=80&w=1200');
@@ -295,7 +278,6 @@ body {
     .squad-stadium-container { grid-template-columns: 1fr; }
 }
 
-/* Bloques contenedores transparentes (Glassmorphism sobre el estadio) */
 .position-group {
     background: rgba(22, 27, 34, 0.55);
     backdrop-filter: blur(12px);
@@ -309,7 +291,7 @@ body {
 .position-title {
     font-size: 0.95rem;
     font-weight: 800;
-    color: #39d353; /* Verde neón brillante */
+    color: #39d353; /* Neón brillante */
     text-transform: uppercase;
     letter-spacing: 1px;
     border-bottom: 1px solid rgba(48, 54, 61, 0.6);
@@ -317,7 +299,6 @@ body {
     margin-bottom: 12px;
 }
 
-/* Filas de los Jugadores Convocados */
 .player-squad-row {
     display: flex;
     align-items: center;
@@ -338,7 +319,6 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 0 5px rgba(46, 164, 79, 0.3);
 }
 
 .player-squad-avatar {
@@ -354,21 +334,13 @@ body {
     font-size: 0.9rem;
     font-weight: 500;
     color: var(--text-primary);
-    letter-spacing: 0.3px;
 }
 
-/* Calendario inferior del equipo */
-.team-schedule {
-    margin-top: 10px;
-}
-
-.team-schedule h3 {
-    font-size: 1.1rem;
-    margin-bottom: 10px;
-}
+.team-schedule { margin-top: 10px; }
+.team-schedule h3 { font-size: 1.1rem; margin-bottom: 10px; }
 
 /* ==========================================================================
-   4. FASE DE GRUPOS (ACORDEÓN COLAPSABLE)
+   FASE DE GRUPOS Y CRIPTO
    ========================================================================== */
 .groups-grid {
     display: grid;
@@ -399,18 +371,8 @@ body {
 }
 
 .group-header-btn:hover { background: var(--bg-card-hover); }
+.group-content { padding: 15px; border-top: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 10px; }
 
-.group-content {
-    padding: 15px;
-    border-top: 1px solid var(--border-color);
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-/* ==========================================================================
-   5. BOTÓN FLOTANTE CRYPTO (GLASSMORPHISM)
-   ========================================================================== */
 .crypto-donation-box {
     position: fixed;
     bottom: 25px;
@@ -436,15 +398,8 @@ body {
     transition: transform 0.3s, background 0.3s;
 }
 
-.donation-trigger:hover {
-    transform: scale(1.05);
-    background: rgba(255, 255, 255, 0.15);
-}
-
-.heart-pulse {
-    color: #e25555;
-    animation: heartBeat 1.2s infinite;
-}
+.donation-trigger:hover { transform: scale(1.05); background: rgba(255, 255, 255, 0.15); }
+.heart-pulse { color: #e25555; animation: heartBeat 1.2s infinite; }
 
 @keyframes heartBeat {
     0% { transform: scale(1); }
@@ -464,43 +419,10 @@ body {
     box-shadow: 0 10px 40px rgba(0,0,0,0.5);
 }
 
-.donation-modal h3 {
-    font-size: 1.1rem;
-    margin-bottom: 15px;
-    text-align: center;
-}
-
+.donation-modal h3 { font-size: 1.1rem; margin-bottom: 15px; text-align: center; }
 .wallet-item { margin-bottom: 12px; }
-
-.coin-name {
-    font-size: 0.85rem;
-    color: var(--text-secondary);
-    display: block;
-    margin-bottom: 4px;
-}
-
-.copy-row {
-    display: flex;
-    gap: 5px;
-}
-
-.copy-row input {
-    flex: 1;
-    background: #0d1117;
-    border: 1px solid var(--border-color);
-    color: var(--text-secondary);
-    padding: 6px 10px;
-    border-radius: 6px;
-    font-size: 0.8rem;
-}
-
-.btn-copy {
-    background: var(--bg-card-hover);
-    border: 1px solid var(--border-color);
-    color: var(--text-primary);
-    padding: 6px 10px;
-    border-radius: 6px;
-    cursor: pointer;
-}
-
+.coin-name { font-size: 0.85rem; color: var(--text-secondary); display: block; margin-bottom: 4px; }
+.copy-row { display: flex; gap: 5px; }
+.copy-row input { flex: 1; background: #0d1117; border: 1px solid var(--border-color); color: var(--text-secondary); padding: 6px 10px; border-radius: 6px; font-size: 0.8rem; }
+.btn-copy { background: var(--bg-card-hover); border: 1px solid var(--border-color); color: var(--text-primary); padding: 6px 10px; border-radius: 6px; cursor: pointer; }
 .btn-copy:hover { background: var(--accent-neon); }
