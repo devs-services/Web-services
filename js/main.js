@@ -182,7 +182,6 @@ function renderizarCanchaOLista(equipo) {
 
     if (!gkContainer || !dfContainer || !mdContainer || !fwContainer || !stadiumPanel) return;
 
-    // Diccionario de traducciones para las cabeceras de posición
     const titulosPosiciones = {
         es: { gk: "Porteros", df: "Defensas", md: "Mediocampistas", fw: "Delanteros" },
         en: { gk: "Goalkeepers", df: "Defenders", md: "Midfielders", fw: "Forwards" },
@@ -193,13 +192,11 @@ function renderizarCanchaOLista(equipo) {
 
     const currentTitles = titulosPosiciones[currentLanguage] || titulosPosiciones['es'];
 
-    // Seteamos las cabeceras neón limpias
     gkContainer.innerHTML = `<div class="position-title"><span>🧤 ${currentTitles.gk}</span></div>`;
     dfContainer.innerHTML = `<div class="position-title"><span>🛡️ ${currentTitles.df}</span></div>`;
     mdContainer.innerHTML = `<div class="position-title"><span>🎯 ${currentTitles.md}</span></div>`;
     fwContainer.innerHTML = `<div class="position-title"><span>⚽ ${currentTitles.fw}</span></div>`;
 
-    // Unificamos titulares y suplentes en una sola lista para el estadio
     const todosLosJugadores = [...(equipo.titulares || []), ...(equipo.suplentes || [])];
 
     if (todosLosJugadores.length === 0) {
@@ -222,7 +219,6 @@ function renderizarCanchaOLista(equipo) {
 
         const pos = (jugador.posicion || '').toUpperCase();
 
-        // Filtro inteligente para acomodar las siglas
         if (pos === 'GK' || pos === 'POR' || pos === 'ARQ') {
             gkContainer.innerHTML += filaHtml;
         } else if (pos === 'CB' || pos === 'LB' || pos === 'RB' || pos === 'DF' || pos === 'DTD' || pos === 'DTI') {
@@ -257,7 +253,7 @@ function renderizarCalendarioEquipo(equipo) {
 }
 
 // ==========================================================================
-// 6. FASE DE GRUPOS COLAPSABLE (ACORDEÓN ESTRICTO - 1 A LA VEZ Y LIMPIO)
+// 6. FASE DE GRUPOS COLAPSABLE (ACORDEÓN ESTRICTO - CORREGIDO DE RAÍZ)
 // ==========================================================================
 function renderizarGrupos() {
     const container = document.getElementById('groups-accordion-container');
@@ -270,7 +266,6 @@ function renderizarGrupos() {
         const card = document.createElement('div');
         card.className = 'group-card';
         
-        // Estructura limpia sin la zona inferior de partidos VS
         card.innerHTML = `
             <button class="group-header-btn" data-grupo="${grupoId}">
                 <span>GRUPO ${grupoId}</span>
@@ -283,7 +278,7 @@ function renderizarGrupos() {
                         const name = eqData?.nombres[currentLanguage] || eqId;
                         const flag = eqData?.bandera ? `<img src="${eqData.bandera}" class="flag-circle" style="width:18px; height:18px; margin-right:8px;" alt="">` : '';
                         return `
-                            <div style="display: flex; align-items: center; padding: 6px 0; font-size: 0.95rem; border-bottom: 1px solid rgba(48,54,61,0.2);">
+                            <div style="display: flex; align-items: center; padding: 6px 0; font-size: 0.95rem; border-bottom: 1px solid rgba(48,54,61,0.2)">
                                 ${flag} 
                                 <strong style="margin-right: 8px; color: var(--accent-neon); font-size: 0.85rem; width: 30px;">${eqId}</strong> 
                                 <span>${name}</span>
@@ -297,23 +292,26 @@ function renderizarGrupos() {
         container.appendChild(card);
     });
 
-    // Manejo exclusivo del acordeón (cierra los demás al abrir uno nuevo)
-    container.querySelectorAll('.group-header-btn').forEach(btn => {
+    // Eventos del Acordeón con selectores ultra-específicos para evitar fallos de propagación
+    const botones = container.querySelectorAll('.group-header-btn');
+    botones.forEach(btn => {
         btn.addEventListener('click', (e) => {
+            e.preventDefault();
             const grupoIdActual = btn.getAttribute('data-grupo');
             const contenidoActual = document.getElementById(`content-grupo-${grupoIdActual}`);
             const iconoActual = btn.querySelector('i');
             const estaOculto = contenidoActual.classList.contains('hidden');
 
-            // 1. Ocultar todos los cuadros abiertos
-            container.querySelectorAll('.group-content').forEach(content => {
-                content.classList.add('hidden');
-            });
-            container.querySelectorAll('.group-header-btn i').forEach(icon => {
-                icon.className = 'fa-solid fa-chevron-down';
+            // 1. Forzamos el cierre de todos los paneles sin excepción
+            botones.forEach(b => {
+                const gId = b.getAttribute('data-grupo');
+                const panel = document.getElementById(`content-grupo-${gId}`);
+                if (panel) panel.classList.add('hidden');
+                const icon = b.querySelector('i');
+                if (icon) icon.className = 'fa-solid fa-chevron-down';
             });
 
-            // 2. Desplegar únicamente el grupo seleccionado
+            // 2. Si el panel clickeado estaba oculto, lo abrimos exclusivamente
             if (estaOculto) {
                 contenidoActual.classList.remove('hidden');
                 iconoActual.className = 'fa-solid fa-chevron-up';
