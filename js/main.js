@@ -253,35 +253,40 @@ function renderizarCalendarioEquipo(equipo) {
 }
 
 // ==========================================================================
-// 6. FASE DE GRUPOS - SISTEMA DE FILAS SIMÉTRICAS (4 EN 4)
+// 6. FASE DE GRUPOS - FILAS SIMÉTRICAS DE 4 CON TAMAÑO ORIGINAL FIJO
 // ==========================================================================
 function renderizarGrupos() {
     const container = document.getElementById('groups-accordion-container');
     if (!container) return;
     container.innerHTML = '';
 
-    // Mapeo manual para saber a qué fila física pertenece cada grupo
+    // Aseguramos que el contenedor principal no interfiera rompiendo el tamaño
+    container.style.display = 'block';
+    container.style.width = '100%';
+
     const mapaFilas = {
         'A': 1, 'B': 1, 'C': 1, 'D': 1,
         'E': 2, 'F': 2, 'G': 2, 'H': 2,
         'I': 3, 'J': 3, 'K': 3, 'L': 3
     };
 
-    // 1. Creamos las 3 grandes filas físicas contenedoras en el HTML
+    // 1. Creamos las 3 filas con diseño adaptativo real para PC (4 columnas idénticas)
     for (let i = 1; i <= 3; i++) {
         const filaDiv = document.createElement('div');
         filaDiv.className = `group-row-block fila-${i}`;
         filaDiv.id = `bloque-fila-${i}`;
-        // Estilo inline directo para asegurar que mantengan las 4 columnas estables
+        
+        // Estilos CSS inline robustos para garantizar el tamaño idéntico de antes
         filaDiv.style.display = 'grid';
-        filaDiv.style.gridTemplateColumns = 'repeat(4, 1fr)';
+        filaDiv.style.gridTemplateColumns = 'repeat(auto-fill, minmax(280px, 1fr))';
         filaDiv.style.gap = '20px';
-        filaDiv.style.marginBottom = '20px';
+        filaDiv.style.marginBottom = '25px';
         filaDiv.style.width = '100%';
+        
         container.appendChild(filaDiv);
     }
 
-    // 2. Inyectamos cada grupo dentro de su fila correspondiente
+    // 2. Inyectamos los grupos manteniendo sus clases estructurales intactas
     Object.keys(mundialData.grupos).forEach(grupoId => {
         const grupo = mundialData.grupos[grupoId];
         const numeroFila = mapaFilas[grupoId] || 1;
@@ -291,6 +296,7 @@ function renderizarGrupos() {
 
         const card = document.createElement('div');
         card.className = 'group-card';
+        card.style.width = '100%'; // Obliga a la tarjeta a usar todo el espacio de su columna
         
         card.innerHTML = `
             <button class="group-header-btn" data-grupo="${grupoId}" data-fila="${numeroFila}">
@@ -318,18 +324,18 @@ function renderizarGrupos() {
         contenedorFila.appendChild(card);
     });
 
-    // 3. Lógica de interacción por Filas Completas
+    // 3. Sistema de apertura exclusiva por filas completas
     container.querySelectorAll('.group-header-btn').forEach(btn => {
         btn.addEventListener('click', (e) => {
             e.preventDefault();
             const filaSeleccionada = btn.getAttribute('data-fila');
             
-            // Comprobamos si la fila cliqueada ya estaba abierta mirando uno de sus contenidos
+            // Verificamos si la fila actual ya está abierta
             const primerGrupoDeFila = container.querySelector(`[data-fila="${filaSeleccionada}"]`);
             const idGrupo = primerGrupoDeFila.getAttribute('data-grupo');
             const estaAbiertaActualmente = !document.getElementById(`content-grupo-${idGrupo}`).classList.contains('hidden');
 
-            // PASO A: Cerramos ABSOLUTAMENTE TODOS los contenidos e iconos del panel
+            // Cerrar absolutamente todos los contenidos del panel primero
             Object.keys(mundialData.grupos).forEach(id => {
                 const content = document.getElementById(`content-grupo-${id}`);
                 if (content) content.classList.add('hidden');
@@ -341,7 +347,7 @@ function renderizarGrupos() {
                 }
             });
 
-            // PASO B: Si la fila NO estaba abierta, abrimos los 4 grupos de esa fila al mismo tiempo
+            // Si la fila estaba cerrada, desplegamos sus 4 grupos simultáneamente
             if (!estaAbiertaActualmente) {
                 Object.keys(mapaFilas).forEach(id => {
                     if (mapaFilas[id] == filaSeleccionada) {
