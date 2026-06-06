@@ -467,3 +467,17 @@ body {
     box-shadow: 0 0 12px rgba(0, 242, 254, 0.3);
     color: var(--accent-neon);
 }
+
+/* Independencia física para las columnas de partidos */
+#live-matches-container, 
+#upcoming-matches-container {
+    height: fit-content;
+}
+
+.matches-section-wrapper, 
+#matches-main-grid-container,
+[id*="matches-container"] {
+    display: flex;
+    align-items: flex-start !important; /* Evita que las columnas se estiren juntas */
+    gap: 20px;
+}
