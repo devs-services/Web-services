@@ -141,7 +141,7 @@ function renderizarPartidos() {
         }
     });
 
-    // 1. Renderizar los partidos EN VIVO (esos siempre se muestran completos)
+    // 1. Renderizar los partidos EN VIVO
     liveContainer.innerHTML = partidosVivoHtml.join('');
 
     // 2. Controlar el límite de PRÓXIMOS PARTIDOS (Mostrar solo 4 si no está expandido)
@@ -149,7 +149,7 @@ function renderizarPartidos() {
     const tieneExcedente = partidosProximosHtml.length > limiteInicial;
     
     let partidosA_Mostrar = [];
-    if (hasExcedente && !matchesExpanded) {
+    if (tieneExcedente && !matchesExpanded) {
         partidosA_Mostrar = partidosProximosHtml.slice(0, limiteInicial);
     } else {
         partidosA_Mostrar = partidosProximosHtml;
@@ -158,7 +158,6 @@ function renderizarPartidos() {
     upcomingContainer.innerHTML = partidosA_Mostrar.join('');
 
     // 3. Crear o actualizar el botón dinámico de "Mostrar más" abajo del contenedor
-    // Buscamos si ya existe el botón anterior para no duplicarlo
     let existingToggle = upcomingContainer.nextElementSibling;
     if (existingToggle && existingToggle.classList.contains('toggle-matches-container')) {
         existingToggle.remove();
@@ -173,13 +172,12 @@ function renderizarPartidos() {
             </button>
         `;
         
-        // Lo insertamos exactamente abajo de la lista de próximos partidos
         upcomingContainer.parentNode.insertBefore(btnContainer, upcomingContainer.nextSibling);
 
         // Evento de click para expandir o colapsar
         document.getElementById('btn-toggle-matches-trigger').addEventListener('click', () => {
             matchesExpanded = !matchesExpanded;
-            renderizarPartidos(); // Volvemos a renderizar con el nuevo estado
+            renderizarPartidos(); // Re-renderizar con el nuevo estado
         });
     }
 }
