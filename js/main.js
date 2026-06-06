@@ -2,7 +2,6 @@
 let mundialData = null;
 let currentLanguage = 'es';
 let selectedTeamId = null;
-let currentLineupType = 'titulares'; // 'titulares' o 'suplentes'
 
 // ==========================================================================
 // 1. CARGA INICIAL DE DATOS
@@ -33,15 +32,17 @@ function inicializarWeb() {
 // ==========================================================================
 function configurarIdiomas() {
     const langSelect = document.getElementById('lang-select');
-    langSelect.addEventListener('change', (e) => {
-        currentLanguage = e.target.value;
-        traducirInterfaz(currentLanguage);
-        renderizarListaEquipos(); // Recargar nombres de países en su idioma
-        renderizarGrupos();       // Recargar nombres en los grupos
-        if (selectedTeamId) {
-            actualizarPanelDetalle(selectedTeamId);
-        }
-    });
+    if (langSelect) {
+        langSelect.addEventListener('change', (e) => {
+            currentLanguage = e.target.value;
+            traducirInterfaz(currentLanguage);
+            renderizarListaEquipos(); // Recargar nombres de países en su idioma
+            renderizarGrupos();       // Recargar nombres en los grupos
+            if (selectedTeamId) {
+                actualizarPanelDetalle(selectedTeamId);
+            }
+        });
+    }
 }
 
 function traducirInterfaz(lang) {
@@ -54,21 +55,20 @@ function traducirInterfaz(lang) {
     document.getElementById('txt-groups').textContent = texts.groups_title;
     document.getElementById('txt-donate-btn').textContent = texts.donate_btn;
     document.getElementById('txt-modal-title').textContent = texts.donate_modal_title;
-    document.getElementById('btn-titulares').textContent = texts.lineup_main;
-    document.getElementById('btn-suplentes').textContent = texts.lineup_subs;
     
-    // Traducir botones de copiado internos si es necesario
     document.querySelectorAll('.btn-copy').forEach(btn => {
         if(!btn.dataset.originalHtml) btn.dataset.originalHtml = btn.innerHTML;
     });
 }
 
 // ==========================================================================
-// 3. SECCIÓN PARTIDOS (LIVES CON LED VERDE Y PRÓXIMOS)
+// 3. SECCIÓN PARTIDOS (EN VIVO / PRÓXIMOS)
 // ==========================================================================
 function renderizarPartidos() {
     const liveContainer = document.getElementById('live-matches-container');
     const upcomingContainer = document.getElementById('upcoming-matches-container');
+    
+    if (!liveContainer || !upcomingContainer) return;
     
     liveContainer.innerHTML = '';
     upcomingContainer.innerHTML = '';
@@ -118,6 +118,7 @@ function renderizarPartidos() {
 // ==========================================================================
 function renderizarListaEquipos() {
     const container = document.getElementById('vertical-teams-container');
+    if (!container) return;
     container.innerHTML = '';
 
     Object.keys(mundialData.equipos).forEach(id => {
@@ -138,10 +139,6 @@ function renderizarListaEquipos() {
             row.classList.add('active');
             
             selectedTeamId = id;
-            currentLineupType = 'titulares';
-            document.getElementById('btn-titulares').classList.add('active');
-            document.getElementById('btn-suplentes').classList.remove('active');
-            
             actualizarPanelDetalle(id);
         });
 
@@ -150,22 +147,26 @@ function renderizarListaEquipos() {
 }
 
 // ==========================================================================
-// 5. DETALLE DEL EQUIPO SELECCIONADO (CANCHA DE JUGADORES Y FX)
+// 5. DETALLE DEL EQUIPO (SQUAD DIVIDIDO POR POSICIONES SOBRE EL ESTADIO)
 // ==========================================================================
 function actualizarPanelDetalle(id) {
-    document.getElementById('panel-empty-msg').classList.add('hidden');
+    const emptyMsg = document.getElementById('panel-empty-msg');
     const content = document.getElementById('panel-real-content');
-    content.classList.remove('hidden');
+    
+    if (emptyMsg) emptyMsg.classList.add('hidden');
+    if (content) content.classList.remove('hidden');
 
     const equipo = mundialData.equipos[id];
     document.getElementById('panel-team-name').textContent = equipo.nombres[currentLanguage];
     
     const flagImg = document.getElementById('panel-team-flag');
-    if (equipo.bandera) {
-        flagImg.src = equipo.bandera;
-        flagImg.classList.remove('hidden');
-    } else {
-        flagImg.classList.add('hidden');
+    if (flagImg) {
+        if (equipo.bandera) {
+            flagImg.src = equipo.bandera;
+            flagImg.classList.remove('hidden');
+        } else {
+            flagImg.classList.add('hidden');
+        }
     }
     
     renderizarCanchaOLista(equipo);
@@ -173,13 +174,15 @@ function actualizarPanelDetalle(id) {
 }
 
 function renderizarCanchaOLista(equipo) {
-    // Conseguimos los contenedores de las 4 categorías principales
     const gkContainer = document.getElementById('group-GK');
     const dfContainer = document.getElementById('group-DF');
     const mdContainer = document.getElementById('group-MD');
     const fwContainer = document.getElementById('group-FW');
+    const stadiumPanel = document.getElementById('stadium-squad-panel');
 
-    // Títulos traducidos de forma limpia según el idioma seleccionado
+    if (!gkContainer || !dfContainer || !mdContainer || !fwContainer || !stadiumPanel) return;
+
+    // Diccionario de traducciones para las cabeceras de posición
     const titulosPosiciones = {
         es: { gk: "Porteros", df: "Defensas", md: "Mediocampistas", fw: "Delanteros" },
         en: { gk: "Goalkeepers", df: "Defenders", md: "Midfielders", fw: "Forwards" },
@@ -190,25 +193,24 @@ function renderizarCanchaOLista(equipo) {
 
     const currentTitles = titulosPosiciones[currentLanguage] || titulosPosiciones['es'];
 
-    // Inicializamos los títulos en los cuadros
+    // Seteamos las cabeceras neón limpias
     gkContainer.innerHTML = `<div class="position-title"><span>🧤 ${currentTitles.gk}</span></div>`;
     dfContainer.innerHTML = `<div class="position-title"><span>🛡️ ${currentTitles.df}</span></div>`;
     mdContainer.innerHTML = `<div class="position-title"><span>🎯 ${currentTitles.md}</span></div>`;
     fwContainer.innerHTML = `<div class="position-title"><span>⚽ ${currentTitles.fw}</span></div>`;
 
-    // Unimos todos los jugadores en una sola gran lista unificada (titulares y suplentes)
+    // Unificamos titulares y suplentes en una sola lista para el estadio
     const todosLosJugadores = [...(equipo.titulares || []), ...(equipo.suplentes || [])];
 
     if (todosLosJugadores.length === 0) {
-        document.getElementById('stadium-squad-panel').style.display = 'block';
+        stadiumPanel.style.display = 'block';
         gkContainer.innerHTML = `<p style="color: var(--text-secondary); text-align:center; padding:20px;">No hay jugadores registrados para este equipo.</p>`;
         dfContainer.innerHTML = ''; mdContainer.innerHTML = ''; fwContainer.innerHTML = '';
         return;
     } else {
-        document.getElementById('stadium-squad-panel').style.display = 'grid';
+        stadiumPanel.style.display = 'grid';
     }
 
-    // Clasificamos y pintamos a cada jugador en su división correspondiente
     todosLosJugadores.forEach(jugador => {
         const filaHtml = `
             <div class="player-squad-row">
@@ -220,7 +222,7 @@ function renderizarCanchaOLista(equipo) {
 
         const pos = (jugador.posicion || '').toUpperCase();
 
-        // Filtro inteligente por siglas de fútbol internacional
+        // Filtro inteligente para acomodar las siglas
         if (pos === 'GK' || pos === 'POR' || pos === 'ARQ') {
             gkContainer.innerHTML += filaHtml;
         } else if (pos === 'CB' || pos === 'LB' || pos === 'RB' || pos === 'DF' || pos === 'DTD' || pos === 'DTI') {
@@ -228,9 +230,29 @@ function renderizarCanchaOLista(equipo) {
         } else if (pos === 'CM' || pos === 'CDM' || pos === 'CAM' || pos === 'LM' || pos === 'RM' || pos === 'MC' || pos === 'MCO' || pos === 'MCD') {
             mdContainer.innerHTML += filaHtml;
         } else {
-            // Delanteros (ST, CF, LW, RW, DC, EI, ED)
             fwContainer.innerHTML += filaHtml;
         }
+    });
+}
+
+function renderizarCalendarioEquipo(equipo) {
+    const list = document.getElementById('team-matches-list');
+    if (!list) return;
+    list.innerHTML = '';
+
+    if (!equipo.proximos_partidos || equipo.proximos_partidos.length === 0) {
+        list.innerHTML = '<p style="color: var(--text-secondary); font-size: 0.9rem;">No hay partidos programados</p>';
+        return;
+    }
+
+    equipo.proximos_partidos.forEach(partido => {
+        const rivalName = mundialData.equipos[partido.rival_id]?.nombres[currentLanguage] || partido.rival_id;
+        list.innerHTML += `
+            <div style="display: flex; justify-content: space-between; background: #21262d; padding: 10px; border-radius: 6px; margin-top: 8px; font-size: 0.9rem;">
+                <span>VS ${rivalName}</span>
+                <span style="color: var(--accent-neon); font-weight: 600;">${partido.fecha} - ${partido.hora}</span>
+            </div>
+        `;
     });
 }
 
@@ -239,6 +261,7 @@ function renderizarCanchaOLista(equipo) {
 // ==========================================================================
 function renderizarGrupos() {
     const container = document.getElementById('groups-accordion-container');
+    if (!container) return;
     container.innerHTML = '';
 
     Object.keys(mundialData.grupos).forEach(grupoId => {
@@ -302,6 +325,8 @@ function configurarDonaciones() {
     const btnTrigger = document.getElementById('donation-btn');
     const modal = document.getElementById('donation-modal');
 
+    if (!btnTrigger || !modal) return;
+
     btnTrigger.addEventListener('click', (e) => {
         e.stopPropagation();
         modal.classList.toggle('hidden');
@@ -317,20 +342,22 @@ function configurarDonaciones() {
         const input = item.querySelector('input');
         const btnCopy = item.querySelector('.btn-copy');
 
-        btnCopy.addEventListener('click', () => {
-            input.select();
-            input.setSelectionRange(0, 99999);
-            navigator.clipboard.writeText(input.value).then(() => {
-                const originalText = btnCopy.innerHTML;
-                const translatedCopied = mundialData.ui_translations[currentLanguage].copied;
-                btnCopy.innerHTML = `<span style="font-size: 0.75rem; font-weight: bold;">${translatedCopied}</span>`;
-                btnCopy.style.background = 'var(--accent-neon)';
-                
-                setTimeout(() => {
-                    btnCopy.innerHTML = originalText;
-                    btnCopy.style.background = '';
-                }, 2000);
+        if (btnCopy && input) {
+            btnCopy.addEventListener('click', () => {
+                input.select();
+                input.setSelectionRange(0, 99999);
+                navigator.clipboard.writeText(input.value).then(() => {
+                    const originalText = btnCopy.innerHTML;
+                    const translatedCopied = mundialData.ui_translations[currentLanguage].copied;
+                    btnCopy.innerHTML = `<span style="font-size: 0.75rem; font-weight: bold;">${translatedCopied}</span>`;
+                    btnCopy.style.background = 'var(--accent-neon)';
+                    
+                    setTimeout(() => {
+                        btnCopy.innerHTML = originalText;
+                        btnCopy.style.background = '';
+                    }, 2000);
+                });
             });
-        });
+        }
     });
 }
