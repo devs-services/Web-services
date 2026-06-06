@@ -256,8 +256,22 @@ function renderizarCalendarioEquipo(equipo) {
     });
 }
 
+¡Claro que sí! Ese comportamiento en el que todos los grupos se abren al mismo tiempo y la presencia de los partidos "VS" abajo resulta bastante molesto y satura la pantalla de información de forma innecesaria. Lo ideal para una experiencia de usuario limpia y profesional es un sistema tipo Acordeón Estricto: al hacer clic en un grupo (por ejemplo, el Grupo A), este se despliega, y si decides abrir otro (como el Grupo B), el anterior se cierra de forma automática para mantener el orden.
+
+Para lograr esto y dejar los cuadros de los grupos completamente limpios (solo con los cuatro países y sus banderas correspondientes), modificaremos únicamente la lógica en tu archivo de JavaScript (js/main.js). No necesitas tocar ni tu archivo HTML ni tu archivo CSS.
+
+Paso Único: Actualizar la función en js/main.js
+Entra a tu repositorio en la web de GitHub.
+
+Abre la carpeta js, selecciona el archivo main.js y haz clic en el icono del lápiz arriba a la derecha para editarlo.
+
+Baja en el código hasta encontrar el bloque de la fase de grupos. Vas a buscar y borrar por completo la función antigua llamada function renderizarGrupos().
+
+En su lugar, pega esta nueva versión optimizada que elimina los partidos "VS" y obliga a que se abra un solo grupo a la vez:
+
+JavaScript
 // ==========================================================================
-// 6. FASE DE GRUPOS COLAPSABLE (ACORDEÓN)
+// 6. FASE DE GRUPOS COLAPSABLE (ACORDEÓN ESTRICTO - 1 A LA VEZ Y LIMPIO)
 // ==========================================================================
 function renderizarGrupos() {
     const container = document.getElementById('groups-accordion-container');
@@ -270,51 +284,55 @@ function renderizarGrupos() {
         const card = document.createElement('div');
         card.className = 'group-card';
         
+        // Diseñamos el cuadro limpio: se eliminó por completo la sección inferior de partidos "VS"
         card.innerHTML = `
-            <button class="group-header-btn">
+            <button class="group-header-btn" data-grupo="${grupoId}">
                 <span>GRUPO ${grupoId}</span>
                 <i class="fa-solid fa-chevron-down"></i>
             </button>
-            <div class="group-content hidden">
-                <div class="group-table-mini" style="margin-bottom: 10px;">
+            <div class="group-content hidden" id="content-grupo-${grupoId}">
+                <div class="group-table-mini">
                     ${grupo.equipos.map(eqId => {
                         const eqData = mundialData.equipos[eqId];
                         const name = eqData?.nombres[currentLanguage] || eqId;
-                        const flag = eqData?.bandera ? `<img src="${eqData.bandera}" class="flag-circle" style="width:18px; height:18px; margin-right:5px;" alt="">` : '';
-                        return `<div style="display: flex; align-items: center; padding: 4px 0; font-size: 0.9rem;">${flag} <strong style="margin-right: 5px;">${eqId}</strong> ${name}</div>`;
+                        const flag = eqData?.bandera ? `<img src="${eqData.bandera}" class="flag-circle" style="width:18px; height:18px; margin-right:8px;" alt="">` : '';
+                        return `
+                            <div style="display: flex; align-items: center; padding: 6px 0; font-size: 0.95rem; border-bottom: 1px solid rgba(48,54,61,0.2);">
+                                ${flag} 
+                                <strong style="margin-right: 8px; color: var(--accent-neon); font-size: 0.85rem; width: 30px;">${eqId}</strong> 
+                                <span>${name}</span>
+                            </div>
+                        `;
                     }).join('')}
                 </div>
-                <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 8px 0;">
-                ${grupo.partidos.map(partido => {
-                    const loc = mundialData.equipos[partido.local]?.nombres[currentLanguage] || partido.local;
-                    const vis = mundialData.equipos[partido.visitante]?.nombres[currentLanguage] || partido.visitante;
-                    return `
-                        <div style="font-size: 0.8rem; display: flex; justify-content: space-between; color: var(--text-secondary); margin-top: 4px;">
-                            <span>${loc} vs ${vis}</span>
-                            <span style="color: var(--text-primary); font-weight: bold;">${partido.resultado}</span>
-                            <span>${partido.fecha}</span>
-                        </div>
-                    `;
-                }).join('')}
             </div>
         `;
 
-        const btn = card.querySelector('.group-header-btn');
-        const content = card.querySelector('.group-content');
-        const icon = btn.querySelector('i');
+        container.appendChild(card);
+    });
 
-        btn.addEventListener('click', () => {
-            const isHidden = content.classList.contains('hidden');
-            if (isHidden) {
-                content.classList.remove('hidden');
-                icon.className = 'fa-solid fa-chevron-up';
-            } else {
+    // Delegación de eventos para lograr el efecto Acordeón Estricto
+    container.querySelectorAll('.group-header-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const grupoIdActual = btn.getAttribute('data-grupo');
+            const contenidoActual = document.getElementById(`content-grupo-${grupoIdActual}`);
+            const iconoActual = btn.querySelector('i');
+            const estaOculto = contenidoActual.classList.contains('hidden');
+
+            // 1. Cerramos absolutamente todos los demás grupos abiertos antes de abrir el nuevo
+            container.querySelectorAll('.group-content').forEach(content => {
                 content.classList.add('hidden');
+            });
+            container.querySelectorAll('.group-header-btn i').forEach(icon => {
                 icon.className = 'fa-solid fa-chevron-down';
+            });
+
+            // 2. Si el grupo al que se le hizo clic estaba cerrado, lo abrimos de forma exclusiva
+            if (estaOculto) {
+                contenidoActual.classList.remove('hidden');
+                iconoActual.className = 'fa-solid fa-chevron-up';
             }
         });
-
-        container.appendChild(card);
     });
 }
 
