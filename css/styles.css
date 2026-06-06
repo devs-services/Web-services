@@ -468,16 +468,43 @@ body {
     color: var(--accent-neon);
 }
 
-/* Independencia física para las columnas de partidos */
+/* ==========================================================================
+   CORRECCIÓN DEFINITIVA: PARTIDOS HACIA ABAJO CON TAMAÑO ORIGINAL FIJO
+   ========================================================================== */
+
+/* Forzamos que las columnas de los partidos crezcan hacia abajo de forma vertical */
 #live-matches-container, 
 #upcoming-matches-container {
-    height: fit-content;
+    display: flex !important;
+    flex-direction: column !important; /* Obliga a los partidos a ir hacia abajo */
+    gap: 15px !important;              /* Separación simétrica vertical */
+    width: 100% !important;
+    height: fit-content !important;
 }
 
-.matches-section-wrapper, 
-#matches-main-grid-container,
-[id*="matches-container"] {
-    display: flex;
-    align-items: flex-start !important; /* Evita que las columnas se estiren juntas */
-    gap: 20px;
+/* Evitamos que las tarjetas colapsen o pierdan sus dimensiones grandes originales */
+#live-matches-container .match-card,
+#upcoming-matches-container .match-card {
+    width: 100% !important;
+    min-height: 85px !important;       /* Altura original de las tarjetas */
+    flex-shrink: 0 !important;         /* Bloquea que el navegador las aplaste */
+}
+
+/* El contenedor global mantiene las dos columnas separadas e independientes */
+.matches-grid,
+.matches-section-wrapper,
+#matches-main-grid-container {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)) !important; /* Estructura PC perfecta de 2 columnas */
+    align-items: start !important;     /* Independencia total: no se arrastran hacia abajo */
+    gap: 25px !important;
+    width: 100% !important;
+}
+
+/* Espaciado limpio para los botones de paginación */
+.toggle-matches-container {
+    width: 100% !important;
+    text-align: center !important;
+    margin: 15px 0 25px 0 !important;
+    clear: both !important;
 }
