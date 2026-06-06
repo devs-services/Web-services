@@ -209,16 +209,28 @@ function renderizarCanchaOLista(equipo) {
     }
 
     todosLosJugadores.forEach(jugador => {
+        const pos = (jugador.posicion || '').toUpperCase();
+        
+        // Asignación dinámica de la silueta correspondiente según la posición táctica
+        let rutaSilueta = 'img/jugadores/silueta_fw.png'; // Por defecto delantero
+        
+        if (pos === 'GK' || pos === 'POR' || pos === 'ARQ') {
+            rutaSilueta = 'img/jugadores/silueta_gk.png';
+        } else if (pos === 'CB' || pos === 'LB' || pos === 'RB' || pos === 'DF' || pos === 'DTD' || pos === 'DTI') {
+            rutaSilueta = 'img/jugadores/silueta_df.png';
+        } else if (pos === 'CM' || pos === 'CDM' || pos === 'CAM' || pos === 'LM' || pos === 'RM' || pos === 'MC' || pos === 'MCO' || pos === 'MCD') {
+            rutaSilueta = 'img/jugadores/silueta_md.png';
+        }
+
         const filaHtml = `
             <div class="player-squad-row">
                 <div class="player-squad-number">${jugador.dorsal}</div>
-                <img src="img/jugadores/silueta.png" class="player-squad-avatar" alt="">
+                <img src="${rutaSilueta}" class="player-squad-avatar" alt="${pos}">
                 <span class="player-squad-name">${jugador.nombre}</span>
             </div>
         `;
 
-        const pos = (jugador.posicion || '').toUpperCase();
-
+        // Clasificación e inyección en los contenedores visuales correspondientes
         if (pos === 'GK' || pos === 'POR' || pos === 'ARQ') {
             gkContainer.innerHTML += filaHtml;
         } else if (pos === 'CB' || pos === 'LB' || pos === 'RB' || pos === 'DF' || pos === 'DTD' || pos === 'DTI') {
@@ -228,27 +240,6 @@ function renderizarCanchaOLista(equipo) {
         } else {
             fwContainer.innerHTML += filaHtml;
         }
-    });
-}
-
-function renderizarCalendarioEquipo(equipo) {
-    const list = document.getElementById('team-matches-list');
-    if (!list) return;
-    list.innerHTML = '';
-
-    if (!equipo.proximos_partidos || equipo.proximos_partidos.length === 0) {
-        list.innerHTML = '<p style="color: var(--text-secondary); font-size: 0.9rem;">No hay partidos programados</p>';
-        return;
-    }
-
-    equipo.proximos_partidos.forEach(partido => {
-        const rivalName = mundialData.equipos[partido.rival_id]?.nombres[currentLanguage] || partido.rival_id;
-        list.innerHTML += `
-            <div style="display: flex; justify-content: space-between; background: #21262d; padding: 10px; border-radius: 6px; margin-top: 8px; font-size: 0.9rem;">
-                <span>VS ${rivalName}</span>
-                <span style="color: var(--accent-neon); font-weight: 600;">${partido.fecha} - ${partido.hora}</span>
-            </div>
-        `;
     });
 }
 
