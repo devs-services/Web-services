@@ -253,7 +253,7 @@ function renderizarCalendarioEquipo(equipo) {
 }
 
 // ==========================================================================
-// 6. FASE DE GRUPOS COLAPSABLE (ACORDEÓN ESTRICTO - CORREGIDO DE RAÍZ)
+// 6. FASE DE GRUPOS COLAPSABLE (ACORDEÓN ESTRICTO - CORRECCIÓN DE CAJAS EXTRA)
 // ==========================================================================
 function renderizarGrupos() {
     const container = document.getElementById('groups-accordion-container');
@@ -264,7 +264,9 @@ function renderizarGrupos() {
         const grupo = mundialData.grupos[grupoId];
         
         const card = document.createElement('div');
+        // IMPORTANTE: Le añadimos un ID único a la tarjeta completa (la caja gris)
         card.className = 'group-card';
+        card.id = `card-container-${grupoId}`;
         
         card.innerHTML = `
             <button class="group-header-btn" data-grupo="${grupoId}">
@@ -278,7 +280,7 @@ function renderizarGrupos() {
                         const name = eqData?.nombres[currentLanguage] || eqId;
                         const flag = eqData?.bandera ? `<img src="${eqData.bandera}" class="flag-circle" style="width:18px; height:18px; margin-right:8px;" alt="">` : '';
                         return `
-                            <div style="display: flex; align-items: center; padding: 6px 0; font-size: 0.95rem; border-bottom: 1px solid rgba(48,54,61,0.2)">
+                            <div style="display: flex; align-items: center; padding: 6px 0; font-size: 0.95rem; border-bottom: 1px solid rgba(48,54,61,0.2);">
                                 ${flag} 
                                 <strong style="margin-right: 8px; color: var(--accent-neon); font-size: 0.85rem; width: 30px;">${eqId}</strong> 
                                 <span>${name}</span>
@@ -292,7 +294,7 @@ function renderizarGrupos() {
         container.appendChild(card);
     });
 
-    // Eventos del Acordeón con selectores ultra-específicos para evitar fallos de propagación
+    // Control estricto de clicks
     const botones = container.querySelectorAll('.group-header-btn');
     botones.forEach(btn => {
         btn.addEventListener('click', (e) => {
@@ -300,19 +302,24 @@ function renderizarGrupos() {
             const grupoIdActual = btn.getAttribute('data-grupo');
             const contenidoActual = document.getElementById(`content-grupo-${grupoIdActual}`);
             const iconoActual = btn.querySelector('i');
-            const estaOculto = contenidoActual.classList.contains('hidden');
+            
+            // Comprobamos si el que tocamos ya estaba abierto
+            const yaEstaAbierto = !contenidoActual.classList.contains('hidden');
 
-            // 1. Forzamos el cierre de todos los paneles sin excepción
-            botones.forEach(b => {
-                const gId = b.getAttribute('data-grupo');
-                const panel = document.getElementById(`content-grupo-${gId}`);
-                if (panel) panel.classList.add('hidden');
-                const icon = b.querySelector('i');
-                if (icon) icon.className = 'fa-solid fa-chevron-down';
+            // 1. PASO CLAVE: Cerramos TODOS los contenidos e iconos primero
+            Object.keys(mundialData.grupos).forEach(id => {
+                const content = document.getElementById(`content-grupo-${id}`);
+                if (content) content.classList.add('hidden');
+                
+                const botonIndividual = container.querySelector(`[data-grupo="${id}"]`);
+                if (botonIndividual) {
+                    const icon = botonIndividual.querySelector('i');
+                    if (icon) icon.className = 'fa-solid fa-chevron-down';
+                }
             });
 
-            // 2. Si el panel clickeado estaba oculto, lo abrimos exclusivamente
-            if (estaOculto) {
+            // 2. Si NO estaba abierto, lo abrimos de forma exclusiva
+            if (!yaEstaAbierto) {
                 contenidoActual.classList.remove('hidden');
                 iconoActual.className = 'fa-solid fa-chevron-up';
             }
