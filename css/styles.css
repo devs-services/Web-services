@@ -508,3 +508,22 @@ body {
     margin: 15px 0 25px 0 !important;
     clear: both !important;
 }
+/* ==========================================================================
+   INDEPENDENCIA ABSOLUTA PARA EL RECUADRO EN VIVO
+   ========================================================================== */
+
+/* Buscamos el bloque que envuelve la sección EN VIVO (ajusta el nombre si tu clase cambia) */
+.live-matches-block,
+.matches-grid > div:first-child,
+#live-section-box {
+    height: fit-content !important; /* Obliga al fondo gris a terminar donde acaban sus tarjetas */
+    align-self: start !important;   /* Evita que el navegador lo estire verticalmente */
+}
+
+/* Forzamos que el contenedor interno de tarjetas en vivo no herede alturas raras */
+#live-matches-container {
+    height: auto !important;
+    max-height: none !important;
+    display: flex !important;
+    flex-direction: column !important;
+}
