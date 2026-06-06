@@ -15,7 +15,7 @@
     --border-color: #30363d;
     --text-primary: #f0f6fc;
     --text-secondary: #8b949e;
-    --accent-neon: #2ea44f; /* Verde deportivo */
+    --accent-neon: #2ea44f; /* Verde deportivo neón */
     --live-led: #238636;
     --final-led: #da3633;
 }
@@ -24,7 +24,7 @@ body {
     background-color: var(--bg-main);
     color: var(--text-primary);
     overflow-x: hidden;
-    /* EFECTO PARALLAX: El fondo se queda fijo y el contenido se mueve sobre él */
+    /* EFECTO PARALLAX GENERAL */
     background-image: linear-gradient(to bottom, rgba(13, 17, 23, 0.85), rgba(22, 27, 34, 0.95)), 
                       url('https://images.unsplash.com/photo-1508098682722-e99c43a406b2?q=80&w=1920');
     background-attachment: fixed;
@@ -125,7 +125,7 @@ body {
     gap: 10px;
 }
 
-/* Tarjetas de partidos individuales */
+/* Tarjetas de partidos */
 .match-card {
     background: var(--bg-card);
     border: 1px solid var(--border-color);
@@ -201,7 +201,7 @@ body {
 }
 
 /* ==========================================================================
-   3. SECCIÓN INTERACTIVA (48 EQUIPOS + CANCHA)
+   3. SECCIÓN INTERACTIVA (48 EQUIPOS + PANEL DE CONVOCADOS ESTADIO)
    ========================================================================== */
 .teams-interactive-section {
     display: grid;
@@ -220,7 +220,7 @@ body {
     border: 1px solid var(--border-color);
     border-radius: 12px;
     padding: 15px;
-    overflow-y: auto; /* Barra de scroll interna */
+    overflow-y: auto;
 }
 
 .team-row-item {
@@ -274,99 +274,97 @@ body {
     object-fit: cover;
 }
 
-/* Botones alineación 1 y 2 */
-.lineup-buttons {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 20px;
-}
-
-.btn-lineup {
-    background: var(--bg-card);
-    color: var(--text-primary);
+/* NUEVA SECCIÓN: PANEL CON IMAGEN DE ESTADIO DESDE EL ALTO CON ESTILO DARK/NEÓN */
+.squad-stadium-container {
+    background-image: linear-gradient(to bottom, rgba(22, 27, 34, 0.88), rgba(13, 17, 23, 0.93)), 
+                      url('https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?q=80&w=1200');
+    background-size: cover;
+    background-position: center;
     border: 1px solid var(--border-color);
-    padding: 8px 16px;
-    border-radius: 6px;
-    cursor: pointer;
-    font-weight: 600;
-    transition: all 0.2s;
-}
-
-.btn-lineup.active {
-    background: var(--accent-neon);
-    border-color: var(--accent-neon);
-}
-
-/* LA CANCHA DE FÚTBOL TÁCTICA */
-.soccer-field {
-    background: linear-gradient(135deg, #1e4620, #112e12);
-    border: 3px solid #ffffff30;
-    border-radius: 8px;
-    height: 350px;
-    position: relative;
-    overflow: hidden;
+    border-radius: 12px;
     padding: 20px;
-}
-
-.field-line.center-circle {
-    width: 100px;
-    height: 100px;
-    border: 2px solid #ffffff15;
-    border-radius: 50%;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-}
-
-#players-field-grid {
+    min-height: 450px;
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    height: 100%;
-    align-items: center;
-    justify-items: center;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 25px;
+    box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.8);
 }
 
-/* Ficha del Jugador en la Cancha */
-.player-card-field {
+@media (max-width: 600px) {
+    .squad-stadium-container { grid-template-columns: 1fr; }
+}
+
+/* Bloques contenedores transparentes (Glassmorphism sobre el estadio) */
+.position-group {
+    background: rgba(22, 27, 34, 0.55);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+}
+
+.position-title {
+    font-size: 0.95rem;
+    font-weight: 800;
+    color: #39d353; /* Verde neón brillante */
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-bottom: 1px solid rgba(48, 54, 61, 0.6);
+    padding-bottom: 6px;
+    margin-bottom: 12px;
+}
+
+/* Filas de los Jugadores Convocados */
+.player-squad-row {
     display: flex;
-    flex-direction: column;
     align-items: center;
-    text-align: center;
+    gap: 12px;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(48, 54, 61, 0.25);
 }
 
-.player-img-wrapper {
-    width: 55px;
-    height: 55px;
-    border-radius: 50%;
-    background-color: #21262d;
-    border: 2px solid var(--accent-neon);
-    overflow: hidden;
+.player-squad-number {
+    background: #0d1117;
+    color: var(--text-primary);
+    border: 1px solid var(--accent-neon);
+    font-size: 0.75rem;
+    font-weight: bold;
+    width: 24px;
+    height: 24px;
+    border-radius: 5px;
     display: flex;
     align-items: center;
     justify-content: center;
+    box-shadow: 0 0 5px rgba(46, 164, 79, 0.3);
 }
 
-.player-img-wrapper img {
-    width: 100%;
-    height: 100%;
+.player-squad-avatar {
+    width: 24px;
+    height: 24px;
     object-fit: contain;
-    background-color: #1c2128;
+    border-radius: 50%;
+    background: #21262d;
+    padding: 2px;
 }
 
-.player-img-wrapper i {
-    font-size: 1.5rem;
-    color: var(--text-secondary);
+.player-squad-name {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text-primary);
+    letter-spacing: 0.3px;
 }
 
-.player-name-lbl {
-    font-size: 0.75rem;
-    font-weight: 700;
-    background: rgba(0,0,0,0.7);
-    padding: 2px 6px;
-    border-radius: 4px;
-    margin-top: 5px;
-    white-space: nowrap;
+/* Calendario inferior del equipo */
+.team-schedule {
+    margin-top: 10px;
+}
+
+.team-schedule h3 {
+    font-size: 1.1rem;
+    margin-bottom: 10px;
 }
 
 /* ==========================================================================
@@ -456,7 +454,6 @@ body {
     70% { transform: scale(1); }
 }
 
-/* Ventana emergente del menú de wallets */
 .donation-modal {
     background: rgba(22, 27, 34, 0.85);
     backdrop-filter: blur(15px);
@@ -473,9 +470,7 @@ body {
     text-align: center;
 }
 
-.wallet-item {
-    margin-bottom: 12px;
-}
+.wallet-item { margin-bottom: 12px; }
 
 .coin-name {
     font-size: 0.85rem;
