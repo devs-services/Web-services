@@ -511,93 +511,113 @@ function configurarDonaciones() {
 }
 
 // ==========================================================================
-// 8. RENDERIZADO DEL BRACKET DINÁMICO (FASE FINAL)
+// 8. MOTOR DEL BRACKET EN ESPEJO PROFESIONAL (ESTILO MUNDIAL 2026)
 // ==========================================================================
 function renderizarBracket() {
-    const container = document.getElementById('bracket-matches-container');
-    if (!container || !mundialData || !mundialData.bracket) return;
-    container.innerHTML = '';
+    const leftWing = document.getElementById('bracket-left-wing');
+    const rightWing = document.getElementById('bracket-right-wing');
+    const centerFinals = document.getElementById('bracket-center-finals');
 
-    // Diccionario de traducciones para las cabeceras del árbol eliminatorio
-    const roundNames = {
-        es: { r32: "Dieciseisavos", r16: "Octavos de Final", r8: "Cuartos de Final", r4: "Semifinales", r2: "Gran Final" },
-        en: { r32: "Round of 32", r16: "Round of 16", r8: "Quarter-finals", r4: "Semi-finals", r2: "Grand Final" },
-        fr: { r32: "16es de Finale", r16: "8es de Finale", r8: "Quarts de Finale", r4: "Demi-finales", r2: "Finale" },
-        pt: { r32: "Dezasseis-avos", r16: "Oitavos de Final", r8: "Quartos de Final", r4: "Semifinais", r2: "Grande Final" },
-        de: { r32: "Sechzehntelfinale", r16: "Achtelfinale", r8: "Viertelfinale", r4: "Halbfinale", r2: "Finale" }
+    if (!leftWing || !rightWing || !centerFinals || !mundialData || !mundialData.bracket) return;
+
+    // Limpiamos los tres bloques para renderizar desde cero
+    leftWing.innerHTML = '';
+    rightWing.innerHTML = '';
+    centerFinals.innerHTML = '';
+
+    // Traducciones para las cabeceras de ronda
+    const roundTitles = {
+        es: { r32: "16avos", r16: "8avos", r8: "4tos", r2: "FINAL", r3: "3ER PUESTO" },
+        en: { r32: "R32", r16: "R16", r8: "Quarters", r2: "FINAL", r3: "3RD PLACE" }
     };
-    const currentRounds = roundNames[currentLanguage] || roundNames['es'];
+    const titles = roundTitles[currentLanguage] || roundTitles['es'];
 
-    // Definimos las rondas y la cantidad teórica de llaves que tiene cada una
-    const estructuraRondas = [
-        { clave: 'dieciseisavos', titulo: currentRounds.r32, cantidadLlaves: 16 },
-        { clave: 'octavos', titulo: currentRounds.r16, cantidadLlaves: 8 },
-        { clave: 'cuartos', titulo: currentRounds.r8, cantidadLlaves: 4 },
-        { clave: 'semis', titulo: currentRounds.r4, cantidadLlaves: 2 },
-        { clave: 'final', titulo: currentRounds.r2, cantidadLlaves: 1 }
-    ];
+    // --- FUNCIÓN INTERNA PARA CONSTRUIR UNA LLAVE DE ENFRENTAMIENTO ---
+    function generarHtmlLlave(claveRonda, indiceLlave) {
+        const partido = mundialData.bracket[claveRonda]?.[indiceLlave] || null;
+        let eq1Name = "&nbsp;", eq2Name = "&nbsp;", eq1Flag = "", eq2Flag = "";
+        let score1 = "", score2 = "", class1 = "bracket-team-empty", class2 = "bracket-team-empty";
 
-    estructuraRondas.forEach(ronda => {
-        // Creamos la columna física para la ronda actual
-        const rondaColumna = document.createElement('div');
-        rondaColumna.className = 'bracket-round';
-        
-        // Agregamos el título de la fase arriba de la columna
-        const htmlTitulo = `<div class="round-title">${ronda.titulo}</div>`;
-        let htmlLlaves = '';
-
-        // Iteramos para construir cada casillero de enfrentamiento
-        for (let i = 0; i < ronda.cantidadLlaves; i++) {
-            // Buscamos si ya existe información real en el JSON para esta llave
-            const datosPartido = mundialData.bracket[ronda.clave]?.[i] || null;
-
-            let eq1Name = "Esperando clasificado...";
-            let eq2Name = "Esperando clasificado...";
-            let eq1Flag = "";
-            let eq2Flag = "";
-            let score1 = "-";
-            let score2 = "-";
-            let classEq1 = "bracket-team-empty";
-            let classEq2 = "bracket-team-empty";
-
-            // Si hay datos cargados, transformamos los IDs en nombres y banderas reales
-            if (datosPartido) {
-                if (datosPartido.equipo1) {
-                    const eq1 = mundialData.equipos[datosPartido.equipo1];
-                    eq1Name = eq1?.nombres[currentLanguage] || datosPartido.equipo1;
-                    eq1Flag = eq1?.bandera ? `<img src="${eq1.bandera}" class="flag-circle" style="width:14px; height:14px; margin-right:6px;" alt="">` : '';
-                    classEq1 = datosPartido.ganador === datosPartido.equipo1 ? 'bracket-team-row winner' : 'bracket-team-row';
-                    score1 = datosPartido.goles1 !== undefined ? datosPartido.goles1 : "-";
-                }
-                if (datosPartido.equipo2) {
-                    const eq2 = mundialData.equipos[datosPartido.equipo2];
-                    eq2Name = eq2?.nombres[currentLanguage] || datosPartido.equipo2;
-                    eq2Flag = eq2?.bandera ? `<img src="${eq2.bandera}" class="flag-circle" style="width:14px; height:14px; margin-right:6px;" alt="">` : '';
-                    classEq2 = datosPartido.ganador === datosPartido.equipo2 ? 'bracket-team-row winner' : 'bracket-team-row';
-                    score2 = datosPartido.goles2 !== undefined ? datosPartido.goles2 : "-";
-                }
+        if (partido) {
+            if (partido.equipo1) {
+                const eq = mundialData.equipos[partido.equipo1];
+                eq1Name = eq?.nombres[currentLanguage] || partido.equipo1;
+                eq1Flag = eq?.bandera ? `<img src="${eq.bandera}" class="flag-circle" style="width:14px; height:14px; margin-right:6px;">` : '';
+                score1 = partido.goles1 !== undefined ? partido.goles1 : "-";
+                class1 = partido.ganador === partido.equipo1 ? "bracket-team-row winner" : "bracket-team-row";
             }
-
-            // Inyectamos la estructura visual de la llave de dos filas
-            htmlLlaves += `
-                <div class="bracket-match-box">
-                    <div class="${classEq1 === 'bracket-team-empty' ? '' : classEq1}" style="display:flex; align-items:center; justify-content:space-between; width:100%;">
-                        <div style="display:flex; align-items:center;" class="${classEq1 === 'bracket-team-empty' ? 'bracket-team-empty' : ''}">
-                            ${eq1Flag} <span>${eq1Name}</span>
-                        </div>
-                        ${datosPartido && datosPartido.equipo1 ? `<span class="bracket-score">${score1}</span>` : ''}
-                    </div>
-                    <div class="${classEq2 === 'bracket-team-empty' ? '' : classEq2}" style="display:flex; align-items:center; justify-content:space-between; width:100%; margin-top:4px;">
-                        <div style="display:flex; align-items:center;" class="${classEq2 === 'bracket-team-empty' ? 'bracket-team-empty' : ''}">
-                            ${eq2Flag} <span>${eq2Name}</span>
-                        </div>
-                        ${datosPartido && datosPartido.equipo2 ? `<span class="bracket-score">${score2}</span>` : ''}
-                    </div>
-                </div>
-            `;
+            if (partido.equipo2) {
+                const eq = mundialData.equipos[partido.equipo2];
+                eq2Name = eq?.nombres[currentLanguage] || partido.equipo2;
+                eq2Flag = eq?.bandera ? `<img src="${eq.bandera}" class="flag-circle" style="width:14px; height:14px; margin-right:6px;">` : '';
+                score2 = partido.goles2 !== undefined ? partido.goles2 : "-";
+                class2 = partido.ganador === partido.equipo2 ? "bracket-team-row winner" : "bracket-team-row";
+            }
         }
 
-        rondaColumna.innerHTML = htmlTitulo + htmlLlaves;
-        container.appendChild(rondaColumna);
-    });
+        return `
+            <div class="bracket-match-box">
+                <div class="${class1}">
+                    <div style="display:flex; align-items:center;">${eq1Flag}<span>${eq1Name}</span></div>
+                    ${partido && partido.equipo1 ? `<span class="bracket-score">${score1}</span>` : ''}
+                </div>
+                <div class="${class2}" style="margin-top:2px;">
+                    <div style="display:flex; align-items:center;">${eq2Flag}<span>${eq2Name}</span></div>
+                    ${partido && partido.equipo2 ? `<span class="bracket-score">${score2}</span>` : ''}
+                </div>
+            </div>
+        `;
+    }
+
+    // --- FUNCIÓN INTERNA PARA CONSTRUIR UNA COLUMNA DE RONDA ---
+    function crearColumnaRonda(titulo, claveRonda, indices) {
+        const col = document.createElement('div');
+        col.className = 'mirror-round-column';
+        let html = `<div class="round-title">${titulo}</div>`;
+        indices.forEach(idx => {
+            html += generarHtmlLlave(claveRonda, idx);
+        });
+        col.innerHTML = html;
+        return col;
+    }
+
+    // ==========================================================================
+    // 1. CONSTRUCCIÓN DE LAS ALAS LATERALES (ESPEJO MUNDIAL)
+    // ==========================================================================
+    
+    // ALA IZQUIERDA: Procesa las primeras mitades de las llaves (0 a 7, 0 a 3, etc.)
+    leftWing.appendChild(crearColumnaRonda(titles.r32, 'dieciseisavos', [0, 1, 2, 3, 4, 5, 6, 7]));
+    leftWing.appendChild(crearColumnaRonda(titles.r16, 'octavos', [0, 1, 2, 3]));
+    leftWing.appendChild(crearColumnaRonda(titles.r8, 'cuartos', [0, 1]));
+    leftWing.appendChild(crearColumnaRonda("SEMIS", 'semis', [0]));
+
+    // ALA DERECHA: Procesa las segundas mitades de las llaves (8 a 15, 4 a 7, etc.)
+    rightWing.appendChild(crearColumnaRonda(titles.r32, 'dieciseisavos', [8, 9, 10, 11, 12, 13, 14, 15]));
+    rightWing.appendChild(crearColumnaRonda(titles.r16, 'octavos', [4, 5, 6, 7]));
+    rightWing.appendChild(crearColumnaRonda(titles.r8, 'cuartos', [2, 3]));
+    rightWing.appendChild(crearColumnaRonda("SEMIS", 'semis', [1]));
+
+    // ==========================================================================
+    // 2. CONSTRUCCIÓN DEL BLOQUE CENTRAL (GRAN FINAL Y TERCER PUESTO)
+    // ==========================================================================
+    
+    // Inyectamos la Copa del Mundo visual como en tu captura
+    let htmlCentro = `
+        <div style="text-align:center; margin-bottom:10px;">
+            <span style="font-size:2.5rem;">🏆</span>
+            <div style="font-weight:bold; color:#ffc107; font-size:0.75rem; margin-top:5px; letter-spacing:2px;">BRACKET COMPLETO</div>
+        </div>
+    `;
+
+    // Renderizamos la GRAN FINAL (Llave única indice 0 de la ronda 'final')
+    htmlCentro += `<div class="center-title-box">🏅 ${titles.r2}</div>`;
+    htmlCentro += `<div class="center-match-card">${generarHtmlLlave('final', 0)}</div>`;
+
+    // Opcional: Renderizamos el TERCER PUESTO si existe en tu JSON como una lista dedicada
+    if (mundialData.bracket.tercer_puesto) {
+        htmlCentro += `<div class="center-title-box" style="background:#ff5722; color:#fff; margin-top:10px;">🥉 ${titles.r3}</div>`;
+        htmlCentro += `<div class="center-match-card third-place">${generarHtmlLlave('tercer_puesto', 0)}</div>`;
+    }
+
+    centerFinals.innerHTML = htmlCentro;
 }
