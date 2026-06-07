@@ -521,95 +521,131 @@ body {
 }
 
 /* ==========================================================================
-   ESTILOS ESTRUCTURALES DEL BRACKET (DIECISEISAVOS HASTA LA FINAL)
+   BRACKET PROFESIONAL EN ESPEJO (ESTILO MUNDIAL 2026)
    ========================================================================== */
 
-/* Permite hacer scroll horizontal en celulares si el árbol es muy ancho */
 .bracket-scroll-container {
     width: 100%;
     overflow-x: auto;
-    padding: 20px 0;
+    padding: 30px 0;
     margin-bottom: 40px;
-    scroll-behavior: smooth;
 }
 
-/* Sostiene las rondas una al lado de la otra de forma horizontal */
-.bracket-wrapper {
-    display: flex;
-    gap: 40px;
-    min-width: max-content;
-    padding: 10px;
+/* El contenedor divide la pantalla en 3: Izquierda, Centro y Derecha */
+.bracket-mirror-layout {
+    display: grid;
+    grid-template-columns: 1fr 300px 1fr;
+    gap: 30px;
+    min-width: 1100px; /* Evita que las llaves se amontonen */
     align-items: center;
+    padding: 10px;
 }
 
-/* Cada ronda eliminatoria es una columna vertical */
-.bracket-round {
+/* Las alas laterales contienen las columnas de las rondas */
+.bracket-side-wing {
     display: flex;
-    flex-direction: column;
-    justify-content: space-around; /* Distribuye las llaves simétricamente */
-    height: 100%;
-    min-width: 240px;
-    gap: 20px;
-}
-
-/* El título de la ronda (ej: Octavos) */
-.round-title {
-    text-align: center;
-    font-size: 0.9rem;
-    font-weight: bold;
-    text-transform: uppercase;
-    color: var(--accent-neon);
-    letter-spacing: 1px;
-    margin-bottom: 10px;
-    border-bottom: 2px solid rgba(0, 242, 254, 0.2);
-    padding-bottom: 5px;
-}
-
-/* Cada llave individual que enfrenta a dos equipos */
-.bracket-match-box {
-    background: rgba(21, 23, 27, 0.8);
-    border: 1px solid rgba(48, 54, 61, 0.8);
-    border-radius: 8px;
-    padding: 8px;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+    gap: 25px;
+    align-items: center;
     width: 100%;
 }
 
-/* Cada una de las dos filas internas de la llave (para cada equipo) */
+/* El ala derecha invierte el orden visual de sus rondas para mantener el espejo */
+.bracket-side-wing.right-wing {
+    flex-direction: row-reverse;
+}
+
+/* Columnas de rondas individuales */
+.mirror-round-column {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    height: 650px; /* Altura ideal fija para la simetría vertical */
+    flex-gap: 15px;
+    flex: 1;
+}
+
+/* Diseño de la cajita del partido (Idéntica a tu captura) */
+.bracket-match-box {
+    background: #15171b;
+    border: 1px solid #30363d;
+    border-radius: 8px;
+    padding: 6px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+    width: 100%;
+    min-height: 64px;
+}
+
+/* Filas internas para los equipos con las banderas redondas */
 .bracket-team-row {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 4px 6px;
+    padding: 4px 8px;
     border-radius: 4px;
     font-size: 0.85rem;
-    height: 28px;
+    height: 26px;
+    color: #8b949e;
 }
 
-/* Resalta al equipo que avanzó de ronda */
 .bracket-team-row.winner {
-    color: #ffffff;
+    color: #ffffff !important;
     font-weight: bold;
-    background: rgba(0, 242, 254, 0.1);
+    background: rgba(0, 242, 254, 0.08);
+    border-left: 2px solid var(--accent-neon);
 }
 
-/* Estilo sutil para los espacios vacíos esperando clasificados */
+/* Espacio vacío limpio y oscuro sin textos estorbosos */
 .bracket-team-empty {
-    color: var(--text-secondary, #8b949e);
-    font-style: italic;
-    font-size: 0.8rem;
+    height: 24px;
+    width: 100%;
 }
 
-/* Casillero para los goles de la fase final */
 .bracket-score {
     font-weight: bold;
     color: var(--accent-neon);
-    background: #161b22;
-    padding: 2px 6px;
+    background: #0d1117;
+    padding: 1px 6px;
     border-radius: 4px;
-    min-width: 20px;
+    min-width: 18px;
     text-align: center;
+    font-size: 0.8rem;
+}
+
+/* Eje central para las finales de la Copa */
+.bracket-center-core {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    padding: 15px;
+    border-radius: 12px;
+}
+
+.center-title-box {
+    background: #ffc107;
+    color: #000000;
+    font-weight: bold;
+    padding: 6px 16px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.center-match-card {
+    background: #1f242c;
+    border: 2px solid #ffc107;
+    border-radius: 10px;
+    width: 100%;
+    padding: 10px;
+    box-shadow: 0 0 15px rgba(255, 193, 7, 0.2);
+}
+
+.center-match-card.third-place {
+    border-color: #ff5722;
+    box-shadow: 0 0 15px rgba(255, 87, 34, 0.2);
 }
