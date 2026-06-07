@@ -521,131 +521,198 @@ body {
 }
 
 /* ==========================================================================
-   BRACKET PROFESIONAL EN ESPEJO (ESTILO MUNDIAL 2026)
+   BRACKET PROFESIONAL EN ESPEJO CON CONEXIONES NATIVAS (CSS GRID)
    ========================================================================== */
 
 .bracket-scroll-container {
     width: 100%;
     overflow-x: auto;
-    padding: 30px 0;
+    padding: 20px 0;
     margin-bottom: 40px;
 }
 
-/* El contenedor divide la pantalla en 3: Izquierda, Centro y Derecha */
+/* Contenedor en espejo de 3 bloques principales */
 .bracket-mirror-layout {
     display: grid;
-    grid-template-columns: 1fr 300px 1fr;
-    gap: 30px;
-    min-width: 1100px; /* Evita que las llaves se amontonen */
+    grid-template-columns: 1fr 280px 1fr;
+    gap: 40px;
+    min-width: 1200px;
     align-items: center;
     padding: 10px;
 }
 
-/* Las alas laterales contienen las columnas de las rondas */
+/* Cada ala lateral es una cuadrícula perfecta de 4 columnas de rondas */
 .bracket-side-wing {
-    display: flex;
-    gap: 25px;
-    align-items: center;
-    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(4, 140px); /* Ancho fijo para alineación perfecta de cabeceras */
+    gap: 30px;
+    position: relative;
+    height: 720px; /* Altura fija para que la matemática de las líneas coincida */
 }
 
-/* El ala derecha invierte el orden visual de sus rondas para mantener el espejo */
+/* El ala derecha invierte el orden de sus columnas */
 .bracket-side-wing.right-wing {
-    flex-direction: row-reverse;
+    direction: rtl; /* Invierte las columnas para el espejo */
+}
+.bracket-side-wing.right-wing * {
+    direction: ltr; /* Devuelve el texto a su lectura normal */
 }
 
-/* Columnas de rondas individuales */
+/* Columnas de rondas */
 .mirror-round-column {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-around;
-    height: 650px; /* Altura ideal fija para la simetría vertical */
-    flex-gap: 15px;
-    flex: 1;
+    display: grid;
+    grid-template-rows: repeat(16, 1fr); /* Divide el espacio en 16 celdas idénticas */
+    height: 100%;
+    position: relative;
 }
 
-/* Diseño de la cajita del partido (Idéntica a tu captura) */
+/* Títulos de las rondas 100% centrados sobre su eje */
+.round-title {
+    grid-row: 1;
+    position: absolute;
+    top: -30px;
+    width: 100%;
+    text-align: center;
+    font-size: 0.85rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    color: var(--accent-neon, #00f2fe);
+    letter-spacing: 1px;
+}
+
+/* ==========================================================================
+   POSICIONAMIENTO MATEMÁTICO: EN MEDIO DE LOS ANTERIORES
+   ========================================================================== */
+.pos-r32-1  { grid-row: 1 / span 2; }  .pos-r32-2  { grid-row: 3 / span 2; }
+.pos-r32-3  { grid-row: 5 / span 2; }  .pos-r32-4  { grid-row: 7 / span 2; }
+.pos-r32-5  { grid-row: 9 / span 2; }  .pos-r32-6  { grid-row: 11 / span 2; }
+.pos-r32-7  { grid-row: 13 / span 2; } .pos-r32-8  { grid-row: 15 / span 2; }
+
+/* Octavos se posicionan abarcando 4 celdas, quedando exactamente al centro */
+.pos-r16-1  { grid-row: 1 / span 4; }  .pos-r16-2  { grid-row: 5 / span 4; }
+.pos-r16-3  { grid-row: 9 / span 4; }  .pos-r16-4  { grid-row: 13 / span 4; }
+
+/* Cuartos abarcan 8 celdas */
+.pos-r8-1   { grid-row: 1 / span 8; }  .pos-r8-2   { grid-row: 9 / span 8; }
+
+/* Semis abarcan las 16 celdas quedando al centro total */
+.pos-semi   { grid-row: 1 / span 16; }
+
+/* Estilo de la caja del partido */
 .bracket-match-box {
     background: #15171b;
     border: 1px solid #30363d;
-    border-radius: 8px;
+    border-radius: 6px;
     padding: 6px;
     display: flex;
     flex-direction: column;
+    justify-content: center;
     gap: 4px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-    width: 100%;
-    min-height: 64px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+    height: 60px;
+    align-self: center; /* Se centra verticalmente en su espacio asignado */
+    position: relative;
 }
 
-/* Filas internas para los equipos con las banderas redondas */
-.bracket-team-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 4px 8px;
-    border-radius: 4px;
-    font-size: 0.85rem;
-    height: 26px;
-    color: #8b949e;
+/* ==========================================================================
+   LÍNEAS DE CONEXIÓN NATIVAS (LOS CODOS VERDES)
+   ========================================================================== */
+.mirror-round-column:not(:last-child) .bracket-match-box::after {
+    content: "";
+    position: absolute;
+    right: -20px;
+    width: 20px;
+    border: 1.5px solid rgba(0, 242, 254, 0.4); /* Línea color neón translúcida */
+    border-left: none;
+    z-index: 1;
 }
 
-.bracket-team-row.winner {
-    color: #ffffff !important;
-    font-weight: bold;
-    background: rgba(0, 242, 254, 0.08);
-    border-left: 2px solid var(--accent-neon);
+/* Matemática para los codos de conexión salientes */
+.mirror-round-column[data-ronda="r32"] .bracket-match-box::after {
+    height: 22px;
+}
+.mirror-round-column[data-ronda="r32"] .bracket-match-box:nth-child(odd)::after {
+    top: 50%;
+    border-bottom: none;
+    border-radius: 0 6px 0 0;
+}
+.mirror-round-column[data-ronda="r32"] .bracket-match-box:nth-child(even)::after {
+    bottom: 50%;
+    border-top: none;
+    border-radius: 0 0 6px 0;
 }
 
-/* Espacio vacío limpio y oscuro sin textos estorbosos */
-.bracket-team-empty {
-    height: 24px;
-    width: 100%;
+.mirror-round-column[data-ronda="r16"] .bracket-match-box::after {
+    height: 45px;
+}
+.mirror-round-column[data-ronda="r16"] .bracket-match-box:nth-child(2)::after,
+.mirror-round-column[data-ronda="r16"] .bracket-match-box:nth-child(4)::after {
+    top: 50%; border-bottom: none; border-radius: 0 6px 0 0;
+}
+.mirror-round-column[data-ronda="r16"] .bracket-match-box:nth-child(3)::after,
+.mirror-round-column[data-ronda="r16"] .bracket-match-box:nth-child(5)::after {
+    bottom: 50%; border-top: none; border-radius: 0 0 6px 0;
 }
 
-.bracket-score {
-    font-weight: bold;
-    color: var(--accent-neon);
-    background: #0d1117;
-    padding: 1px 6px;
-    border-radius: 4px;
-    min-width: 18px;
-    text-align: center;
-    font-size: 0.8rem;
+.mirror-round-column[data-ronda="r8"] .bracket-match-box::after {
+    height: 90px;
+}
+.mirror-round-column[data-ronda="r8"] .bracket-match-box:nth-child(2)::after {
+    top: 50%; border-bottom: none; border-radius: 0 6px 0 0;
+}
+.mirror-round-column[data-ronda="r8"] .bracket-match-box:nth-child(3)::after {
+    bottom: 50%; border-top: none; border-radius: 0 0 6px 0;
 }
 
-/* Eje central para las finales de la Copa */
+/* Entrada directa para la siguiente ronda */
+.mirror-round-column:not(:first-child) .bracket-match-box::before {
+    content: "";
+    position: absolute;
+    left: -12px;
+    top: 50%;
+    width: 12px;
+    border-top: 1.5px solid rgba(0, 242, 254, 0.4);
+    z-index: 1;
+}
+
+/* Componentes del bloque central */
 .bracket-center-core {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 20px;
-    padding: 15px;
-    border-radius: 12px;
+    gap: 15px;
 }
 
 .center-title-box {
     background: #ffc107;
     color: #000000;
     font-weight: bold;
-    padding: 6px 16px;
-    border-radius: 6px;
-    font-size: 0.85rem;
+    padding: 6px 14px;
+    border-radius: 4px;
+    font-size: 0.8rem;
     text-transform: uppercase;
     letter-spacing: 1px;
 }
 
 .center-match-card {
     background: #1f242c;
-    border: 2px solid #ffc107;
-    border-radius: 10px;
+    border: 1.5px solid #ffc107;
+    border-radius: 8px;
     width: 100%;
-    padding: 10px;
-    box-shadow: 0 0 15px rgba(255, 193, 7, 0.2);
+    padding: 4px;
 }
 
-.center-match-card.third-place {
-    border-color: #ff5722;
-    box-shadow: 0 0 15px rgba(255, 87, 34, 0.2);
+.bracket-team-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 4px 6px;
+    font-size: 0.8rem;
+    height: 22px;
+}
+
+.bracket-team-empty {
+    height: 20px;
+    width: 100%;
 }
