@@ -521,57 +521,58 @@ body {
 }
 
 /* ==========================================================================
-   BRACKET FLUIDO DE GRAN TAMAÑO CON CODOS MATEMÁTICOS AUTO-ALINEADOS
+   BRACKET DE ALTA PRECISIÓN GEOMÉTRICA CON COORDENADAS FISS (SIN SCROLL)
    ========================================================================== */
 
-/* Contenedor principal que se adapta al ancho de pantalla */
 .bracket-scroll-container {
     width: 100% !important;
-    overflow: hidden !important; /* Mantiene la pantalla limpia sin barras molestas */
-    padding: 40px 0;
+    overflow: hidden !important; /* Forzamos que todo entre limpio en pantalla completa */
+    padding: 30px 0;
 }
 
 .bracket-mirror-layout {
     display: grid !important;
-    grid-template-columns: 1fr 240px 1fr !important;
-    gap: 10px !important;
+    grid-template-columns: 1fr 240px 1fr !important; /* Centro rígido para las finales */
+    gap: 20px !important;
     width: 100% !important;
-    max-width: 1400px; /* Más ancho para que el árbol se vea imponente y grande */
+    max-width: 1350px;
     margin: 0 auto;
     align-items: center !important;
 }
 
-/* Las alas laterales ahora usan Flexbox elástico vertical */
+/* Las alas laterales miden exactamente 680px de alto. Ni un píxel más, ni uno menos */
 .bracket-side-wing {
-    display: flex !important;
-    justify-content: space-between !important;
-    align-items: center !important;
-    width: 100% !important;
-    height: 750px !important; /* Altura generosa para que NADA se corte abajo */
-}
-
-/* El ala derecha invierte el orden de las columnas para lograr el espejo */
-.bracket-side-wing.right-wing {
-    flex-direction: row-reverse !important;
-}
-
-/* Cada columna de ronda se distribuye uniformemente de arriba a abajo */
-.bracket-column-fluid {
-    display: flex !important;
-    flex-direction: column !important;
-    justify-content: space-around !important;
-    height: 100% !important;
-    width: 135px !important; /* Tarjetas más anchas y legibles */
+    display: grid !important;
+    grid-template-columns: repeat(4, 120px) !important; /* 4 columnas de ancho idéntico */
+    gap: 25px !important;
+    height: 680px !important;
     position: relative !important;
 }
 
-/* Títulos de las rondas perfectamente centrados sobre su columna */
+/* Inversión limpia del ala derecha para mantener el espejo */
+.bracket-side-wing.right-wing {
+    direction: rtl !important;
+}
+.bracket-side-wing.right-wing * {
+    direction: ltr !important;
+}
+
+/* Cada columna se divide verticalmente en 16 celdas idénticas */
+.mirror-round-column {
+    display: grid !important;
+    grid-template-rows: repeat(16, 1fr) !important;
+    height: 100% !important;
+    position: relative !important;
+}
+
+/* Cabeceras de ronda 100% centradas sobre su eje vertical */
 .round-title-fluid {
+    grid-row: 1 !important;
     position: absolute !important;
-    top: -30px !important;
+    top: -25px !important;
     width: 100% !important;
     text-align: center !important;
-    font-size: 0.85rem !important;
+    font-size: 0.8rem !important;
     font-weight: 800 !important;
     text-transform: uppercase !important;
     color: var(--accent-neon, #00f2fe) !important;
@@ -579,92 +580,31 @@ body {
 }
 
 /* ==========================================================================
-   EL TRUCO MAESTRO: CONEXIÓN AUTOMÁTICA EN MEDIO DE LAS ANTERIORES
+   MATEMÁTICA DE FILAS: ALINEACIÓN VERTICAL PERFECTA EN EL MEDIO
    ========================================================================== */
 
-/* Bloque físico que agrupa a 2 partidos hermanos de la ronda anterior */
-.bracket-match-pair-block {
-    display: flex !important;
-    flex-direction: column !important;
-    justify-content: space-between !important;
-    height: 100% !important;
-    max-height: 170px !important; /* Ajuste de altura elástica por ronda */
-    position: relative !important;
-    width: 100% !important;
-}
+/* 16avos: Ocupan 2 celdas consecutivas de forma natural (Total 8 cajas) */
+.pos-r32-1 { grid-row: 1 / span 2; }  .pos-r32-2 { grid-row: 3 / span 2; }
+.pos-r32-3 { grid-row: 5 / span 2; }  .pos-r32-4 { grid-row: 7 / span 2; }
+.pos-r32-5 { grid-row: 9 / span 2; }  .pos-r32-6 { grid-row: 11 / span 2; }
+.pos-r32-7 { grid-row: 13 / span 2; } .pos-r32-8 { grid-row: 15 / span 2; }
 
-/* Modificamos la altura máxima del bloque en rondas avanzadas para estirar los codos */
-.bracket-column-fluid:nth-child(2) .bracket-match-pair-block { max-height: 330px !important; }
-.bracket-column-fluid:nth-child(3) .bracket-match-pair-block { max-height: 600px !important; }
+/* Octavos: Se saltan la primera celda y abarcan de 2 en 2, quedando al medio exacto */
+.pos-r16-1 { grid-row: 1.5 / span 2; } /* Entre r32-1 y r32-2 */
+.pos-r16-2 { grid-row: 5.5 / span 2; } /* Entre r32-3 y r32-4 */
+.pos-r16-3 { grid-row: 9.5 / span 2; } /* Entre r32-5 y r32-6 */
+.pos-r16-4 { grid-row: 13.5 / span 2; } /* Entre r32-7 y r32-8 */
 
-/* El bloque de Semis se alinea solo al centro vertical absoluto */
-.bracket-single-block {
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    height: 100% !important;
-    width: 100% !important;
-}
+/* Cuartos: Se posicionan en el centro de los bloques de octavos */
+.pos-r8-1  { grid-row: 3.5 / span 2; }
+.pos-r8-2  { grid-row: 11.5 / span 2; }
+
+/* Semis: Se congela en el centro absoluto horizontal del ala lateral */
+.pos-semi  { grid-row: 7.5 / span 2; }
+
 
 /* ==========================================================================
-   DIBUJO DE LOS CODOS DE CONEXIÓN DE ALTA VISIBILIDAD (GROSOR 3PX)
-   ========================================================================== */
-
-/* El codo nace abrazando por detrás al bloque de dos partidos */
-.bracket-match-pair-block::after {
-    content: "" !important;
-    position: absolute !important;
-    right: -12px !important;
-    top: 25% !important;
-    bottom: 25% !important;
-    width: 12px !important;
-    border: 3px solid var(--accent-neon, #00f2fe) !important; /* Color neón grueso ultra-visible */
-    border-left: none !important;
-    border-radius: 0 8px 8px 0 !important;
-    z-index: 1 !important;
-}
-
-/* Línea horizontal central que sale del codo hacia la siguiente tarjeta */
-.bracket-match-pair-block::before {
-    content: "" !important;
-    position: absolute !important;
-    right: -24px !important;
-    top: 50% !important;
-    width: 12px !important;
-    border-top: 3px solid var(--accent-neon, #00f2fe) !important;
-    z-index: 1 !important;
-}
-
-/* Línea recta horizontal que saca Semis hacia el bloque central de la Final */
-.bracket-single-block::after {
-    content: "" !important;
-    position: absolute !important;
-    right: -20px !important;
-    top: 50% !important;
-    width: 20px !important;
-    border-top: 3px solid var(--accent-neon, #00f2fe) !important;
-    z-index: 1 !important;
-}
-
-/* Inversión de líneas en el ala derecha para que apunten al centro */
-.bracket-side-wing.right-wing .bracket-match-pair-block::after {
-    right: auto !important;
-    left: -12px !important;
-    border-left: 3px solid var(--accent-neon, #00f2fe) !important;
-    border-right: none !important;
-    border-radius: 8px 0 0 8px !important;
-}
-.bracket-side-wing.right-wing .bracket-match-pair-block::before {
-    right: auto !important;
-    left: -24px !important;
-}
-.bracket-side-wing.right-wing .bracket-single-block::after {
-    right: auto !important;
-    left: -20px !important;
-}
-
-/* ==========================================================================
-   ESTILO DE LAS TARJETAS GRANDES E IMPONENTES
+   ESTILO RÍGIDO DE LAS TARJETAS (TODAS MIDEN EXACTAMENTE LO MISMO)
    ========================================================================== */
 .bracket-match-box {
     background: #15171b !important;
@@ -675,18 +615,102 @@ body {
     flex-direction: column !important;
     justify-content: center !important;
     box-shadow: 0 4px 15px rgba(0,0,0,0.6) !important;
-    height: 56px !important; /* Más grandes y altas */
-    width: 100% !important;
-    z-index: 2 !important;
+    height: 56px !important;   /* ALTURA TOTALMENTE FIJA */
+    width: 100% !important;     /* ANCHO TOTALMENTE FIJO */
+    align-self: center !important; /* Se suspende en el centro de su celda */
+    position: relative !important;
+    z-index: 5 !important;
 }
 
-/* El Eje de las Finales del Centro */
+/* ==========================================================================
+   SISTEMA DE LÍNEAS Y CODOS DE CONEXIÓN ULTRAPRECISOS
+   ========================================================================== */
+
+/* Línea recta saliente desde el centro de la tarjeta de atrás */
+.mirror-round-column:not(:last-child) .bracket-match-box::after {
+    content: "" !important;
+    position: absolute !important;
+    right: -13px !important;
+    top: 50% !important;
+    width: 13px !important;
+    border-top: 3px solid var(--accent-neon, #00f2fe) !important; /* Gruesas y de alta visibilidad */
+    z-index: 1 !important;
+}
+
+/* Codos conectores que nacen en los partidos impares y bajan, o pares y suben */
+.mirror-round-column[data-ronda="r32"] .bracket-match-box:nth-child(even)::after {
+    height: 22px !important;
+    border-right: 3px solid var(--accent-neon, #00f2fe) !important;
+    border-radius: 0 6px 0 0 !important;
+}
+.mirror-round-column[data-ronda="r32"] .bracket-match-box:nth-child(odd):not(:first-child)::after {
+    height: 22px !important;
+    top: auto !important;
+    bottom: 50% !important;
+    border-right: 3px solid var(--accent-neon, #00f2fe) !important;
+    border-radius: 0 0 6px 0 !important;
+}
+
+.mirror-round-column[data-ronda="r16"] .bracket-match-box:nth-child(even)::after {
+    height: 42px !important;
+    border-right: 3px solid var(--accent-neon, #00f2fe) !important;
+    border-radius: 0 6px 0 0 !important;
+}
+.mirror-round-column[data-ronda="r16"] .bracket-match-box:nth-child(odd):not(:first-child)::after {
+    height: 42px !important;
+    top: auto !important;
+    bottom: 50% !important;
+    border-right: 3px solid var(--accent-neon, #00f2fe) !important;
+    border-radius: 0 0 6px 0 !important;
+}
+
+.mirror-round-column[data-ronda="r8"] .bracket-match-box:nth-child(2)::after {
+    height: 85px !important;
+    border-right: 3px solid var(--accent-neon, #00f2fe) !important;
+    border-radius: 0 6px 0 0 !important;
+}
+.mirror-round-column[data-ronda="r8"] .bracket-match-box:nth-child(3)::after {
+    height: 85px !important;
+    top: auto !important;
+    bottom: 50% !important;
+    border-right: 3px solid var(--accent-neon, #00f2fe) !important;
+    border-radius: 0 0 6px 0 !important;
+}
+
+/* Línea final directa desde Semis hasta el bloque central */
+.mirror-round-column[data-ronda="semi"] .bracket-match-box::after {
+    width: 25px !important;
+    right: -25px !important;
+    border-top: 3px solid var(--accent-neon, #00f2fe) !important;
+}
+
+/* Ajustes de inversión de líneas para el ala derecha */
+.bracket-side-wing.right-wing .bracket-match-box::after {
+    right: auto !important;
+    left: -13px !important;
+    border-left: 3px solid var(--accent-neon, #00f2fe) !important;
+    border-right: none !important;
+}
+.bracket-side-wing.right-wing .bracket-match-box:nth-child(even)::after {
+    border-radius: 6px 0 0 0 !important;
+}
+.bracket-side-wing.right-wing .bracket-match-box:nth-child(odd):not(:first-child)::after {
+    border-radius: 0 0 0 6px !important;
+}
+.bracket-side-wing.right-wing .mirror-round-column[data-ronda="semi"] .bracket-match-box::after {
+    left: -25px !important;
+    right: auto !important;
+}
+
+/* ==========================================================================
+   BLOQUE CENTRAL DE LAS FINALES (EJE PARALELO A LAS SEMIFINALES)
+   ========================================================================== */
 .bracket-center-core {
     display: flex !important;
     flex-direction: column !important;
     align-items: center !important;
     justify-content: center !important;
-    gap: 15px !important;
+    gap: 12px !important;
     height: 100% !important;
 }
 
@@ -699,6 +723,7 @@ body {
     font-size: 0.8rem !important;
     text-transform: uppercase !important;
     letter-spacing: 1px !important;
+    margin-top: 10px !important;
 }
 
 .center-match-card-wrapper {
@@ -712,7 +737,7 @@ body {
     border-color: #ff5722 !important;
 }
 
-/* Filas internas */
+/* Filas internas del partido */
 .bracket-team-row {
     display: flex !important;
     align-items: center !important;
@@ -720,6 +745,7 @@ body {
     padding: 2px 4px !important;
     font-size: 0.82rem !important;
     height: 22px !important;
+    color: #ffffff;
 }
 .bracket-team-empty {
     height: 22px !important;
