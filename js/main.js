@@ -511,7 +511,7 @@ function configurarDonaciones() {
 }
 
 // ==========================================================================
-// 8. MOTOR DEL BRACKET EN ESPEJO PROFESIONAL (ESTILO MUNDIAL 2026)
+// 8. MOTOR DEL BRACKET EN ESPEJO COMPUTADO (MUNDIAL 2026)
 // ==========================================================================
 function renderizarBracket() {
     const leftWing = document.getElementById('bracket-left-wing');
@@ -520,19 +520,21 @@ function renderizarBracket() {
 
     if (!leftWing || !rightWing || !centerFinals || !mundialData || !mundialData.bracket) return;
 
-    // Limpiamos los tres bloques para renderizar desde cero
     leftWing.innerHTML = '';
     rightWing.innerHTML = '';
     centerFinals.innerHTML = '';
 
-    // Traducciones para las cabeceras de ronda
+    // 1. DICCIONARIO CORREGIDO CON TRADUCCIONES PARA TODOS LOS IDIOMAS DISPONIBLES
     const roundTitles = {
-        es: { r32: "16avos", r16: "8avos", r8: "4tos", r2: "FINAL", r3: "3ER PUESTO" },
-        en: { r32: "R32", r16: "R16", r8: "Quarters", r2: "FINAL", r3: "3RD PLACE" }
+        es: { r32: "16avos", r16: "8avos", r8: "4tos", r4: "Semis", r2: "FINAL", r3: "3ER PUESTO" },
+        en: { r32: "R32", r16: "R16", r8: "Quarters", r4: "Semis", r2: "FINAL", r3: "3RD PLACE" },
+        fr: { r32: "16es", r16: "8es", r8: "Quarts", r4: "Demis", r2: "FINALE", r3: "3E PLACE" },
+        pt: { r32: "16avos", r16: "8avos", r8: "Quartos", r4: "Semis", r2: "FINAL", r3: "3º LUGAR" },
+        de: { r32: "16tel", r16: "8tel", r8: "Viertel", r4: "Halb", r2: "FINALE", r3: "3. PLATZ" }
     };
     const titles = roundTitles[currentLanguage] || roundTitles['es'];
 
-    // --- FUNCIÓN INTERNA PARA CONSTRUIR UNA LLAVE DE ENFRENTAMIENTO ---
+    // Función auxiliar para renderizar el HTML interno de una tarjeta de partido
     function generarHtmlLlave(claveRonda, indiceLlave) {
         const partido = mundialData.bracket[claveRonda]?.[indiceLlave] || null;
         let eq1Name = "&nbsp;", eq2Name = "&nbsp;", eq1Flag = "", eq2Flag = "";
@@ -556,7 +558,7 @@ function renderizarBracket() {
         }
 
         return `
-            <div class="bracket-match-box">
+            <div style="width:100%;">
                 <div class="${class1}">
                     <div style="display:flex; align-items:center;">${eq1Flag}<span>${eq1Name}</span></div>
                     ${partido && partido.equipo1 ? `<span class="bracket-score">${score1}</span>` : ''}
@@ -569,55 +571,68 @@ function renderizarBracket() {
         `;
     }
 
-    // --- FUNCIÓN INTERNA PARA CONSTRUIR UNA COLUMNA DE RONDA ---
-    function crearColumnaRonda(titulo, claveRonda, indices) {
+    // --- CONSTRUCTOR DE COLUMNAS USANDO COORDENADAS RÍGIDAS DE GRID ---
+    function crearColumnaRonda(titulo, claveRonda, dataRondaAttr, listaIndices, clasePosicionPrefijo) {
         const col = document.createElement('div');
         col.className = 'mirror-round-column';
+        col.setAttribute('data-ronda', dataRondaAttr);
+        
+        // Cabecera perfectamente integrada a la columna
         let html = `<div class="round-title">${titulo}</div>`;
-        indices.forEach(idx => {
-            html += generarHtmlLlave(claveRonda, idx);
+        
+        listaIndices.forEach((idx, num) => {
+            const claseCoordenada = `${clasePosicionPrefijo}-${num + 1}`;
+            html += `
+                <div class="bracket-match-box ${claseCoordenada}">
+                    ${generarHtmlLlave(claveRonda, idx)}
+                </div>
+            `;
         });
+        
         col.innerHTML = html;
         return col;
     }
 
     // ==========================================================================
-    // 1. CONSTRUCCIÓN DE LAS ALAS LATERALES (ESPEJO MUNDIAL)
+    // 1. ACOPLAMIENTO DE LAS ALAS LATERALES (IZQUIERDA Y DERECHA EN ESPEJO)
     // ==========================================================================
     
-    // ALA IZQUIERDA: Procesa las primeras mitades de las llaves (0 a 7, 0 a 3, etc.)
-    leftWing.appendChild(crearColumnaRonda(titles.r32, 'dieciseisavos', [0, 1, 2, 3, 4, 5, 6, 7]));
-    leftWing.appendChild(crearColumnaRonda(titles.r16, 'octavos', [0, 1, 2, 3]));
-    leftWing.appendChild(crearColumnaRonda(titles.r8, 'cuartos', [0, 1]));
-    leftWing.appendChild(crearColumnaRonda("SEMIS", 'semis', [0]));
+    // ALA IZQUIERDA: Mapea los índices iniciales de las llaves
+    leftWing.appendChild(crearColumnaRonda(titles.r32, 'dieciseisavos', 'r32', [0, 1, 2, 3, 4, 5, 6, 7], 'pos-r32'));
+    leftWing.appendChild(crearColumnaRonda(titles.r16, 'octavos', 'r16', [0, 1, 2, 3], 'pos-r16'));
+    leftWing.appendChild(crearColumnaRonda(titles.r8, 'cuartos', 'r8', [0, 1], 'pos-r8'));
+    leftWing.appendChild(crearColumnaRonda(titles.r4, 'semis', 'semi', [0], 'pos-semi'));
 
-    // ALA DERECHA: Procesa las segundas mitades de las llaves (8 a 15, 4 a 7, etc.)
-    rightWing.appendChild(crearColumnaRonda(titles.r32, 'dieciseisavos', [8, 9, 10, 11, 12, 13, 14, 15]));
-    rightWing.appendChild(crearColumnaRonda(titles.r16, 'octavos', [4, 5, 6, 7]));
-    rightWing.appendChild(crearColumnaRonda(titles.r8, 'cuartos', [2, 3]));
-    rightWing.appendChild(crearColumnaRonda("SEMIS", 'semis', [1]));
+    // ALA DERECHA: Mapea los índices secundarios invertidos en espejo
+    rightWing.appendChild(crearColumnaRonda(titles.r32, 'dieciseisavos', 'r32', [8, 9, 10, 11, 12, 13, 14, 15], 'pos-r32'));
+    rightWing.appendChild(crearColumnaRonda(titles.r16, 'octavos', 'r16', [4, 5, 6, 7], 'pos-r16'));
+    rightWing.appendChild(crearColumnaRonda(titles.r8, 'cuartos', 'r8', [2, 3], 'pos-r8'));
+    rightWing.appendChild(crearColumnaRonda(titles.r4, 'semis', 'semi', [1], 'pos-semi'));
 
     // ==========================================================================
-    // 2. CONSTRUCCIÓN DEL BLOQUE CENTRAL (GRAN FINAL Y TERCER PUESTO)
+    // 2. BLOQUE CENTRAL (ELIMINADO EL TEXTO "BRACKET COMPLETO" Y TRADUCIDO)
     // ==========================================================================
-    
-    // Inyectamos la Copa del Mundo visual como en tu captura
     let htmlCentro = `
-        <div style="text-align:center; margin-bottom:10px;">
-            <span style="font-size:2.5rem;">🏆</span>
-            <div style="font-weight:bold; color:#ffc107; font-size:0.75rem; margin-top:5px; letter-spacing:2px;">BRACKET COMPLETO</div>
+        <div style="text-align:center; margin-bottom:5px;">
+            <span style="font-size:2.8rem;">🏆</span>
         </div>
     `;
 
-    // Renderizamos la GRAN FINAL (Llave única indice 0 de la ronda 'final')
+    // GRAN FINAL
     htmlCentro += `<div class="center-title-box">🏅 ${titles.r2}</div>`;
-    htmlCentro += `<div class="center-match-card">${generarHtmlLlave('final', 0)}</div>`;
+    htmlCentro += `
+        <div class="center-match-card" style="height:60px; display:flex; align-items:center; padding:6px;">
+            ${generarHtmlLlave('final', 0)}
+        </div>
+    `;
 
-    // Opcional: Renderizamos el TERCER PUESTO si existe en tu JSON como una lista dedicada
-    if (mundialData.bracket.tercer_puesto) {
-        htmlCentro += `<div class="center-title-box" style="background:#ff5722; color:#fff; margin-top:10px;">🥉 ${titles.r3}</div>`;
-        htmlCentro += `<div class="center-match-card third-place">${generarHtmlLlave('tercer_puesto', 0)}</div>`;
-    }
+    // TERCER PUESTO
+    htmlCentro += `<div class="center-title-box" style="background:#ff5722; color:#fff; margin-top:15px;">🥉 ${titles.r3}</div>`;
+    htmlCentro += `
+        <div class="center-match-card" style="border-color:#ff5722; height:60px; display:flex; align-items:center; padding:6px;">
+            ${generarHtmlLlave('final', 1)} 
+        </div>
+    `;
 
     centerFinals.innerHTML = htmlCentro;
 }
