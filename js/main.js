@@ -23,7 +23,7 @@ function inicializarWeb() {
     renderizarPartidos();
     renderizarListaEquipos();
     renderizarGrupos();
-    // Traducir la interfaz por primera vez
+    renderizarBracket();
     traducirInterfaz(currentLanguage);
 }
 
@@ -39,6 +39,8 @@ function configurarIdiomas() {
             renderizarListaEquipos(); // Recargar nombres de países en su idioma
             renderizarGrupos();       // Recargar nombres en los grupos
             renderizarPartidos();     // Actualizar el formato de idioma de las fechas
+            renderizarBracket();      // Traduce el árbol eliminatorio
+            
             if (selectedTeamId) {
                 actualizarPanelDetalle(selectedTeamId);
             }
