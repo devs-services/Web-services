@@ -521,18 +521,18 @@ body {
 }
 
 /* ==========================================================================
-   BRACKET DE PRECISIÓN GEOMÉTRICA FINAL: CABLEADO ELECTRÓNICO COMPLETO
-   ========================================================================= */
+   BRACKET EN ESPEJO: AJUSTE DE PRECISIÓN PARA CODOS Y ARCOS AVANZADOS
+   ========================================================================== */
 
 .bracket-scroll-container {
     width: 100% !important;
-    overflow: hidden !important;
+    overflow: hidden !important; /* Pantalla limpia sin scrollbars */
     padding: 20px 0;
 }
 
 .bracket-mirror-layout {
     display: grid !important;
-    grid-template-columns: 1fr 200px 1fr !important;
+    grid-template-columns: 1fr 200px 1fr !important; /* Módulo central estrecho */
     gap: 15px !important;
     width: 100% !important;
     max-width: 1350px;
@@ -540,6 +540,7 @@ body {
     align-items: center !important;
 }
 
+/* Las alas laterales actúan como el eje de suspensión horizontal */
 .bracket-side-wing {
     display: flex !important;
     justify-content: space-between !important;
@@ -548,10 +549,12 @@ body {
     height: 640px !important;
 }
 
+/* Espejo físico del ala derecha */
 .bracket-side-wing.right-wing {
     flex-direction: row-reverse !important;
 }
 
+/* Cada columna de ronda mantiene un ancho fijo compacto de 112px */
 .bracket-column-fluid {
     display: flex !important;
     flex-direction: column !important;
@@ -561,6 +564,7 @@ body {
     position: relative !important;
 }
 
+/* Títulos superiores de ronda */
 .round-title-fluid {
     position: absolute !important;
     top: -25px !important;
@@ -573,20 +577,23 @@ body {
     letter-spacing: 1px !important;
 }
 
-/* Bloques contenedores de parejas elásticas */
+/* ==========================================================================
+   BLOQUES DE EMPAREJAMIENTO CON CENTRADO VERTICAL (SOPORTE DE LÍNEAS)
+   ========================================================================== */
+
 .bracket-match-pair-block {
     display: flex !important;
     flex-direction: column !important;
-    justify-content: center !important;
+    justify-content: center !important; /* Amontona las parejas al centro de su bloque */
     height: 100% !important;
     position: relative !important;
     width: 100% !important;
 }
 
-/* Control estricto de distancias (Gaps) verticales por cada ronda */
+/* Distancia interna (gap) rigurosa para que las tarjetas toquen las esquinas del codo */
 .bracket-column-fluid[data-ronda="r32"] .bracket-match-pair-block { max-height: 140px !important; gap: 24px !important; }
-.bracket-column-fluid[data-ronda="r16"] .bracket-match-pair-block { max-height: 290px !important; gap: 92px !important; }
-.bracket-column-fluid[data-ronda="r8"] .bracket-match-pair-block { max-height: 540px !important; gap: 232px !important; }
+.bracket-column-fluid[data-ronda="r16"] .bracket-match-pair-block { max-height: 290px !important; gap: 96px !important; }
+.bracket-column-fluid[data-ronda="r8"] .bracket-match-pair-block { max-height: 540px !important; gap: 234px !important; }
 
 .bracket-single-block {
     display: flex !important;
@@ -594,10 +601,9 @@ body {
     justify-content: center !important;
     height: 100% !important;
     width: 100% !important;
-    position: relative !important;
 }
 
-/* Dimensiones inalterables de las tarjetas compactas */
+/* Dimensión inalterable de las tarjetas compactas */
 .bracket-match-box {
     background: #15171b !important;
     border: 1px solid #30363d !important;
@@ -609,44 +615,41 @@ body {
     box-shadow: 0 4px 15px rgba(0,0,0,0.6) !important;
     height: 52px !important;
     width: 100% !important;
-    position: relative !important;
     z-index: 5 !important;
 }
 
 /* ==========================================================================
-   SISTEMA DE CABLEADO MATEMÁTICO DE ALTA VISIBILIDAD (GROSOR 3PX)
+   CABLEADO DE CODOS ARQUEADOS RECTIFICADOS (GROSOR 3PX)
    ========================================================================== */
 
-/* 1. Línea recta horizontal que saca cada tarjeta hacia adelante */
-.bracket-column-fluid:not([data-ronda="semi"]) .bracket-match-box::after {
+/* El codo nace abrazando los dos partidos desde sus ejes centrales */
+.bracket-match-pair-block::after {
+    content: "" !important;
+    position: absolute !important;
+    right: -12px !important;
+    top: 26px !important;    /* Mitad exacta de la primera tarjeta */
+    bottom: 26px !important; /* Mitad exacta de la segunda tarjeta */
+    width: 12px !important;
+    border: 3px solid var(--accent-neon, #00f2fe) !important;
+    border-left: none !important;
+    border-radius: 0 8px 8px 0 !important;
+    z-index: 1 !important;
+}
+
+/* Línea horizontal que sale de la punta del codo hacia la tarjeta del frente */
+.bracket-match-pair-block::before {
     content: "" !important;
     position: absolute !important;
     right: -24px !important;
     top: 50% !important;
     transform: translateY(-50%) !important;
-    width: 24px !important;
+    width: 12px !important;
     border-top: 3px solid var(--accent-neon, #00f2fe) !important;
     z-index: 1 !important;
 }
 
-/* 2. Cable vertical trasero que une los dos partidos hermanos por detrás */
-.bracket-column-fluid[data-ronda="r16"] .bracket-match-pair-block::before,
-.bracket-column-fluid[data-ronda="r8"] .bracket-match-pair-block::before {
-    content: "" !important;
-    position: absolute !important;
-    left: -12px !important; /* Punto medio exacto del puente de flujo */
-    border-left: 3px solid var(--accent-neon, #00f2fe) !important;
-    z-index: 1 !important;
-}
-
-/* Ajuste milimétrico de las alturas fijas del cable vertical para conectar perfecto */
-.bracket-column-fluid[data-ronda="r16"] .bracket-match-pair-block::before { top: 44px !important; bottom: 44px !important; }
-.bracket-column-fluid[data-ronda="r8"] .bracket-match-pair-block::before { top: 114px !important; bottom: 114px !important; }
-
-/* 3. El puente conector horizontal que introduce el flujo a la tarjeta receptora */
-.bracket-column-fluid[data-ronda="r16"] .bracket-match-box::before,
-.bracket-column-fluid[data-ronda="r8"] .bracket-match-box::before,
-.bracket-column-fluid[data-ronda="semi"] .bracket-match-box::before {
+/* Entrada de flujo horizontal directo para las tarjetas receptoras */
+.bracket-column-fluid:not(:first-child) .bracket-match-box::before {
     content: "" !important;
     position: absolute !important;
     left: -12px !important;
@@ -657,31 +660,8 @@ body {
     z-index: 1 !important;
 }
 
-/* CORRECCIÓN CRÍTICA: Cable vertical gigante en la columna de 4tos para abrazar la pareja y alimentar Semis */
-.bracket-column-fluid[data-ronda="r8"]::before {
-    content: "" !important;
-    position: absolute !important;
-    right: -12px !important;
-    top: 172px !important;   /* Centrado exacto sobre el partido superior de 4tos */
-    bottom: 172px !important;/* Centrado exacto sobre el partido inferior de 4tos */
-    border-right: 3px solid var(--accent-neon, #00f2fe) !important;
-    z-index: 1 !important;
-}
-
-/* Ajuste del puente horizontal que sale de ese gran cable vertical hacia Semis */
-.bracket-column-fluid[data-ronda="semi"]::before {
-    content: "" !important;
-    position: absolute !important;
-    left: -24px !important;
-    top: 50% !important;
-    transform: translateY(-50%) !important;
-    width: 12px !important;
-    border-top: 3px solid var(--accent-neon, #00f2fe) !important;
-    z-index: 1 !important;
-}
-
-/* 4. Conexión de salida final desde Semis hacia las cajas del bloque central */
-.bracket-column-fluid[data-ronda="semi"] .bracket-single-block::after {
+/* Extensión de línea horizontal final que saca Semis hacia el bloque de la Final */
+.bracket-single-block::after {
     content: "" !important;
     position: absolute !important;
     right: -15px !important;
@@ -693,31 +673,22 @@ body {
 }
 
 /* ==========================================================================
-   INVERSIÓN GEOMÉTRICA DE CONEXIONES PARA EL ALA DERECHA (ESPEJO TOTAL)
+   INVERSIÓN GEOMÉTRICA DE ARCOS PARA EL ALA DERECHA (ESPEJO TOTAL)
    ========================================================================== */
-.bracket-side-wing.right-wing .bracket-match-box::after {
-    right: auto !important;
-    left: -24px !important;
-}
-.bracket-side-wing.right-wing .bracket-match-pair-block::before {
-    left: auto !important;
-    right: -12px !important;
-    border-right: 3px solid var(--accent-neon, #00f2fe) !important;
-    border-left: none !important;
-}
-.bracket-side-wing.right-wing .bracket-match-box::before {
-    left: auto !important;
-    right: -12px !important;
-}
-.bracket-side-wing.right-wing .bracket-column-fluid[data-ronda="r8"]::before {
+.bracket-side-wing.right-wing .bracket-match-pair-block::after {
     right: auto !important;
     left: -12px !important;
     border-left: 3px solid var(--accent-neon, #00f2fe) !important;
     border-right: none !important;
+    border-radius: 8px 0 0 8px !important;
 }
-.bracket-side-wing.right-wing .bracket-column-fluid[data-ronda="semi"]::before {
+.bracket-side-wing.right-wing .bracket-match-pair-block::before {
+    right: auto !important;
+    left: -24px !important;
+}
+.bracket-side-wing.right-wing .bracket-match-box::before {
     left: auto !important;
-    right: -24px !important;
+    right: -12px !important;
 }
 .bracket-side-wing.right-wing .bracket-single-block::after {
     right: auto !important;
