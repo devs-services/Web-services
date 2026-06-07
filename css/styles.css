@@ -521,7 +521,7 @@ body {
 }
 
 /* ==========================================================================
-   BRACKET DE ALTA PRECISIÓN: CODOS INDIVIDUALES RECTIFICADOS (SIN LÍNEAS LARGAS)
+   BRACKET DE ALTA PRECISIÓN: AJUSTE DE CODOS AVANZADOS SEGMENTADOS
    ========================================================================== */
 
 .bracket-scroll-container {
@@ -620,25 +620,27 @@ body {
 }
 
 /* ==========================================================================
-   RECONSTRUCCIÓN DE LOS CODOS CORTOS INDIVIDUALES (GROSOR 3PX)
+   RECONSTRUCCIÓN DE LOS CODOS CORTOS INDIVIDUALES CALIBRADOS (GROSOR 3PX)
    ========================================================================== */
 
-/* El codo nace en la mitad de la tarjeta de arriba y baja hasta la mitad de la de abajo */
+/* El codo base vertical se centra matemáticamente en el medio del bloque */
 .bracket-match-pair-block::after {
     content: "" !important;
     position: absolute !important;
     right: -12px !important;
-    
-    /* Con "height" fija controlamos que el codo mida exactamente la distancia entre las dos tarjetas */
-    top: 26px !important; /* Centrado en la tarjeta de arriba */
-    bottom: 26px !important; /* Centrado en la de abajo */
-    
+    top: 50% !important;
+    transform: translateY(-50%) !important;
     width: 12px !important;
-    border: 3px solid var(--accent-neon, #00f2fe) !important; /* Líneas gruesas ultrapotentes */
+    border: 3px solid var(--accent-neon, #00f2fe) !important;
     border-left: none !important;
     border-radius: 0 8px 8px 0 !important;
     z-index: 1 !important;
 }
+
+/* Ajustamos la altura física real de la línea del codo de forma individual por ronda */
+.bracket-column-fluid[data-ronda="r32"] .bracket-match-pair-block::after { height: 78px !important; }  /* Codo corto para 16avos */
+.bracket-column-fluid[data-ronda="r16"] .bracket-match-pair-block::after { height: 164px !important; } /* Codo medio para 8avos */
+.bracket-column-fluid[data-ronda="r8"] .bracket-match-pair-block::after { height: 334px !important; }  /* CORRECCIÓN: Codo exacto para 4tos */
 
 /* Línea horizontal central que sale de la punta del codo hacia adelante */
 .bracket-match-pair-block::before {
