@@ -521,8 +521,8 @@ body {
 }
 
 /* ==========================================================================
-   BRACKET DE ALTA PRECISIÓN: SISTEMA DE CONEXIONES LINEALES FIJAS
-   ========================================================================== */
+   BRACKET DE PRECISIÓN GEOMÉTRICA FINAL: CABLEADO ELECTRÓNICO COMPLETO
+   ========================================================================= */
 
 .bracket-scroll-container {
     width: 100% !important;
@@ -573,7 +573,7 @@ body {
     letter-spacing: 1px !important;
 }
 
-/* Contenedores de parejas alineados al centro */
+/* Bloques contenedores de parejas elásticas */
 .bracket-match-pair-block {
     display: flex !important;
     flex-direction: column !important;
@@ -583,7 +583,7 @@ body {
     width: 100% !important;
 }
 
-/* Control estricto de distancias (Gaps) por ronda */
+/* Control estricto de distancias (Gaps) verticales por cada ronda */
 .bracket-column-fluid[data-ronda="r32"] .bracket-match-pair-block { max-height: 140px !important; gap: 24px !important; }
 .bracket-column-fluid[data-ronda="r16"] .bracket-match-pair-block { max-height: 290px !important; gap: 92px !important; }
 .bracket-column-fluid[data-ronda="r8"] .bracket-match-pair-block { max-height: 540px !important; gap: 232px !important; }
@@ -597,7 +597,7 @@ body {
     position: relative !important;
 }
 
-/* Estilo estricto de las tarjetas laterales compactas */
+/* Dimensiones inalterables de las tarjetas compactas */
 .bracket-match-box {
     background: #15171b !important;
     border: 1px solid #30363d !important;
@@ -614,10 +614,10 @@ body {
 }
 
 /* ==========================================================================
-   NUEVO NUEVO SISTEMA DE CABLEADO MATEMÁTICO (ANULAMOS ARCOS ERRÁTICOS)
+   SISTEMA DE CABLEADO MATEMÁTICO DE ALTA VISIBILIDAD (GROSOR 3PX)
    ========================================================================== */
 
-/* 1. Cada tarjeta saca una línea horizontal recta hacia adelante desde su centro */
+/* 1. Línea recta horizontal que saca cada tarjeta hacia adelante */
 .bracket-column-fluid:not([data-ronda="semi"]) .bracket-match-box::after {
     content: "" !important;
     position: absolute !important;
@@ -625,29 +625,28 @@ body {
     top: 50% !important;
     transform: translateY(-50%) !important;
     width: 24px !important;
-    border-top: 3px solid var(--accent-neon, #00f2fe) !important; /* Línea neón gruesa visible */
+    border-top: 3px solid var(--accent-neon, #00f2fe) !important;
     z-index: 1 !important;
 }
 
-/* 2. Cable vertical trasero que une los dos partidos de la pareja para recibir el flujo */
+/* 2. Cable vertical trasero que une los dos partidos hermanos por detrás */
 .bracket-column-fluid[data-ronda="r16"] .bracket-match-pair-block::before,
 .bracket-column-fluid[data-ronda="r8"] .bracket-match-pair-block::before {
     content: "" !important;
     position: absolute !important;
-    left: -12px !important; /* Se posiciona a la mitad del puente de entrada */
-    top: 25% !important;
-    bottom: 25% !important;
+    left: -12px !important; /* Punto medio exacto del puente de flujo */
     border-left: 3px solid var(--accent-neon, #00f2fe) !important;
     z-index: 1 !important;
 }
 
-/* Ajuste específico de la altura del cable vertical por ronda para conectar perfecto */
+/* Ajuste milimétrico de las alturas fijas del cable vertical para conectar perfecto */
 .bracket-column-fluid[data-ronda="r16"] .bracket-match-pair-block::before { top: 44px !important; bottom: 44px !important; }
 .bracket-column-fluid[data-ronda="r8"] .bracket-match-pair-block::before { top: 114px !important; bottom: 114px !important; }
 
-/* 3. El conector que sale del cable vertical hacia la propia tarjeta receptora */
+/* 3. El puente conector horizontal que introduce el flujo a la tarjeta receptora */
 .bracket-column-fluid[data-ronda="r16"] .bracket-match-box::before,
-.bracket-column-fluid[data-ronda="r8"] .bracket-match-box::before {
+.bracket-column-fluid[data-ronda="r8"] .bracket-match-box::before,
+.bracket-column-fluid[data-ronda="semi"] .bracket-match-box::before {
     content: "" !important;
     position: absolute !important;
     left: -12px !important;
@@ -658,7 +657,30 @@ body {
     z-index: 1 !important;
 }
 
-/* 4. Conexión limpia y directa desde las Semis hasta el bloque central */
+/* CORRECCIÓN CRÍTICA: Cable vertical gigante en la columna de 4tos para abrazar la pareja y alimentar Semis */
+.bracket-column-fluid[data-ronda="r8"]::before {
+    content: "" !important;
+    position: absolute !important;
+    right: -12px !important;
+    top: 172px !important;   /* Centrado exacto sobre el partido superior de 4tos */
+    bottom: 172px !important;/* Centrado exacto sobre el partido inferior de 4tos */
+    border-right: 3px solid var(--accent-neon, #00f2fe) !important;
+    z-index: 1 !important;
+}
+
+/* Ajuste del puente horizontal que sale de ese gran cable vertical hacia Semis */
+.bracket-column-fluid[data-ronda="semi"]::before {
+    content: "" !important;
+    position: absolute !important;
+    left: -24px !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    width: 12px !important;
+    border-top: 3px solid var(--accent-neon, #00f2fe) !important;
+    z-index: 1 !important;
+}
+
+/* 4. Conexión de salida final desde Semis hacia las cajas del bloque central */
 .bracket-column-fluid[data-ronda="semi"] .bracket-single-block::after {
     content: "" !important;
     position: absolute !important;
@@ -686,6 +708,16 @@ body {
 .bracket-side-wing.right-wing .bracket-match-box::before {
     left: auto !important;
     right: -12px !important;
+}
+.bracket-side-wing.right-wing .bracket-column-fluid[data-ronda="r8"]::before {
+    right: auto !important;
+    left: -12px !important;
+    border-left: 3px solid var(--accent-neon, #00f2fe) !important;
+    border-right: none !important;
+}
+.bracket-side-wing.right-wing .bracket-column-fluid[data-ronda="semi"]::before {
+    left: auto !important;
+    right: -24px !important;
 }
 .bracket-side-wing.right-wing .bracket-single-block::after {
     right: auto !important;
