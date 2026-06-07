@@ -521,7 +521,7 @@ body {
 }
 
 /* ==========================================================================
-   BRACKET DE ALTA PRECISIÓN: AJUSTE DE CODOS AVANZADOS SEGMENTADOS
+   BRACKET DE PRECISIÓN GEOMÉTRICA FINAL: ELIMINACIÓN DE LÍNEAS DUPLICADAS
    ========================================================================== */
 
 .bracket-scroll-container {
@@ -532,7 +532,7 @@ body {
 
 .bracket-mirror-layout {
     display: grid !important;
-    grid-template-columns: 1fr 200px 1fr !important; /* Centro estrecho para la Final */
+    grid-template-columns: 1fr 200px 1fr !important; /* Centro estrecho para las finales */
     gap: 15px !important;
     width: 100% !important;
     max-width: 1350px;
@@ -554,7 +554,7 @@ body {
     flex-direction: row-reverse !important;
 }
 
-/* Cada columna mantiene su ancho de 112px para que la pantalla respire */
+/* Cada columna mantiene su ancho estricto de 112px */
 .bracket-column-fluid {
     display: flex !important;
     flex-direction: column !important;
@@ -620,10 +620,10 @@ body {
 }
 
 /* ==========================================================================
-   RECONSTRUCCIÓN DE LOS CODOS CORTOS INDIVIDUALES CALIBRADOS (GROSOR 3PX)
+   CABLEADO DE CODOS ARQUEADOS CONTROLADOS (GROSOR 3PX)
    ========================================================================== */
 
-/* El codo base vertical se centra matemáticamente en el medio del bloque */
+/* El codo base vertical se posiciona y centra en el medio de la pareja */
 .bracket-match-pair-block::after {
     content: "" !important;
     position: absolute !important;
@@ -631,42 +631,32 @@ body {
     top: 50% !important;
     transform: translateY(-50%) !important;
     width: 12px !important;
-    border: 3px solid var(--accent-neon, #00f2fe) !important;
+    border: 3px solid var(--accent-neon, #00f2fe) !important; /* Líneas neón de alta visibilidad */
     border-left: none !important;
     border-radius: 0 8px 8px 0 !important;
     z-index: 1 !important;
 }
 
-/* Ajustamos la altura física real de la línea del codo de forma individual por ronda */
-.bracket-column-fluid[data-ronda="r32"] .bracket-match-pair-block::after { height: 78px !important; }  /* Codo corto para 16avos */
-.bracket-column-fluid[data-ronda="r16"] .bracket-match-pair-block::after { height: 164px !important; } /* Codo medio para 8avos */
-.bracket-column-fluid[data-ronda="r8"] .bracket-match-pair-block::after { height: 334px !important; }  /* CORRECCIÓN: Codo exacto para 4tos */
+/* Alturas físicas ultra-calibradas por ronda para que abracen el lomo de las tarjetas */
+.bracket-column-fluid[data-ronda="r32"] .bracket-match-pair-block::after { height: 78px !important; }
+.bracket-column-fluid[data-ronda="r16"] .bracket-match-pair-block::after { height: 164px !important; }
+.bracket-column-fluid[data-ronda="r8"] .bracket-match-pair-block::after { height: 334px !important; }
 
-/* Línea horizontal central que sale de la punta del codo hacia adelante */
+/* 🌟 LÍNEA ÚNICA EXTENDIDA: Viaja todo el canal intermedio (24px) hasta tocar el cuadro del frente */
 .bracket-match-pair-block::before {
     content: "" !important;
     position: absolute !important;
-    right: -24px !important;
+    right: -24px !important; /* Cubre toda la distancia de separación entre columnas */
     top: 50% !important;
     transform: translateY(-50%) !important;
-    width: 12px !important;
+    width: 24px !important; /* Se alarga a 24px para unirse directamente con la tarjeta */
     border-top: 3px solid var(--accent-neon, #00f2fe) !important;
     z-index: 1 !important;
 }
 
-/* Línea de entrada horizontal que recibe a las tarjetas de frente en la ronda siguiente */
-.bracket-column-fluid:not(:first-child) .bracket-match-box::before {
-    content: "" !important;
-    position: absolute !important;
-    left: -12px !important;
-    top: 50% !important;
-    transform: translateY(-50%) !important;
-    width: 12px !important;
-    border-top: 3px solid var(--accent-neon, #00f2fe) !important;
-    z-index: 1 !important;
-}
+/* 🛑 ¡SOLUCIÓN!: Eliminamos por completo la regla .bracket-match-box::before que duplicaba el palito horizontal */
 
-/* Extensión de línea horizontal desde Semis hacia el bloque de la Final */
+/* Extensión de línea horizontal limpia desde Semis hacia el bloque central de la Final */
 .bracket-single-block::after {
     content: "" !important;
     position: absolute !important;
@@ -691,10 +681,6 @@ body {
 .bracket-side-wing.right-wing .bracket-match-pair-block::before {
     right: auto !important;
     left: -24px !important;
-}
-.bracket-side-wing.right-wing .bracket-match-box::before {
-    left: auto !important;
-    right: -12px !important;
 }
 .bracket-side-wing.right-wing .bracket-single-block::after {
     right: auto !important;
