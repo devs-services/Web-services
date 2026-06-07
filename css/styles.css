@@ -519,3 +519,97 @@ body {
     border-left: 3px solid var(--accent-neon, #00f2fe) !important;
     padding-left: 10px !important;
 }
+
+/* ==========================================================================
+   ESTILOS ESTRUCTURALES DEL BRACKET (DIECISEISAVOS HASTA LA FINAL)
+   ========================================================================== */
+
+/* Permite hacer scroll horizontal en celulares si el árbol es muy ancho */
+.bracket-scroll-container {
+    width: 100%;
+    overflow-x: auto;
+    padding: 20px 0;
+    margin-bottom: 40px;
+    scroll-behavior: smooth;
+}
+
+/* Sostiene las rondas una al lado de la otra de forma horizontal */
+.bracket-wrapper {
+    display: flex;
+    gap: 40px;
+    min-width: max-content;
+    padding: 10px;
+    align-items: center;
+}
+
+/* Cada ronda eliminatoria es una columna vertical */
+.bracket-round {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around; /* Distribuye las llaves simétricamente */
+    height: 100%;
+    min-width: 240px;
+    gap: 20px;
+}
+
+/* El título de la ronda (ej: Octavos) */
+.round-title {
+    text-align: center;
+    font-size: 0.9rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    color: var(--accent-neon);
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+    border-bottom: 2px solid rgba(0, 242, 254, 0.2);
+    padding-bottom: 5px;
+}
+
+/* Cada llave individual que enfrenta a dos equipos */
+.bracket-match-box {
+    background: rgba(21, 23, 27, 0.8);
+    border: 1px solid rgba(48, 54, 61, 0.8);
+    border-radius: 8px;
+    padding: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+    width: 100%;
+}
+
+/* Cada una de las dos filas internas de la llave (para cada equipo) */
+.bracket-team-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 4px 6px;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    height: 28px;
+}
+
+/* Resalta al equipo que avanzó de ronda */
+.bracket-team-row.winner {
+    color: #ffffff;
+    font-weight: bold;
+    background: rgba(0, 242, 254, 0.1);
+}
+
+/* Estilo sutil para los espacios vacíos esperando clasificados */
+.bracket-team-empty {
+    color: var(--text-secondary, #8b949e);
+    font-style: italic;
+    font-size: 0.8rem;
+}
+
+/* Casillero para los goles de la fase final */
+.bracket-score {
+    font-weight: bold;
+    color: var(--accent-neon);
+    background: #161b22;
+    padding: 2px 6px;
+    border-radius: 4px;
+    min-width: 20px;
+    text-align: center;
+}
