@@ -521,7 +521,7 @@ body {
 }
 
 /* ==========================================================================
-   BRACKET EN ESPEJO: AJUSTE DE PRECISIÓN PARA CODOS Y ARCOS AVANZADOS
+   BRACKET DE ALTA PRECISIÓN: CODOS INDIVIDUALES RECTIFICADOS (SIN LÍNEAS LARGAS)
    ========================================================================== */
 
 .bracket-scroll-container {
@@ -532,7 +532,7 @@ body {
 
 .bracket-mirror-layout {
     display: grid !important;
-    grid-template-columns: 1fr 200px 1fr !important; /* Módulo central estrecho */
+    grid-template-columns: 1fr 200px 1fr !important; /* Centro estrecho para la Final */
     gap: 15px !important;
     width: 100% !important;
     max-width: 1350px;
@@ -554,7 +554,7 @@ body {
     flex-direction: row-reverse !important;
 }
 
-/* Cada columna de ronda mantiene un ancho fijo compacto de 112px */
+/* Cada columna mantiene su ancho de 112px para que la pantalla respire */
 .bracket-column-fluid {
     display: flex !important;
     flex-direction: column !important;
@@ -578,22 +578,22 @@ body {
 }
 
 /* ==========================================================================
-   BLOQUES DE EMPAREJAMIENTO CON CENTRADO VERTICAL (SOPORTE DE LÍNEAS)
+   BLOQUES DE EMPAREJAMIENTO CON CONTENIDO CENTRADO Y GAPS FIJOS
    ========================================================================== */
 
 .bracket-match-pair-block {
     display: flex !important;
     flex-direction: column !important;
-    justify-content: center !important; /* Amontona las parejas al centro de su bloque */
+    justify-content: center !important; /* Junta los dos cuadros hacia el centro */
     height: 100% !important;
     position: relative !important;
     width: 100% !important;
 }
 
-/* Distancia interna (gap) rigurosa para que las tarjetas toquen las esquinas del codo */
+/* Calibración milimétrica de distancias verticales (Gaps) por ronda */
 .bracket-column-fluid[data-ronda="r32"] .bracket-match-pair-block { max-height: 140px !important; gap: 24px !important; }
-.bracket-column-fluid[data-ronda="r16"] .bracket-match-pair-block { max-height: 290px !important; gap: 96px !important; }
-.bracket-column-fluid[data-ronda="r8"] .bracket-match-pair-block { max-height: 540px !important; gap: 234px !important; }
+.bracket-column-fluid[data-ronda="r16"] .bracket-match-pair-block { max-height: 290px !important; gap: 110px !important; }
+.bracket-column-fluid[data-ronda="r8"] .bracket-match-pair-block { max-height: 540px !important; gap: 280px !important; }
 
 .bracket-single-block {
     display: flex !important;
@@ -603,7 +603,7 @@ body {
     width: 100% !important;
 }
 
-/* Dimensión inalterable de las tarjetas compactas */
+/* Dimensiones fijas e inalterables de las tarjetas compactas */
 .bracket-match-box {
     background: #15171b !important;
     border: 1px solid #30363d !important;
@@ -615,28 +615,32 @@ body {
     box-shadow: 0 4px 15px rgba(0,0,0,0.6) !important;
     height: 52px !important;
     width: 100% !important;
+    position: relative !important;
     z-index: 5 !important;
 }
 
 /* ==========================================================================
-   CABLEADO DE CODOS ARQUEADOS RECTIFICADOS (GROSOR 3PX)
+   RECONSTRUCCIÓN DE LOS CODOS CORTOS INDIVIDUALES (GROSOR 3PX)
    ========================================================================== */
 
-/* El codo nace abrazando los dos partidos desde sus ejes centrales */
+/* El codo nace en la mitad de la tarjeta de arriba y baja hasta la mitad de la de abajo */
 .bracket-match-pair-block::after {
     content: "" !important;
     position: absolute !important;
     right: -12px !important;
-    top: 26px !important;    /* Mitad exacta de la primera tarjeta */
-    bottom: 26px !important; /* Mitad exacta de la segunda tarjeta */
+    
+    /* Con "height" fija controlamos que el codo mida exactamente la distancia entre las dos tarjetas */
+    top: 26px !important; /* Centrado en la tarjeta de arriba */
+    bottom: 26px !important; /* Centrado en la de abajo */
+    
     width: 12px !important;
-    border: 3px solid var(--accent-neon, #00f2fe) !important;
+    border: 3px solid var(--accent-neon, #00f2fe) !important; /* Líneas gruesas ultrapotentes */
     border-left: none !important;
     border-radius: 0 8px 8px 0 !important;
     z-index: 1 !important;
 }
 
-/* Línea horizontal que sale de la punta del codo hacia la tarjeta del frente */
+/* Línea horizontal central que sale de la punta del codo hacia adelante */
 .bracket-match-pair-block::before {
     content: "" !important;
     position: absolute !important;
@@ -648,7 +652,7 @@ body {
     z-index: 1 !important;
 }
 
-/* Entrada de flujo horizontal directo para las tarjetas receptoras */
+/* Línea de entrada horizontal que recibe a las tarjetas de frente en la ronda siguiente */
 .bracket-column-fluid:not(:first-child) .bracket-match-box::before {
     content: "" !important;
     position: absolute !important;
@@ -660,7 +664,7 @@ body {
     z-index: 1 !important;
 }
 
-/* Extensión de línea horizontal final que saca Semis hacia el bloque de la Final */
+/* Extensión de línea horizontal desde Semis hacia el bloque de la Final */
 .bracket-single-block::after {
     content: "" !important;
     position: absolute !important;
