@@ -511,7 +511,7 @@ function configurarDonaciones() {
 }
 
 // ==========================================================================
-// 8. MOTOR DEL BRACKET EN ESPEJO FLUIDO DE ALTA PRECISIÓN
+// 8. MOTOR DEL BRACKET EN ESPEJO FLUIDO POR BLOQUES (MUNDIAL 2026)
 // ==========================================================================
 function renderizarBracket() {
     const leftWing = document.getElementById('bracket-left-wing');
@@ -520,6 +520,7 @@ function renderizarBracket() {
 
     if (!leftWing || !rightWing || !centerFinals || !mundialData || !mundialData.bracket) return;
 
+    // Limpieza total
     leftWing.innerHTML = '';
     rightWing.innerHTML = '';
     centerFinals.innerHTML = '';
@@ -533,6 +534,7 @@ function renderizarBracket() {
     };
     const titles = roundTitles[currentLanguage] || roundTitles['es'];
 
+    // Renderiza el contenido interno de una tarjeta de partido
     function generarHtmlLlave(claveRonda, indiceLlave) {
         const partido = mundialData.bracket[claveRonda]?.[indiceLlave] || null;
         let eq1Name = "&nbsp;", eq2Name = "&nbsp;", eq1Flag = "", eq2Flag = "";
@@ -542,26 +544,26 @@ function renderizarBracket() {
             if (partido.equipo1) {
                 const eq = mundialData.equipos[partido.equipo1];
                 eq1Name = eq?.nombres[currentLanguage] || partido.equipo1;
-                eq1Flag = eq?.bandera ? `<img src="${eq.bandera}" class="flag-circle" style="width:13px; height:13px; margin-right:5px;">` : '';
+                eq1Flag = eq?.bandera ? `<img src="${eq.bandera}" class="flag-circle" style="width:14px; height:14px; margin-right:6px;">` : '';
                 score1 = partido.goles1 !== undefined ? partido.goles1 : "-";
                 class1 = partido.ganador === partido.equipo1 ? "bracket-team-row winner" : "bracket-team-row";
             }
             if (partido.equipo2) {
                 const eq = mundialData.equipos[partido.equipo2];
                 eq2Name = eq?.nombres[currentLanguage] || partido.equipo2;
-                eq2Flag = eq?.bandera ? `<img src="${eq.bandera}" class="flag-circle" style="width:13px; height:13px; margin-right:5px;">` : '';
+                eq2Flag = eq?.bandera ? `<img src="${eq.bandera}" class="flag-circle" style="width:14px; height:14px; margin-right:6px;">` : '';
                 score2 = partido.goles2 !== undefined ? partido.goles2 : "-";
                 class2 = partido.ganador === partido.equipo2 ? "bracket-team-row winner" : "bracket-team-row";
             }
         }
 
         return `
-            <div style="width:100%;">
+            <div class="bracket-match-box">
                 <div class="${class1}">
                     <div style="display:flex; align-items:center;">${eq1Flag}<span>${eq1Name}</span></div>
                     ${partido && partido.equipo1 ? `<span class="bracket-score">${score1}</span>` : ''}
                 </div>
-                <div class="${class2}" style="margin-top:1px;">
+                <div class="${class2}" style="margin-top:3px;">
                     <div style="display:flex; align-items:center;">${eq2Flag}<span>${eq2Name}</span></div>
                     ${partido && partido.equipo2 ? `<span class="bracket-score">${score2}</span>` : ''}
                 </div>
@@ -569,57 +571,61 @@ function renderizarBracket() {
         `;
     }
 
-    function crearColumnaRonda(titulo, claveRonda, dataRondaAttr, listaIndices, clasePosicionPrefijo) {
+    // --- CONSTRUCTOR DE RONDAS FLUIDAS ---
+    function construirColumnaRonda(titulo, claveRonda, indices, esUltima = false) {
         const col = document.createElement('div');
-        col.className = 'mirror-round-column';
-        col.setAttribute('data-ronda', dataRondaAttr);
+        col.className = 'bracket-column-fluid';
         
-        let html = `<div class="round-title">${titulo}</div>`;
-        listaIndices.forEach((idx, num) => {
-            const claseCoordenada = `${clasePosicionPrefijo}-${num + 1}`;
-            html += `
-                <div class="bracket-match-box ${claseCoordenada}">
-                    ${generarHtmlLlave(claveRonda, idx)}
-                </div>
-            `;
-        });
+        let html = `<div class="round-title-fluid">${titulo}</div>`;
+        
+        // Emparejamos las tarjetas de 2 en 2 para crear el contenedor conector, excepto en Semis
+        if (indices.length > 1 && !esUltima) {
+            for (let i = 0; i < indices.length; i += 2) {
+                html += `
+                    <div class="bracket-match-pair-block">
+                        ${generarHtmlLlave(claveRonda, indices[i])}
+                        ${generarHtmlLlave(claveRonda, indices[i+1])}
+                    </div>
+                `;
+            }
+        } else {
+            // Para Semis o columnas de una sola llave
+            indices.forEach(idx => {
+                html += `
+                    <div class="bracket-single-block">
+                        ${generarHtmlLlave(claveRonda, idx)}
+                    </div>
+                `;
+            });
+        }
         
         col.innerHTML = html;
         return col;
     }
 
-    // Ala Izquierda
-    leftWing.appendChild(crearColumnaRonda(titles.r32, 'dieciseisavos', 'r32', [0, 1, 2, 3, 4, 5, 6, 7], 'pos-r32'));
-    leftWing.appendChild(crearColumnaRonda(titles.r16, 'octavos', 'r16', [0, 1, 2, 3], 'pos-r16'));
-    leftWing.appendChild(crearColumnaRonda(titles.r8, 'cuartos', 'r8', [0, 1], 'pos-r8'));
-    leftWing.appendChild(crearColumnaRonda(titles.r4, 'semis', 'semi', [0], 'pos-semi'));
+    // LADO IZQUIERDO (Llaves A)
+    leftWing.appendChild(construirColumnaRonda(titles.r32, 'dieciseisavos', [0, 1, 2, 3, 4, 5, 6, 7]));
+    leftWing.appendChild(construirColumnaRonda(titles.r16, 'octavos', [0, 1, 2, 3]));
+    leftWing.appendChild(construirColumnaRonda(titles.r8, 'cuartos', [0, 1]));
+    leftWing.appendChild(construirColumnaRonda(titles.r4, 'semis', [0], true));
 
-    // Ala Derecha
-    rightWing.appendChild(crearColumnaRonda(titles.r32, 'dieciseisavos', 'r32', [8, 9, 10, 11, 12, 13, 14, 15], 'pos-r32'));
-    rightWing.appendChild(crearColumnaRonda(titles.r16, 'octavos', 'r16', [4, 5, 6, 7], 'pos-r16'));
-    rightWing.appendChild(crearColumnaRonda(titles.r8, 'cuartos', 'r8', [2, 3], 'pos-r8'));
-    rightWing.appendChild(crearColumnaRonda(titles.r4, 'semis', 'semi', [1], 'pos-semi'));
+    // LADO DERECHO (Llaves B)
+    rightWing.appendChild(construirColumnaRonda(titles.r32, 'dieciseisavos', [8, 9, 10, 11, 12, 13, 14, 15]));
+    rightWing.appendChild(construirColumnaRonda(titles.r16, 'octavos', [4, 5, 6, 7]));
+    rightWing.appendChild(construirColumnaRonda(titles.r8, 'cuartos', [2, 3]));
+    rightWing.appendChild(construirColumnaRonda(titles.r4, 'semis', [1], true));
 
-    // Bloque Central alineado
+    // BLOQUE CENTRAL (Finales)
     let htmlCentro = `
-        <div style="text-align:center; margin-bottom:5px; margin-top:20px;">
-            <span style="font-size:2.3rem;">🏆</span>
+        <div style="text-align:center; margin-bottom:10px;">
+            <span style="font-size:3.5rem;">🏆</span>
         </div>
     `;
-
     htmlCentro += `<div class="center-title-box">🏅 ${titles.r2}</div>`;
-    htmlCentro += `
-        <div class="center-match-card" style="height:54px; display:flex; align-items:center;">
-            ${generarHtmlLlave('final', 0)}
-        </div>
-    `;
+    htmlCentro += `<div class="center-match-card-wrapper">${generarHtmlLlave('final', 0)}</div>`;
 
-    htmlCentro += `<div class="center-title-box" style="background:#ff5722; color:#fff; margin-top:15px;">🥉 ${titles.r3}</div>`;
-    htmlCentro += `
-        <div class="center-match-card" style="border-color:#ff5722; height:54px; display:flex; align-items:center;">
-            ${generarHtmlLlave('final', 1)}
-        </div>
-    `;
+    htmlCentro += `<div class="center-title-box" style="background:#ff5722; color:#fff; margin-top:25px;">🥉 ${titles.r3}</div>`;
+    htmlCentro += `<div class="center-match-card-wrapper third-place">${generarHtmlLlave('final', 1)}</div>`;
 
     centerFinals.innerHTML = htmlCentro;
 }
