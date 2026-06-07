@@ -511,7 +511,7 @@ function configurarDonaciones() {
 }
 
 // ==========================================================================
-// 8. MOTOR DEL BRACKET EN ESPEJO FLUIDO POR BLOQUES (MUNDIAL 2026)
+// 8. MOTOR DEL BRACKET EN ESPEJO POR COORDENADAS RÍGIDAS FIJAS
 // ==========================================================================
 function renderizarBracket() {
     const leftWing = document.getElementById('bracket-left-wing');
@@ -520,7 +520,6 @@ function renderizarBracket() {
 
     if (!leftWing || !rightWing || !centerFinals || !mundialData || !mundialData.bracket) return;
 
-    // Limpieza total
     leftWing.innerHTML = '';
     rightWing.innerHTML = '';
     centerFinals.innerHTML = '';
@@ -534,8 +533,7 @@ function renderizarBracket() {
     };
     const titles = roundTitles[currentLanguage] || roundTitles['es'];
 
-    // Renderiza el contenido interno de una tarjeta de partido
-    function generarHtmlLlave(claveRonda, indiceLlave) {
+    function generarHtmlLlaveInner(claveRonda, indiceLlave) {
         const partido = mundialData.bracket[claveRonda]?.[indiceLlave] || null;
         let eq1Name = "&nbsp;", eq2Name = "&nbsp;", eq1Flag = "", eq2Flag = "";
         let score1 = "", score2 = "", class1 = "bracket-team-empty", class2 = "bracket-team-empty";
@@ -558,12 +556,12 @@ function renderizarBracket() {
         }
 
         return `
-            <div class="bracket-match-box">
+            <div style="width:100%;">
                 <div class="${class1}">
                     <div style="display:flex; align-items:center;">${eq1Flag}<span>${eq1Name}</span></div>
                     ${partido && partido.equipo1 ? `<span class="bracket-score">${score1}</span>` : ''}
                 </div>
-                <div class="${class2}" style="margin-top:3px;">
+                <div class="${class2}" style="margin-top:2px;">
                     <div style="display:flex; align-items:center;">${eq2Flag}<span>${eq2Name}</span></div>
                     ${partido && partido.equipo2 ? `<span class="bracket-score">${score2}</span>` : ''}
                 </div>
@@ -571,61 +569,57 @@ function renderizarBracket() {
         `;
     }
 
-    // --- CONSTRUCTOR DE RONDAS FLUIDAS ---
-    function construirColumnaRonda(titulo, claveRonda, indices, esUltima = false) {
+    function crearColumnaRondaRigida(titulo, claveRonda, dataRondaAttr, listaIndices, clasePosicionPrefijo) {
         const col = document.createElement('div');
-        col.className = 'bracket-column-fluid';
+        col.className = 'mirror-round-column';
+        col.setAttribute('data-ronda', dataRondaAttr);
         
         let html = `<div class="round-title-fluid">${titulo}</div>`;
-        
-        // Emparejamos las tarjetas de 2 en 2 para crear el contenedor conector, excepto en Semis
-        if (indices.length > 1 && !esUltima) {
-            for (let i = 0; i < indices.length; i += 2) {
-                html += `
-                    <div class="bracket-match-pair-block">
-                        ${generarHtmlLlave(claveRonda, indices[i])}
-                        ${generarHtmlLlave(claveRonda, indices[i+1])}
-                    </div>
-                `;
-            }
-        } else {
-            // Para Semis o columnas de una sola llave
-            indices.forEach(idx => {
-                html += `
-                    <div class="bracket-single-block">
-                        ${generarHtmlLlave(claveRonda, idx)}
-                    </div>
-                `;
-            });
-        }
+        listaIndices.forEach((idx, num) => {
+            const claseCoordenada = `${clasePosicionPrefijo}-${num + 1}`;
+            html += `
+                <div class="bracket-match-box ${claseCoordenada}">
+                    ${generarHtmlLlaveInner(claveRonda, idx)}
+                </div>
+            `;
+        });
         
         col.innerHTML = html;
         return col;
     }
 
-    // LADO IZQUIERDO (Llaves A)
-    leftWing.appendChild(construirColumnaRonda(titles.r32, 'dieciseisavos', [0, 1, 2, 3, 4, 5, 6, 7]));
-    leftWing.appendChild(construirColumnaRonda(titles.r16, 'octavos', [0, 1, 2, 3]));
-    leftWing.appendChild(construirColumnaRonda(titles.r8, 'cuartos', [0, 1]));
-    leftWing.appendChild(construirColumnaRonda(titles.r4, 'semis', [0], true));
+    // ENSAMBLADO DEL ALA IZQUIERDA
+    leftWing.appendChild(crearColumnaRondaRigida(titles.r32, 'dieciseisavos', 'r32', [0, 1, 2, 3, 4, 5, 6, 7], 'pos-r32'));
+    leftWing.appendChild(crearColumnaRondaRigida(titles.r16, 'octavos', 'r16', [0, 1, 2, 3], 'pos-r16'));
+    leftWing.appendChild(crearColumnaRondaRigida(titles.r8, 'cuartos', 'r8', [0, 1], 'pos-r8'));
+    leftWing.appendChild(crearColumnaRondaRigida(titles.r4, 'semis', 'semi', [0], 'pos-semi'));
 
-    // LADO DERECHO (Llaves B)
-    rightWing.appendChild(construirColumnaRonda(titles.r32, 'dieciseisavos', [8, 9, 10, 11, 12, 13, 14, 15]));
-    rightWing.appendChild(construirColumnaRonda(titles.r16, 'octavos', [4, 5, 6, 7]));
-    rightWing.appendChild(construirColumnaRonda(titles.r8, 'cuartos', [2, 3]));
-    rightWing.appendChild(construirColumnaRonda(titles.r4, 'semis', [1], true));
+    // ENSAMBLADO DEL ALA DERECHA
+    rightWing.appendChild(crearColumnaRondaRigida(titles.r32, 'dieciseisavos', 'r32', [8, 9, 10, 11, 12, 13, 14, 15], 'pos-r32'));
+    rightWing.appendChild(crearColumnaRondaRigida(titles.r16, 'octavos', 'r16', [4, 5, 6, 7], 'pos-r16'));
+    rightWing.appendChild(crearColumnaRondaRigida(titles.r8, 'cuartos', 'r8', [2, 3], 'pos-r8'));
+    rightWing.appendChild(crearColumnaRondaRigida(titles.r4, 'semis', 'semi', [1], 'pos-semi'));
 
-    // BLOQUE CENTRAL (Finales)
+    // BLOQUE CENTRAL TOTALMENTE ALINEADO
     let htmlCentro = `
-        <div style="text-align:center; margin-bottom:10px;">
-            <span style="font-size:3.5rem;">🏆</span>
+        <div style="text-align:center; margin-bottom:5px; margin-top:20px;">
+            <span style="font-size:2.8rem;">🏆</span>
         </div>
     `;
-    htmlCentro += `<div class="center-title-box">🏅 ${titles.r2}</div>`;
-    htmlCentro += `<div class="center-match-card-wrapper">${generarHtmlLlave('final', 0)}</div>`;
 
-    htmlCentro += `<div class="center-title-box" style="background:#ff5722; color:#fff; margin-top:25px;">🥉 ${titles.r3}</div>`;
-    htmlCentro += `<div class="center-match-card-wrapper third-place">${generarHtmlLlave('final', 1)}</div>`;
+    htmlCentro += `<div class="center-title-box">🏅 ${titles.r2}</div>`;
+    htmlCentro += `
+        <div class="center-match-card-wrapper" style="height:56px; display:flex; align-items:center;">
+            ${generarHtmlLlaveInner('final', 0)}
+        </div>
+    `;
+
+    htmlCentro += `<div class="center-title-box" style="background:#ff5722; color:#fff; margin-top:15px;">🥉 ${titles.r3}</div>`;
+    htmlCentro += `
+        <div class="center-match-card-wrapper style="border-color:#ff5722; height:56px; display:flex; align-items:center;">
+            ${generarHtmlLlaveInner('final', 1)}
+        </div>
+    `;
 
     centerFinals.innerHTML = htmlCentro;
 }
