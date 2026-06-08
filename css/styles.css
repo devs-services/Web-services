@@ -521,32 +521,32 @@ body {
 }
 
 /* ==========================================================================
-   BRACKET DE PRECISIÓN GEOMÉTRICA FINAL: AJUSTE ULTRA-COMPACTO SIN SCROLL
+   BRACKET DE PRECISIÓN GEOMÉTRICA FINAL: ENLACE ANCHO ALINEADO CON MARGENES
    ========================================================================== */
 
 .bracket-scroll-container {
     width: 100% !important;
-    overflow: hidden !important; /* Eliminamos por completo la barra de scroll inferior */
-    padding: 20px 0;
+    overflow: hidden !important; /* Desaparece por completo el scrollbar inferior */
+    padding: 35px 0 20px 0 !important; /* El padding superior ahora protege a los títulos sin deformar las cajas */
 }
 
 .bracket-mirror-layout {
     display: grid !important;
-    grid-template-columns: 484px 200px 484px !important; /* Anchos compactos optimizados */
-    gap: 12px !important;
-    width: 1180px !important; /* Encaja perfectamente en cualquier resolución estándar */
+    grid-template-columns: 568px 200px 568px !important; /* Ancho expandido proporcionalmente */
+    gap: 0 !important;
+    width: 1336px !important; /* Alineación milimétrica con los bloques inferiores de la web */
     margin: 0 auto !important;
     align-items: center !important;
 }
 
-/* Las alas laterales actúan como el eje de suspensión horizontal */
+/* Las alas laterales actúan como el eje de suspensión horizontal puro */
 .bracket-side-wing {
     display: flex !important;
-    gap: 12px !important; /* Distancia de oro compacta */
+    gap: 40px !important; /* Espaciado uniforme extendido para cubrir los márgenes */
     align-items: center !important;
-    width: 484px !important;
+    width: 568px !important;
     height: 640px !important;
-    padding-top: 35px !important; 
+    padding-top: 0 !important; /* Eliminado el error que causaba la caída de las líneas */
 }
 
 /* Espejo físico del ala derecha */
@@ -563,10 +563,10 @@ body {
     position: relative !important;
 }
 
-/* Títulos superiores de ronda corregidos */
+/* Títulos superiores de ronda */
 .round-title-fluid {
     position: absolute !important;
-    top: -12px !important;        
+    top: -25px !important;        
     width: 100% !important;
     text-align: center !important;
     font-size: 0.78rem !important;
@@ -579,7 +579,7 @@ body {
 }
 
 /* ==========================================================================
-   BLOQUES DE EMPAREJAMIENTO CON ALTURAS FIJAS (PROPORCIÓN MATEMÁTICA)
+   BLOQUES DE EMPAREJAMIENTO CON ALTURAS DE PRECISIÓN ABSOLUTA
    ========================================================================== */
 
 .bracket-match-pair-block {
@@ -591,7 +591,7 @@ body {
     box-sizing: border-box !important;
 }
 
-/* Alturas proporcionales exactas para que los centros coincidan al píxel */
+/* Distribución matemática exacta sobre los 640px de altura */
 .bracket-column-fluid[data-ronda="r32"] .bracket-match-pair-block { height: 160px !important; gap: 28px !important; padding: 14px 0 !important; }
 .bracket-column-fluid[data-ronda="r16"] .bracket-match-pair-block { height: 320px !important; gap: 108px !important; padding: 54px 0 !important; }
 .bracket-column-fluid[data-ronda="r8"] .bracket-match-pair-block { height: 640px !important; gap: 268px !important; padding: 134px 0 !important; }
@@ -605,7 +605,7 @@ body {
     position: relative !important;
 }
 
-/* Dimensiones fijas de las tarjetas */
+/* Dimensiones fijas de las tarjetas compactas */
 .bracket-match-box {
     background: #15171b !important;
     border: 1px solid #30363d !important;
@@ -622,17 +622,17 @@ body {
 }
 
 /* ==========================================================================
-   CABLEADO DE CODOS ARQUEADOS 100% ALINEADOS POR CÓMPUTO VERTICAL
+   CABLEADO EXTENDIDO CENTRADO (SOPORTA RESIZE SIN ESCAPES)
    ========================================================================== */
 
 /* El codo base vertical se posiciona y centra en el medio exacto de la pareja */
 .bracket-match-pair-block::after {
     content: "" !important;
     position: absolute !important;
-    right: -6px !important; 
+    right: -20px !important; /* Mitad exacta del nuevo gap de 40px */
     top: 50% !important;
     transform: translateY(-50%) !important;
-    width: 6px !important;
+    width: 20px !important;
     border: 3px solid var(--accent-neon, #00f2fe) !important;
     border-left: none !important;
     border-radius: 0 6px 6px 0 !important;
@@ -644,14 +644,14 @@ body {
 .bracket-column-fluid[data-ronda="r16"] .bracket-match-pair-block::after { height: 160px !important; }
 .bracket-column-fluid[data-ronda="r8"] .bracket-match-pair-block::after { height: 320px !important; }
 
-/* Línea única extendida hacia el canal intermedio */
+/* Línea única extendida que viaja la otra mitad del canal intermedio */
 .bracket-match-pair-block::before {
     content: "" !important;
     position: absolute !important;
-    right: -12px !important; 
+    right: -40px !important; 
     top: 50% !important;
     transform: translateY(-50%) !important;
-    width: 6px !important; 
+    width: 20px !important; 
     border-top: 3px solid var(--accent-neon, #00f2fe) !important;
     z-index: 1 !important;
 }
@@ -663,40 +663,40 @@ body {
     position: absolute !important;
     top: 50% !important;
     transform: translateY(-50%) !important;
-    width: 12px !important; /* Cubre la distancia compacta del grid */
+    width: 20px !important; 
     border-top: 3px solid var(--accent-neon, #00f2fe) !important;
     z-index: 1 !important;
 }
-.center-match-card-wrapper.final-box::before { left: -12px !important; }
-.center-match-card-wrapper.final-box::after { right: -12px !important; }
+.center-match-card-wrapper.final-box::before { left: -20px !important; }
+.center-match-card-wrapper.final-box::after { right: -20px !important; }
 
 /* Inversión geométrica de arcos para el ala derecha (Espejo Perfecto) */
 .bracket-side-wing.right-wing .bracket-match-pair-block::after {
     right: auto !important;
-    left: -6px !important;
+    left: -20px !important;
     border-left: 3px solid var(--accent-neon, #00f2fe) !important;
     border-right: none !important;
     border-radius: 6px 0 0 6px !important;
 }
 .bracket-side-wing.right-wing .bracket-match-pair-block::before {
     right: auto !important;
-    left: -12px !important;
+    left: -40px !important;
 }
 
 /* ==========================================================================
-   MÓDULO CENTRAL COMPACTO POR COORDENADAS RÍGIDAS
+   MÓDULO CENTRAL COMPACTO POR COORDENADAS RELES UNIFICADAS
    ========================================================================== */
 .bracket-center-core {
     display: block !important;
     position: relative !important;
-    height: 640px !important; /* Mismo alto exacto de las alas laterales */
+    height: 640px !important; 
     width: 200px !important;
 }
 
-/* Bloque Superior: Copa + Título Final agrupados estrechamente sobre la caja */
+/* Bloque Superior: Copa + Título colocados estrechamente encima de la caja */
 .center-top-zone {
     position: absolute !important;
-    top: 200px !important;
+    top: 195px !important;
     left: 0 !important;
     width: 100% !important;
     display: flex !important;
@@ -705,10 +705,10 @@ body {
     gap: 4px !important;
 }
 
-/* Caja de la Gran Final: Posicionada al centro exacto del eje horizontal (320px) */
+/* Caja de la Gran Final: Bajada y posicionada en el centro horizontal exacto (320px) */
 .center-match-card-wrapper.final-box {
     position: absolute !important;
-    top: 293px !important; /* 320px - 27px (mitad de su altura) para alineación perfecta */
+    top: 293px !important; /* Alineación perfecta con el centro vertical de las Semis */
     left: 50% !important;
     transform: translateX(-50%) !important;
     width: 180px !important;
@@ -716,10 +716,10 @@ body {
     z-index: 5 !important;
 }
 
-/* Bloque Inferior: Título 3er Puesto + Caja agrupados estrechamente bajo la final */
+/* Bloque Inferior: Título 3er Puesto + Caja agrupados estrechamente abajo */
 .center-bottom-zone {
     position: absolute !important;
-    top: 375px !important; /* Agrupación compacta directa hacia arriba */
+    top: 365px !important; 
     left: 0 !important;
     width: 100% !important;
     display: flex !important;
