@@ -622,12 +622,10 @@ function renderizarBracket() {
         <div style="text-align:center; margin-bottom:5px; margin-top:20px;">
             <span style="font-size:2.8rem;">🏆</span>
         </div>
-    `;
-
-    htmlCentro += `<div class="center-title-box">🏅 ${titles.r2}</div>`;
-    htmlCentro += `<div class="center-match-card-wrapper final-box">
+    <div class="center-title-box">🏅 ${titles.r2}</div>
+    <div class="center-match-card-wrapper final-box">
         ${generarHtmlLlaveItem('final', 0)}
-    </div>`;
+    </div>
     `;
     
     htmlCentro += `<div class="center-title-box" style="background:#ff5722; color:#fff; margin-top:15px;">🥉 ${titles.r3}</div>`;
