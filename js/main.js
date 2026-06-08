@@ -511,7 +511,7 @@ function configurarDonaciones() {
 }
 
 // ==========================================================================
-// 8. MOTOR DEL BRACKET DE PRECISIÓN GEOMÉTRICA CON COORDENADAS RÍGIDAS
+// 8. MOTOR DEL BRACKET INMUNE CON RE-RENDERIZADO VECTORIAL ASINCRÓNICO
 // ==========================================================================
 function renderizarBracket() {
     const leftWing = document.getElementById('bracket-left-wing');
@@ -573,7 +573,7 @@ function renderizarBracket() {
         `;
     }
 
-    function crearColumnaEjeRigido(titulo, claveRonda, dataRondaAttr, listaIndices, clasePosicionPrefijo) {
+    function crearColumnaEjeRigido(titulo, claveRonda, dataRondaAttr, listaIndices) {
         const col = document.createElement('div');
         col.className = 'bracket-column-fluid';
         col.setAttribute('data-ronda', dataRondaAttr);
@@ -584,20 +584,20 @@ function renderizarBracket() {
             for (let i = 0; i < listaIndices.length; i += 2) {
                 html += `<div class="bracket-match-pair-block">`;
                 html += `
-                    <div class="bracket-match-box ${clasePosicionPrefijo}-${i + 1}">
+                    <div class="bracket-match-box" data-round="${claveRonda}" data-index="${listaIndices[i]}">
                         ${generarHtmlLlaveEje(claveRonda, listaIndices[i])}
                     </div>
-                    <div class="bracket-match-box ${clasePosicionPrefijo}-${i + 2}">
+                    <div class="bracket-match-box" data-round="${claveRonda}" data-index="${listaIndices[i + 1]}">
                         ${generarHtmlLlaveEje(claveRonda, listaIndices[i + 1])}
                     </div>
                 `;
                 html += `</div>`;
             }
         } else {
-            listaIndices.forEach((idx, num) => {
+            listaIndices.forEach((idx) => {
                 html += `
                     <div class="bracket-single-block">
-                        <div class="bracket-match-box ${clasePosicionPrefijo}-${num + 1}">
+                        <div class="bracket-match-box" data-round="${claveRonda}" data-index="${idx}">
                             ${generarHtmlLlaveEje(claveRonda, idx)}
                         </div>
                     </div>
@@ -609,33 +609,33 @@ function renderizarBracket() {
         return col;
     }
 
-    // INYECCIÓN DE COLUMNAS
-    leftWing.appendChild(crearColumnaEjeRigido(titles.r32, 'dieciseisavos', 'r32', [0, 1, 2, 3, 4, 5, 6, 7], 'pos-r32'));
-    leftWing.appendChild(crearColumnaEjeRigido(titles.r16, 'octavos', 'r16', [0, 1, 2, 3], 'pos-r16'));
-    leftWing.appendChild(crearColumnaEjeRigido(titles.r8, 'cuartos', 'r8', [0, 1], 'pos-r8'));
-    leftWing.appendChild(crearColumnaEjeRigido(titles.r4, 'semis', 'semi', [0], 'pos-semi'));
+    // ENSAMBLADO DE COLUMNAS SIMÉTRICAS POR FLEXBOX
+    leftWing.appendChild(crearColumnaEjeRigido(titles.r32, 'dieciseisavos', 'r32', [0, 1, 2, 3, 4, 5, 6, 7]));
+    leftWing.appendChild(crearColumnaEjeRigido(titles.r16, 'octavos', 'r16', [0, 1, 2, 3]));
+    leftWing.appendChild(crearColumnaEjeRigido(titles.r8, 'cuartos', 'r8', [0, 1]));
+    leftWing.appendChild(crearColumnaEjeRigido(titles.r4, 'semis', 'semi', [0]));
 
-    rightWing.appendChild(crearColumnaEjeRigido(titles.r32, 'dieciseisavos', 'r32', [8, 9, 10, 11, 12, 13, 14, 15], 'pos-r32'));
-    rightWing.appendChild(crearColumnaEjeRigido(titles.r16, 'octavos', 'r16', [4, 5, 6, 7], 'pos-r16'));
-    rightWing.appendChild(crearColumnaEjeRigido(titles.r8, 'cuartos', 'r8', [2, 3], 'pos-r8'));
-    rightWing.appendChild(crearColumnaEjeRigido(titles.r4, 'semis', 'semi', [1], 'pos-semi'));
+    rightWing.appendChild(crearColumnaEjeRigido(titles.r32, 'dieciseisavos', 'r32', [8, 9, 10, 11, 12, 13, 14, 15]));
+    rightWing.appendChild(crearColumnaEjeRigido(titles.r16, 'octavos', 'r16', [4, 5, 6, 7]));
+    rightWing.appendChild(crearColumnaEjeRigido(titles.r8, 'cuartos', 'r8', [2, 3]));
+    rightWing.appendChild(crearColumnaEjeRigido(titles.r4, 'semis', 'semi', [1]));
 
-    // COORDENADAS DEL NÚCLEO CENTRAL
+    // CONSTRUCCIÓN DEL NÚCLEO CENTRAL CON ATRIBUTOS DE PRECISIÓN DE DATOS
     let htmlCentro = `
         <div class="center-top-zone">
             <div style="font-size: 2.1rem; filter: drop-shadow(0 2px 6px rgba(0,0,0,0.5));">🏆</div>
             <div class="center-title-box">🏅 ${titles.r2}</div>
         </div>
 
-        <div class="center-match-card-wrapper final-box">
+        <div class="center-match-card-wrapper final-box" data-round="final" data-index="0">
             <div class="bracket-match-box" style="width:100%; border:none; background:transparent; box-shadow:none; padding:0 !important;">
                 ${generarHtmlLlaveEje('final', 0)}
             </div>
         </div>
 
         <div class="center-bottom-zone">
-            <div class="center-title-box" style="background:#ff5722 !important; color:#ffffff !important;">🥉 ${titles.r3}</div>
-            <div class="center-match-card-wrapper third-place" style="height:54px; display:flex; align-items:center;">
+            <div class="center-title-box" style="background:#ff5722 !important; color:#ffffff !important;">🥉 ${titles.txt_third || titles.r3}</div>
+            <div class="center-match-card-wrapper third-place" data-round="terceros" data-index="0">
                 <div class="bracket-match-box" style="width:100%; border:none; background:transparent; box-shadow:none; padding:0 !important;">
                     ${generarHtmlLlaveEje('terceros', 0)}
                 </div>
@@ -644,4 +644,123 @@ function renderizarBracket() {
     `;
 
     centerFinals.innerHTML = htmlCentro;
+
+    // Disparamos el cálculo matemático del lienzo una vez inyectado el DOM
+    setTimeout(dibujarLineasBracket, 50);
 }
+
+// ==========================================================================
+// 9. LIENZO VECTORIAL INTERACTIVO PARA CABLEADO DE PRECISIÓN ABSOLUTA
+// ==========================================================================
+function dibujarLineasBracket() {
+    const svg = document.getElementById('bracket-svg-canvas');
+    if (!svg) return;
+    
+    const container = document.querySelector('.bracket-scroll-container');
+    if (!container) return;
+
+    // Sincronizar el tamaño nativo del lienzo SVG al contenedor padre
+    svg.setAttribute('width', container.clientWidth);
+    svg.setAttribute('height', container.clientHeight);
+    svg.innerHTML = ''; // Limpiamos cables obsoletos
+
+    const colorLinea = getComputedStyle(document.documentElement).getPropertyValue('--accent-neon').trim() || '#00df89';
+
+    function obtenerCoordenadas(ronda, index, borde) {
+        const el = document.querySelector(`[data-round="${ronda}"][data-index="${index}"]`);
+        if (!el) return null;
+        
+        const containerRect = container.getBoundingClientRect();
+        const rect = el.getBoundingClientRect();
+        
+        const xLeft = rect.left - containerRect.left;
+        const xRight = rect.right - containerRect.left;
+        const yCenter = (rect.top + rect.bottom) / 2 - containerRect.top;
+        
+        if (borde === 'left') return { x: xLeft, y: yCenter };
+        if (borde === 'right') return { x: xRight, y: yCenter };
+        return { x: (xLeft + xRight) / 2, y: yCenter };
+    }
+
+    function crearPathSVG(d) {
+        const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        path.setAttribute('d', d);
+        path.setAttribute('stroke', colorLinea);
+        path.setAttribute('stroke-width', '3');
+        path.setAttribute('fill', 'none');
+        path.setAttribute('stroke-linecap', 'round');
+        path.setAttribute('stroke-linejoin', 'round');
+        svg.appendChild(path);
+    }
+
+    // Listas lógicas de conexión del torneo
+    const conexionesIzquierda = [
+        { desde: [0, 1], rondaDesde: 'dieciseisavos', hacia: 0, rondaHacia: 'octavos' },
+        { desde: [2, 3], rondaDesde: 'dieciseisavos', hacia: 1, rondaHacia: 'octavos' },
+        { desde: [4, 5], rondaDesde: 'dieciseisavos', hacia: 2, rondaHacia: 'octavos' },
+        { desde: [6, 7], rondaDesde: 'dieciseisavos', hacia: 3, rondaHacia: 'octavos' },
+        { desde: [0, 1], rondaDesde: 'octavos', hacia: 0, rondaHacia: 'cuartos' },
+        { desde: [2, 3], rondaDesde: 'octavos', hacia: 1, rondaHacia: 'cuartos' },
+        { desde: [0, 1], rondaDesde: 'cuartos', hacia: 0, rondaHacia: 'semis' }
+    ];
+
+    const conexionesDerecha = [
+        { desde: [8, 9], rondaDesde: 'dieciseisavos', hacia: 4, rondaHacia: 'octavos' },
+        { desde: [10, 11], rondaDesde: 'dieciseisavos', hacia: 5, rondaHacia: 'octavos' },
+        { desde: [12, 13], rondaDesde: 'dieciseisavos', hacia: 6, rondaHacia: 'octavos' },
+        { desde: [14, 15], rondaDesde: 'dieciseisavos', hacia: 7, rondaHacia: 'octavos' },
+        { desde: [4, 5], rondaDesde: 'octavos', hacia: 2, rondaHacia: 'cuartos' },
+        { desde: [6, 7], rondaDesde: 'octavos', hacia: 3, rondaHacia: 'cuartos' },
+        { desde: [2, 3], rondaDesde: 'cuartos', hacia: 1, rondaHacia: 'semis' }
+    ];
+
+    // 1. Ala Izquierda (Codos orientados a la derecha)
+    conexionesIzquierda.forEach(con => {
+        const p1 = obtenerCoordenadas(con.rondaDesde, con.desde[0], 'right');
+        const p2 = obtenerCoordenadas(con.rondaDesde, con.desde[1], 'right');
+        const pDestino = obtenerCoordenadas(con.rondaHacia, con.hacia, 'left');
+
+        if (p1 && p2 && pDestino) {
+            const midX = (p1.x + pDestino.x) / 2;
+            const d1 = `M ${p1.x} ${p1.y} L ${midX} ${p1.y} L ${midX} ${pDestino.y} L ${pDestino.x} ${pDestino.y}`;
+            const d2 = `M ${p2.x} ${p2.y} L ${midX} ${p2.y} L ${midX} ${pDestino.y}`;
+            crearPathSVG(d1);
+            crearPathSVG(d2);
+        }
+    });
+
+    // 2. Ala Derecha (Codos orientados a la izquierda)
+    conexionesDerecha.forEach(con => {
+        const p1 = obtenerCoordenadas(con.rondaDesde, con.desde[0], 'left');
+        const p2 = obtenerCoordenadas(con.rondaDesde, con.desde[1], 'left');
+        const pDestino = obtenerCoordenadas(con.rondaHacia, con.hacia, 'right');
+
+        if (p1 && p2 && pDestino) {
+            const midX = (p1.x + pDestino.x) / 2;
+            const d1 = `M ${p1.x} ${p1.y} L ${midX} ${p1.y} L ${midX} ${pDestino.y} L ${pDestino.x} ${pDestino.y}`;
+            const d2 = `M ${p2.x} ${p2.y} L ${midX} ${p2.y} L ${midX} ${pDestino.y}`;
+            crearPathSVG(d1);
+            crearPathSVG(d2);
+        }
+    });
+
+    // 3. Conexiones centrales hacia la Final
+    const pSemiIzq = obtenerCoordenadas('semis', 0, 'right');
+    const pSemiDer = obtenerCoordenadas('semis', 1, 'left');
+    const pFinalIzq = obtenerCoordenadas('final', 0, 'left');
+    const pFinalDer = obtenerCoordenadas('final', 0, 'right');
+
+    if (pSemiIzq && pFinalIzq) {
+        const midX = (pSemiIzq.x + pFinalIzq.x) / 2;
+        const d = `M ${pSemiIzq.x} ${pSemiIzq.y} L ${midX} ${pSemiIzq.y} L ${midX} ${pFinalIzq.y} L ${pFinalIzq.x} ${pFinalIzq.y}`;
+        crearPathSVG(d);
+    }
+    if (pSemiDer && pFinalDer) {
+        const midX = (pSemiDer.x + pFinalDer.x) / 2;
+        const d = `M ${pSemiDer.x} ${pSemiDer.y} L ${midX} ${pSemiDer.y} L ${midX} ${pFinalDer.y} L ${pFinalDer.x} ${pFinalDer.y}`;
+        crearPathSVG(d);
+    }
+}
+
+// Escuchador global de redimensión para recalcular cables al vuelo sin deformar
+window.addEventListener('resize', dibujarLineasBracket);
