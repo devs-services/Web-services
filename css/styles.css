@@ -521,7 +521,7 @@ body {
 }
 
 /* ==========================================================================
-   BRACKET DE PRECISIÓN GEOMÉTRICA FINAL: ELIMINACIÓN DE LÍNEAS DUPLICADAS
+   BRACKET DE PRECISIÓN GEOMÉTRICA FINAL: REMOCIÓN DE LÍNEAS SOBRESALIENTES
    ========================================================================== */
 
 .bracket-scroll-container {
@@ -578,7 +578,7 @@ body {
 }
 
 /* ==========================================================================
-   BLOQUES DE EMPAREJAMIENTO CON CONTENIDO CENTRADO Y GAPS FIJOS
+   BLOQUES DE EMPAREJAMIENTO CON RECORTE SEGURO DE DESBORDES
    ========================================================================== */
 
 .bracket-match-pair-block {
@@ -587,7 +587,8 @@ body {
     justify-content: center !important; /* Junta los dos cuadros hacia el centro */
     height: 100% !important;
     position: relative !important;
-    width: 100% !important;
+    width: calc(100% + 24px) !important; /* Damos un pequeño aire extra controlado para el codo */
+    overflow: visible !important;        /* Controlamos que las líneas salgan pero no se desborden */
 }
 
 /* Calibración milimétrica de distancias verticales (Gaps) por ronda */
@@ -620,41 +621,39 @@ body {
 }
 
 /* ==========================================================================
-   CABLEADO DE CODOS ARQUEADOS CONTROLADOS (GROSOR 3PX)
+   CABLEADO DE CODOS ARQUEADOS CONTROLADOS REBANADOS (GROSOR 3PX)
    ========================================================================== */
 
 /* El codo base vertical se posiciona y centra en el medio de la pareja */
 .bracket-match-pair-block::after {
     content: "" !important;
     position: absolute !important;
-    right: -12px !important;
+    right: 12px !important; /* Retraemos la posición 12px hacia adentro para limpiar el desborde trasero */
     top: 50% !important;
     transform: translateY(-50%) !important;
     width: 12px !important;
-    border: 3px solid var(--accent-neon, #00f2fe) !important; /* Líneas neón de alta visibilidad */
+    border: 3px solid var(--accent-neon, #00f2fe) !important;
     border-left: none !important;
     border-radius: 0 8px 8px 0 !important;
     z-index: 1 !important;
 }
 
-/* Alturas físicas ultra-calibradas por ronda para que abracen el lomo de las tarjetas */
+/* Alturas físicas por ronda que abrazan el lomo exacto de las tarjetas */
 .bracket-column-fluid[data-ronda="r32"] .bracket-match-pair-block::after { height: 78px !important; }
 .bracket-column-fluid[data-ronda="r16"] .bracket-match-pair-block::after { height: 164px !important; }
 .bracket-column-fluid[data-ronda="r8"] .bracket-match-pair-block::after { height: 334px !important; }
 
-/* 🌟 LÍNEA ÚNICA EXTENDIDA: Viaja todo el canal intermedio (24px) hasta tocar el cuadro del frente */
+/* Línea única extendida que toca el cuadro del frente de forma limpia */
 .bracket-match-pair-block::before {
     content: "" !important;
     position: absolute !important;
-    right: -24px !important; /* Cubre toda la distancia de separación entre columnas */
+    right: 0px !important; /* Alineado justo al ras de salida */
     top: 50% !important;
     transform: translateY(-50%) !important;
-    width: 24px !important; /* Se alarga a 24px para unirse directamente con la tarjeta */
+    width: 12px !important; 
     border-top: 3px solid var(--accent-neon, #00f2fe) !important;
     z-index: 1 !important;
 }
-
-/* 🛑 ¡SOLUCIÓN!: Eliminamos por completo la regla .bracket-match-box::before que duplicaba el palito horizontal */
 
 /* Extensión de línea horizontal limpia desde Semis hacia el bloque central de la Final */
 .bracket-single-block::after {
@@ -673,14 +672,14 @@ body {
    ========================================================================== */
 .bracket-side-wing.right-wing .bracket-match-pair-block::after {
     right: auto !important;
-    left: -12px !important;
+    left: 12px !important;
     border-left: 3px solid var(--accent-neon, #00f2fe) !important;
     border-right: none !important;
     border-radius: 8px 0 0 8px !important;
 }
 .bracket-side-wing.right-wing .bracket-match-pair-block::before {
     right: auto !important;
-    left: -24px !important;
+    left: 0px !important;
 }
 .bracket-side-wing.right-wing .bracket-single-block::after {
     right: auto !important;
