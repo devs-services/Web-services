@@ -639,14 +639,14 @@ function renderizarBracket() {
     rightWing.appendChild(crearColumnaEjeRigido(titles.r8, 'cuartos', 'r8', [2, 3], 'pos-r8'));
     rightWing.appendChild(crearColumnaEjeRigido(titles.r4, 'semis', 'semi', [1], 'pos-semi'));
 
-    // CONSTRUCCIÓN DEL NÚCLEO CENTRAL CON SIMETRÍA VERTICAL CONTROLADA
+    // CONSTRUCCIÓN DEL NÚCLEO CENTRAL CON COORDENADAS FIJAS COMPACTAS
     let htmlCentro = `
         <div class="center-top-zone">
-            <div style="font-size: 2.3rem; margin-bottom: 2px; filter: drop-shadow(0 2px 8px rgba(0,0,0,0.5));">🏆</div>
+            <div style="font-size: 2.1rem; filter: drop-shadow(0 2px 6px rgba(0,0,0,0.5));">🏆</div>
             <div class="center-title-box">🏅 ${titles.r2}</div>
         </div>
 
-        <div class="center-match-card-wrapper final-box" style="height:54px; display:flex; align-items:center;">
+        <div class="center-match-card-wrapper final-box">
             <div class="bracket-match-box" style="width:100%; border:none; background:transparent; box-shadow:none; padding:0 !important;">
                 ${generarHtmlLlaveEje('final', 0)}
             </div>
