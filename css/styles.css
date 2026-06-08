@@ -532,9 +532,9 @@ body {
 
 .bracket-mirror-layout {
     display: grid !important;
-    grid-template-columns: 484px 200px 484px !important; /* Ancho total de 1168px: cabe en cualquier monitor sin cortarse */
-    gap: 16px !important; /* Espacio exacto entre las alas y el centro */
-    width: 1168px !important;
+    grid-template-columns: 1fr 200px 1fr !important; /* Distribución elástica pura */
+    gap: 25px !important; /* Mismo gap exacto que el wrapper de partidos inferior */
+    width: 100% !important; /* Ocupa todo el ancho disponible del contenedor */
     margin: 0 auto !important;
     align-items: center !important;
 }
