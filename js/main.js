@@ -454,18 +454,29 @@ function configurarDonaciones() {
         const btnCopy = item.querySelector('.btn-copy');
         if (btnCopy && input) {
             btnCopy.addEventListener('click', () => {
-                input.select(); input.setSelectionRange(0, 99999);
-                navigator.clipboard.writeText(input.value).then(() => {
-                    const originalText = btnCopy.innerHTML;
-                    const translatedCopied = mundialData.ui_translations[currentLanguage].copied;
-                    btnCopy.innerHTML = `<span style="font-size: 0.75rem; font-weight: bold;">${translatedCopied}</span>`;
-                    btnCopy.style.background = 'var(--accent-neon)';
-                    setTimeout(() => { btnCopy.innerHTML = originalText; btnCopy.style.background = ''; }, 2000);
-                });
-            });
-        }
+    // Validación estricta: Si ya se está copiando, ignoramos el clic adicional
+    if (btnCopy.dataset.copied === "true") return; 
+
+    input.select(); 
+    input.setSelectionRange(0, 99999);
+    navigator.clipboard.writeText(input.value).then(() => {
+        btnCopy.dataset.copied = "true"; // Bloqueo de estado
+
+        // Salvaguarda del HTML original
+        const originalHtml = btnCopy.dataset.originalHtml || btnCopy.innerHTML;
+        btnCopy.dataset.originalHtml = originalHtml; 
+
+        const translatedCopied = mundialData.ui_translations[currentLanguage].copied;
+        btnCopy.innerHTML = `<span style="font-size: 0.75rem; font-weight: bold;">${translatedCopied}</span>`;
+        btnCopy.style.background = 'var(--accent-neon)';
+
+        setTimeout(() => { 
+            btnCopy.innerHTML = originalHtml; 
+            btnCopy.style.background = ''; 
+            btnCopy.dataset.copied = "false"; // Liberación de estado
+        }, 2000);
     });
-}
+});
 
 // ==========================================================================
 // 8. MOTOR DEL BRACKET INMUNE VECTORIAL (FLEXBOX PLANO)
@@ -572,8 +583,6 @@ function renderizarBracket() {
         </div>
     `;
     centerFinals.innerHTML = htmlCentro;
-
-    requestAnimationFrame(() => { setTimeout(dibujarLineasBracket, 200); });
 }
 
 // ==========================================================================
