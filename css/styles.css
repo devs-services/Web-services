@@ -521,54 +521,55 @@ body {
 }
 
 /* ==========================================================================
-   BRACKET DE PRECISIÓN GEOMÉTRICA FINAL: VERSÍON SANEADA Y BLINDADA
+   BRACKET DE PRECISIÓN ABSOLUTA RESPONSIVO - GEOMETRÍA FIJA INDESTRUCTIBLE
    ========================================================================== */
 
 .bracket-scroll-container {
     width: 100% !important;
-    overflow: hidden !important; /* Pantalla limpia sin scrollbars */
+    overflow: hidden !important;
     padding: 20px 0;
 }
 
 .bracket-mirror-layout {
     display: grid !important;
-    grid-template-columns: 1fr 200px 1fr !important; /* Mantenemos tus distancias de oro */
-    gap: 15px !important; /* Regresamos al gap de 15px que alineaba el ala derecha a la perfección */
+    grid-template-columns: 1fr 180px 1fr !important; /* Bloque central estricto de 180px */
+    gap: 15px !important;
     width: 100% !important;
     max-width: 1350px;
     margin: 0 auto;
     align-items: center !important;
 }
 
-/* Las alas laterales actúan como el eje de suspensión horizontal */
+/* Forzamos que las dos alas midan exactamente 620px de alto totales */
 .bracket-side-wing {
-    display: flex !important;
-    justify-content: space-between !important;
-    align-items: center !important;
-    width: 100% !important;
-    height: 640px !important;
-    padding-top: 35px !important; /* Mantiene tus títulos 100% visibles y enteros */
+    display: grid !important;
+    grid-template-columns: repeat(4, 112px) !important; /* Columnas rígidas de 112px */
+    gap: 12px !important;
+    height: 620px !important;
+    position: relative !important;
+    padding-top: 30px !important; /* Espacio exacto para los títulos superiores */
 }
 
-/* Espejo físico del ala derecha */
+/* Espejo físico perfecto del ala derecha */
 .bracket-side-wing.right-wing {
-    flex-direction: row-reverse !important;
+    direction: rtl !important;
+}
+.bracket-side-wing.right-wing * {
+    direction: ltr !important;
 }
 
-/* Cada columna mantiene su ancho estricto e inalterable de 112px */
+/* Cada columna se convierte en un contenedor rígido con coordenadas de arriba a abajo */
 .bracket-column-fluid {
-    display: flex !important;
-    flex-direction: column !important;
-    justify-content: space-around !important;
+    display: block !important;
     height: 100% !important;
-    width: 112px !important;
+    width: 100% !important;
     position: relative !important;
 }
 
-/* Títulos superiores de ronda corregidos */
+/* TÍTULOS SUPERIORES: 100% visibles, grandes y sin recortes */
 .round-title-fluid {
     position: absolute !important;
-    top: -12px !important;        
+    top: -15px !important;
     width: 100% !important;
     text-align: center !important;
     font-size: 0.78rem !important;
@@ -576,38 +577,14 @@ body {
     text-transform: uppercase !important;
     color: var(--accent-neon, #00f2fe) !important;
     letter-spacing: 1px !important;
-    line-height: 1.2 !important;
     white-space: nowrap !important;
 }
 
 /* ==========================================================================
-   BLOQUES DE EMPAREJAMIENTO CON CONTENIDO CENTRADO Y GAPS FIJOS
+   POSICIONAMIENTO MATEMÁTICO AL PÍXEL DE LAS TARJETAS (EVITA DESALINEACIONES)
    ========================================================================== */
 
-.bracket-match-pair-block {
-    display: flex !important;
-    flex-direction: column !important;
-    justify-content: center !important; /* Junta los dos cuadros hacia el centro */
-    height: 100% !important;
-    position: relative !important;
-    width: 100% !important; 
-}
-
-/* Distancias de oro verticales (Gaps) por ronda que calzan milimétricamente */
-.bracket-column-fluid[data-ronda="r32"] .bracket-match-pair-block { max-height: 140px !important; gap: 24px !important; }
-.bracket-column-fluid[data-ronda="r16"] .bracket-match-pair-block { max-height: 290px !important; gap: 110px !important; }
-.bracket-column-fluid[data-ronda="r8"] .bracket-match-pair-block { max-height: 540px !important; gap: 280px !important; }
-
-.bracket-single-block {
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    height: 100% !important;
-    width: 100% !important;
-    position: relative !important;
-}
-
-/* Dimensiones fijas e inalterables de las tarjetas compactas */
+/* Altura rígida idéntica para todas las tarjetas del torneo */
 .bracket-match-box {
     background: #15171b !important;
     border: 1px solid #30363d !important;
@@ -619,88 +596,113 @@ body {
     box-shadow: 0 4px 15px rgba(0,0,0,0.6) !important;
     height: 52px !important;
     width: 100% !important;
-    position: relative !important;
+    position: absolute !important; /* Coordenada fija en el espacio */
     z-index: 5 !important;
 }
 
+/* Coordenadas de altura (Top) exactas para la ronda de 16avos (8 partidos) */
+.pos-r32-1 { top: 0px !important; }    .pos-r32-2 { top: 74px !important; }
+.pos-r32-3 { top: 148px !important; }  .pos-r32-4 { top: 222px !important; }
+.pos-r32-5 { top: 296px !important; }  .pos-r32-6 { top: 370px !important; }
+.pos-r32-7 { top: 444px !important; }  .pos-r32-8 { top: 518px !important; }
+
+/* Coordenadas de altura para 8avos: Se posicionan en el centro medio de los dos anteriores */
+.pos-r16-1 { top: 37px !important; }   /* Centro entre r32-1 y r32-2 */
+.pos-r16-2 { top: 185px !important; }  /* Centro entre r32-3 y r32-4 */
+.pos-r16-3 { top: 333px !important; }  /* Centro entre r32-5 y r32-6 */
+.pos-r16-4 { top: 481px !important; }  /* Centro entre r32-7 y r32-8 */
+
+/* Coordenadas de altura para 4tos: Centrados en el horizonte intermedio */
+.pos-r8-1  { top: 111px !important; }  /* Centro entre r16-1 y r16-2 */
+.pos-r8-2  { top: 407px !important; }  /* Centro entre r16-3 y r16-4 */
+
+/* Coordenada de Semis: Centro absoluto vertical paralelo a la Final */
+.pos-semi  { top: 259px !important; }  /* Centro perfecto del horizonte del árbol */
+
 /* ==========================================================================
-   CABLEADO DE CODOS ARQUEADOS (GROSOR 3PX) - RESTAURADO
+   SISTEMA DE CONEXIONES Y CODOS NATIVOS AL RAS DE LAS TARJETAS (3PX)
    ========================================================================== */
 
-/* El codo base vertical se posiciona y centra en el medio de la pareja */
-.bracket-match-pair-block::after {
+/* Línea recta horizontal saliente detrás de cada tarjeta */
+.bracket-column-fluid:not([data-ronda="semi"]) .bracket-match-box::after {
     content: "" !important;
     position: absolute !important;
-    right: -12px !important; 
+    right: -15px !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    width: 15px !important;
+    border-top: 3px solid var(--accent-neon, #00f2fe) !important;
+    z-index: 1 !important;
+}
+
+/* Codos de 16avos que bajan y suben para alimentar 8avos */
+.bracket-column-fluid[data-ronda="r32"] .bracket-match-box:nth-child(even)::after {
+    height: 40px !important;
+    border-right: 3px solid var(--accent-neon, #00f2fe) !important;
+    border-radius: 0 6px 0 0 !important;
+}
+.bracket-column-fluid[data-ronda="r32"] .bracket-match-box:nth-child(odd):not(:first-child)::after {
+    height: 40px !important;
+    top: auto !important;
+    bottom: 50% !important;
+    border-right: 3px solid var(--accent-neon, #00f2fe) !important;
+    border-radius: 0 0 6px 0 !important;
+}
+
+/* Codos de 8avos que se extienden para alimentar 4tos */
+.bracket-column-fluid[data-ronda="r16"] .bracket-match-box:nth-child(2)::after,
+.bracket-column-fluid[data-ronda="r16"] .bracket-match-box:nth-child(4)::after {
+    height: 77px !important;
+    border-right: 3px solid var(--accent-neon, #00f2fe) !important;
+    border-radius: 0 6px 0 0 !important;
+}
+.bracket-column-fluid[data-ronda="r16"] .bracket-match-box:nth-child(3)::after,
+.bracket-column-fluid[data-ronda="r16"] .bracket-match-box:nth-child(5)::after {
+    height: 77px !important;
+    top: auto !important;
+    bottom: 50% !important;
+    border-right: 3px solid var(--accent-neon, #00f2fe) !important;
+    border-radius: 0 0 6px 0 !important;
+}
+
+/* Codos de 4tos gigantes que se cierran en Semis */
+.bracket-column-fluid[data-ronda="r8"] .bracket-match-box:nth-child(2)::after {
+    height: 151px !important;
+    border-right: 3px solid var(--accent-neon, #00f2fe) !important;
+    border-radius: 0 6px 0 0 !important;
+}
+.bracket-column-fluid[data-ronda="r8"] .bracket-match-box:nth-child(3)::after {
+    height: 151px !important;
+    top: auto !important;
+    bottom: 50% !important;
+    border-right: 3px solid var(--accent-neon, #00f2fe) !important;
+    border-radius: 0 0 6px 0 !important;
+}
+
+/* Línea de entrada receptora que espera a los codos de frente */
+.bracket-column-fluid:not(:first-child) .bracket-match-box::before {
+    content: "" !important;
+    position: absolute !important;
+    left: -12px !important;
     top: 50% !important;
     transform: translateY(-50%) !important;
     width: 12px !important;
-    border: 3px solid var(--accent-neon, #00f2fe) !important;
-    border-left: none !important;
-    border-radius: 0 8px 8px 0 !important;
-    z-index: 1 !important;
-}
-
-/* Alturas físicas de codos por ronda que calzan de forma exacta */
-.bracket-column-fluid[data-ronda="r32"] .bracket-match-pair-block::after { height: 78px !important; }
-.bracket-column-fluid[data-ronda="r16"] .bracket-match-pair-block::after { height: 164px !important; }
-.bracket-column-fluid[data-ronda="r8"] .bracket-match-pair-block::after { height: 334px !important; }
-
-/* Línea única extendida que viaja el canal intermedio */
-.bracket-match-pair-block::before {
-    content: "" !important;
-    position: absolute !important;
-    right: -24px !important; 
-    top: 50% !important;
-    transform: translateY(-50%) !important;
-    width: 12px !important; 
     border-top: 3px solid var(--accent-neon, #00f2fe) !important;
     z-index: 1 !important;
-    clip-path: inset(0 0 0 0) !important;
-}
-
-/* 🌟 CONEXIÓN EXCLUSIVA DESDE LA GRAN FINAL HACIA LAS SEMIFINALES */
-.center-match-card-wrapper.final-box::before,
-.center-match-card-wrapper.final-box::after {
-    content: "" !important;
-    position: absolute !important;
-    top: 50% !important;
-    transform: translateY(-50%) !important;
-    width: 25px !important; /* Longitud fija que cubre la separación de Semis sin desajustes */
-    border-top: 3px solid var(--accent-neon, #00f2fe) !important;
-    z-index: 1 !important;
-}
-/* Brazo izquierdo conecta Semis A */
-.center-match-card-wrapper.final-box::before { left: -25px !important; }
-/* Brazo derecho conecta Semis B */
-.center-match-card-wrapper.final-box::after { right: -25px !important; }
-
-/* Anulamos las líneas antiguas del bloque de Semis para que no compitan */
-.bracket-single-block::after { display: none !important; }
-
-/* Inversión geométrica de arcos para el ala derecha (Espejo Perfecto) */
-.bracket-side-wing.right-wing .bracket-match-pair-block::after {
-    right: auto !important;
-    left: -12px !important;
-    border-left: 3px solid var(--accent-neon, #00f2fe) !important;
-    border-right: none !important;
-    border-radius: 8px 0 0 8px !important;
-}
-.bracket-side-wing.right-wing .bracket-match-pair-block::before {
-    right: auto !important;
-    left: -24px !important;
 }
 
 /* ==========================================================================
-   MÓDULO CENTRAL COMPACTO SEGURO Y ALINEADO CON SEMIFINALES
+   EJÉRCITO CENTRAL TOTALMENTE SANEADO, CENTRADO Y LIMPIO
    ========================================================================== */
+
 .bracket-center-core {
     display: flex !important;
     flex-direction: column !important;
     align-items: center !important;
-    justify-content: center !important;
+    justify-content: flex-start !important;
     height: 100% !important;
     position: relative !important;
+    padding-top: 130px !important; /* 🌟 ALINEACIÓN LÁSER: Baja todo el bloque central para congelar la Final con las Semis */
 }
 
 .center-title-box {
@@ -712,44 +714,42 @@ body {
     font-size: 0.75rem !important;
     text-transform: uppercase !important;
     letter-spacing: 1px !important;
-    margin-top: 25px !important;
 }
 
-/* CAJA DE LA GRAN FINAL: Centrada y nivelada con las Semis */
-.center-match-card-wrapper.final-box {
-    background: #15171b !important; /* Mismo fondo oscuro de las tarjetas laterales */
-    border: 1px solid #ffc107 !important; /* Borde dorado estilizado */
-    border-radius: 6px !important;
-    width: 100% !important;
-    max-width: 180px !important; /* Ancho estricto compacto */
-    padding: 6px !important;
-    position: relative !important;
-    height: 52px !important; /* Altura idéntica exacta a las tarjetas del árbol */
-    display: flex !important;
-    flex-direction: column !important;
-    justify-content: center !important;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.6) !important;
-    margin-bottom: 84px !important; /* 🌟 AJUSTE LÁSER: Centra la Final con el horizonte de las Semis */
-}
-
-/* CAJA DEL TERCER PUESTO: Abajo y aislada de cables */
-.center-match-card-wrapper.third-place {
+/* CONTENEDORES EXCLUSIVOS DE LA FINAL (SIN LÍNEAS BLANCAS NI VERDES EXTRAS) */
+.center-match-card-wrapper {
     background: #15171b !important;
-    border: 1px solid #ff5722 !important; /* Borde naranja bronce */
+    border: 1px solid #ffc107 !important; /* Borde dorado limpio */
     border-radius: 6px !important;
     width: 100% !important;
     max-width: 180px !important;
     padding: 6px !important;
     position: relative !important;
-    height: 52px !important;
+    height: 52px !important; /* Altura exacta idéntica a las laterales */
     display: flex !important;
     flex-direction: column !important;
     justify-content: center !important;
     box-shadow: 0 4px 15px rgba(0,0,0,0.6) !important;
+    margin-bottom: 90px !important; /* Colchón exacto para separar el Tercer Puesto */
 }
 
-/* Filas internas del partido centrado */
-.center-match-card-wrapper .bracket-team-row {
+.center-match-card-wrapper.third-place {
+    border-color: #ff5722 !important; /* Borde bronce */
+    margin-bottom: 0px !important;
+}
+
+/* Eliminamos los palitos o decoraciones internas fantasmas de las finales */
+.center-match-card-wrapper .bracket-match-box {
+    position: static !important;
+    border: none !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    height: auto !important;
+}
+
+/* Filas internas del partido limpias */
+.bracket-team-row {
     display: flex !important;
     align-items: center !important;
     justify-content: space-between !important;
@@ -759,7 +759,7 @@ body {
     color: #ffffff !important;
 }
 
-.center-match-card-wrapper .bracket-score {
+.bracket-score {
     font-weight: bold !important;
     color: var(--accent-neon, #00f2fe) !important;
     background: #0d1117 !important;
@@ -768,23 +768,22 @@ body {
     font-size: 0.75rem !important;
 }
 
-/* CONEXIONES HORIZONTALES RECTAS DESDE LA GRAN FINAL HACIA LAS SEMIFINALES */
+/* BRAZOS NEÓN QUE SALEN DE LA FINAL PARA ABROCHAR LAS SEMIFINALES */
 .center-match-card-wrapper.final-box::before,
 .center-match-card-wrapper.final-box::after {
     content: "" !important;
     position: absolute !important;
     top: 50% !important;
     transform: translateY(-50%) !important;
-    width: 25px !important; /* Distancia justa para besar los cuadros de Semis */
+    width: 15px !important; /* Longitud justa que abraza la columna de Semis */
     border-top: 3px solid var(--accent-neon, #00f2fe) !important;
     z-index: 1 !important;
 }
-.center-match-card-wrapper.final-box::before { left: -25px !important; }
-.center-match-card-wrapper.final-box::after { right: -25px !important; }
+.center-match-card-wrapper.final-box::before { left: -15px !important; }
+.center-match-card-wrapper.final-box::after { right: -15px !important; }
 
-/* El Tercer Puesto permanece libre de cables */
-.center-match-card-wrapper.third-place::before,
-.center-match-card-wrapper.third-place::after {
-    display: none !important;
-    content: none !important;
+/* El ala derecha invierte la dirección de entrada en codos de 16avos */
+.bracket-side-wing.right-wing .bracket-match-box::before {
+    right: -12px !important;
+    left: auto !important;
 }
