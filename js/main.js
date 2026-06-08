@@ -533,20 +533,31 @@ function renderizarBracket() {
     };
     const titles = roundTitles[currentLanguage] || roundTitles['es'];
 
+    // Función interna adaptada para leer tanto Arrays (rondas de llaves) como Objetos directos (final / terceros)
     function generarHtmlLlaveEje(claveRonda, indiceLlave) {
-        const partido = mundialData.bracket[claveRonda]?.[indiceLlave] || null;
+        let rondaData = mundialData.bracket[claveRonda];
+        let partido = null;
+        
+        if (rondaData) {
+            if (Array.isArray(rondaData)) {
+                partido = rondaData[indiceLlave] || null;
+            } else {
+                partido = rondaData; // Caso de 'final' o 'terceros' que son objetos directos
+            }
+        }
+
         let eq1Name = "&nbsp;", eq2Name = "&nbsp;", eq1Flag = "", eq2Flag = "";
         let score1 = "", score2 = "", class1 = "bracket-team-empty", class2 = "bracket-team-empty";
 
         if (partido) {
-            if (partido.equipo1) {
+            if (partido.equipo1 && partido.equipo1.trim() !== "") {
                 const eq = mundialData.equipos[partido.equipo1];
                 eq1Name = eq?.nombres[currentLanguage] || partido.equipo1;
                 eq1Flag = eq?.bandera ? `<img src="${eq.bandera}" class="flag-circle" style="width:14px; height:14px; margin-right:6px;">` : '';
                 score1 = partido.goles1 !== undefined ? partido.goles1 : "-";
                 class1 = partido.ganador === partido.equipo1 ? "bracket-team-row winner" : "bracket-team-row";
             }
-            if (partido.equipo2) {
+            if (partido.equipo2 && partido.equipo2.trim() !== "") {
                 const eq = mundialData.equipos[partido.equipo2];
                 eq2Name = eq?.nombres[currentLanguage] || partido.equipo2;
                 eq2Flag = eq?.bandera ? `<img src="${eq.bandera}" class="flag-circle" style="width:14px; height:14px; margin-right:6px;">` : '';
@@ -558,29 +569,59 @@ function renderizarBracket() {
         return `
             <div class="bracket-team-row ${class1}">
                 <div style="display:flex; align-items:center;">${eq1Flag}<span>${eq1Name}</span></div>
-                ${partido && partido.equipo1 ? `<span class="bracket-score">${score1}</span>` : ''}
+                ${partido && partido.equipo1 && score1 !== "" ? `<span class="bracket-score">${score1}</span>` : ''}
             </div>
             <div class="bracket-team-row ${class2}" style="margin-top:2px;">
                 <div style="display:flex; align-items:center;">${eq2Flag}<span>${eq2Name}</span></div>
-                ${partido && partido.equipo2 ? `<span class="bracket-score">${score2}</span>` : ''}
+                ${partido && partido.equipo2 && score2 !== "" ? `<span class="bracket-score">${score2}</span>` : ''}
             </div>
         `;
     }
 
+    // Reconstrucción del generador de columnas inyectando el contenedor de codos de conexión CSS
     function crearColumnaEjeRigido(titulo, claveRonda, dataRondaAttr, listaIndices, clasePosicionPrefijo) {
         const col = document.createElement('div');
         col.className = 'bracket-column-fluid';
         col.setAttribute('data-ronda', dataRondaAttr);
         
         let html = `<div class="round-title-fluid">${titulo}</div>`;
-        listaIndices.forEach((idx, num) => {
-            const claseCoordenada = `${clasePosicionPrefijo}-${num + 1}`;
-            html += `
-                <div class="bracket-match-box ${claseCoordenada}">
-                    ${generarHtmlLlaveEje(claveRonda, idx)}
-                </div>
-            `;
-        });
+        
+        // Si la ronda requiere cables de conexión (16avos, 8avos, 4tos), los agrupamos de 2 en 2
+        if (dataRondaAttr === 'r32' || dataRondaAttr === 'r16' || dataRondaAttr === 'r8') {
+            for (let i = 0; i < listaIndices.length; i += 2) {
+                html += `<div class="bracket-match-pair-block">`;
+                
+                const idx1 = listaIndices[i];
+                const claseCoordenada1 = `${clasePosicionPrefijo}-${i + 1}`;
+                html += `
+                    <div class="bracket-match-box ${claseCoordenada1}">
+                        ${generarHtmlLlaveEje(claveRonda, idx1)}
+                    </div>
+                `;
+                
+                const idx2 = listaIndices[i + 1];
+                const claseCoordenada2 = `${clasePosicionPrefijo}-${i + 2}`;
+                html += `
+                    <div class="bracket-match-box ${claseCoordenada2}">
+                        ${generarHtmlLlaveEje(claveRonda, idx2)}
+                    </div>
+                `;
+                
+                html += `</div>`;
+            }
+        } else {
+            // Para las Semifinales (no se agrupan en pares con codos salientes)
+            listaIndices.forEach((idx, num) => {
+                const claseCoordenada = `${clasePosicionPrefijo}-${num + 1}`;
+                html += `
+                    <div class="bracket-single-block">
+                        <div class="bracket-match-box ${claseCoordenada}">
+                            ${generarHtmlLlaveEje(claveRonda, idx)}
+                        </div>
+                    </div>
+                `;
+            });
+        }
         
         col.innerHTML = html;
         return col;
@@ -598,17 +639,30 @@ function renderizarBracket() {
     rightWing.appendChild(crearColumnaEjeRigido(titles.r8, 'cuartos', 'r8', [2, 3], 'pos-r8'));
     rightWing.appendChild(crearColumnaEjeRigido(titles.r4, 'semis', 'semi', [1], 'pos-semi'));
 
-    // Bloque Central alineado con las Semis
+    // CONSTRUCCIÓN DEL NÚCLEO CENTRAL (FINAL Y 3ER PUESTO RESTAURADO)
     let htmlCentro = `
-        <div style="text-align:center; margin-bottom:5px; margin-top:20px;">
-            <span style="font-size:2.8rem;">🏆</span>
+        <div style="text-align:center; margin-bottom:5px; margin-top:10px;">
+            <span style="font-size:2.5rem;">🏆</span>
         </div>
     `;
 
+    // Renderizar la Final
     htmlCentro += `<div class="center-title-box">🏅 ${titles.r2}</div>`;
     htmlCentro += `
-        <div class="center-match-card-wrapper final-box" style="height:54px; display:flex; align-items:center;">
-            ${generarHtmlLlaveEje('final', 0)}
+        <div class="center-match-card-wrapper final-box" style="height:54px; display:flex; align-items:center; margin-bottom:20px;">
+            <div class="bracket-match-box" style="width:100%; border:none; background:transparent; box-shadow:none;">
+                ${generarHtmlLlaveEje('final', 0)}
+            </div>
+        </div>
+    `;
+
+    // Renderizar el Tercer Puesto
+    htmlCentro += `<div class="center-title-box" style="background:#ff5722 !important; color:#ffffff !important;">🥉 ${titles.r3}</div>`;
+    htmlCentro += `
+        <div class="center-match-card-wrapper third-place" style="height:54px; display:flex; align-items:center;">
+            <div class="bracket-match-box" style="width:100%; border:none; background:transparent; box-shadow:none;">
+                ${generarHtmlLlaveEje('terceros', 0)}
+            </div>
         </div>
     `;
 
