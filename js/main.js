@@ -617,24 +617,28 @@ function renderizarBracket() {
     rightWing.appendChild(construirColumnaRondaFluida(titles.r8, 'cuartos', 'r8', [2, 3]));
     rightWing.appendChild(construirColumnaRondaFluida(titles.r4, 'semis', 'semi', [1], true));
 
-    // Bloque Central alineado con las Semis (Inyección de HTML Directo Protegido)
+    // Bloque Central alineado con las Semis (Sintaxis Estructural Nativa)
     let htmlCentro = '<div style="text-align:center; margin-bottom:5px; margin-top:20px;"><span style="font-size:2.8rem;">🏆</span></div>';
 
-    // Sección de la Gran Final con estructura exacta de clases nativas
+    // Sección de la Gran Final
     htmlCentro += '<div class="center-title-box">🏅 ' + titles.r2 + '</div>';
     htmlCentro += '<div class="center-match-card-wrapper final-box">';
-    htmlCentro += '  <div class="bracket-match-box">';
-    htmlCentro += '    <div class="bracket-team-row"><span class="bracket-team-name">—</span><span class="bracket-score">-</span></div>';
-    htmlCentro += '    <div class="bracket-team-row"><span class="bracket-team-name">—</span><span class="bracket-score">-</span></div>';
+    htmlCentro += '  <div class="bracket-team-row">';
+    htmlCentro += '    <div style="display:flex; align-items:center;"><span>—</span></div><span class="bracket-score">-</span>';
+    htmlCentro += '  </div>';
+    htmlCentro += '  <div class="bracket-team-row" style="margin-top:2px;">';
+    htmlCentro += '    <div style="display:flex; align-items:center;"><span>—</span></div><span class="bracket-score">-</span>';
     htmlCentro += '  </div>';
     htmlCentro += '</div>';
 
-    // Sección del Tercer Puesto con estructura exacta de clases nativas
+    // Sección del Tercer Puesto
     htmlCentro += '<div class="center-title-box" style="background:#ff5722; color:#fff; margin-top:15px;">🥉 ' + titles.r3 + '</div>';
     htmlCentro += '<div class="center-match-card-wrapper third-place">';
-    htmlCentro += '  <div class="bracket-match-box">';
-    htmlCentro += '    <div class="bracket-team-row"><span class="bracket-team-name">—</span><span class="bracket-score">-</span></div>';
-    htmlCentro += '    <div class="bracket-team-row"><span class="bracket-team-name">—</span><span class="bracket-score">-</span></div>';
+    htmlCentro += '  <div class="bracket-team-row">';
+    htmlCentro += '    <div style="display:flex; align-items:center;"><span>—</span></div><span class="bracket-score">-</span>';
+    htmlCentro += '  </div>';
+    htmlCentro += '  <div class="bracket-team-row" style="margin-top:2px;">';
+    htmlCentro += '    <div style="display:flex; align-items:center;"><span>—</span></div><span class="bracket-score">-</span>';
     htmlCentro += '  </div>';
     htmlCentro += '</div>';
 
