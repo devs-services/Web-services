@@ -712,10 +712,10 @@ body {
     font-size: 0.75rem !important;
     text-transform: uppercase !important;
     letter-spacing: 1px !important;
-    margin-top: 40px !important; /* Genera el colchón debajo del trofeo */
+    margin-top: 30px !important;
 }
 
-/* CAJA DE LA GRAN FINAL: Centrada y nivelada con las Semis */
+/* CAJA DE LA GRAN FINAL: Centrada y alineada con las Semis */
 .center-match-card-wrapper.final-box {
     background: #1f242c !important;
     border: 2px solid #ffc107 !important;
@@ -724,11 +724,11 @@ body {
     max-width: 180px !important;
     padding: 2px !important;
     position: relative !important;
-    height: 52px !important; /* Misma altura exacta que las tarjetas laterales */
-    margin-bottom: 90px !important; /* CLAVE: Empuja el Tercer Puesto hacia abajo y centra la Final con las Semis */
+    height: 52px !important; 
+    margin-bottom: 75px !important; /* Equilibrio de altura hacia las Semis */
 }
 
-/* CAJA DEL TERCER PUESTO: Separada de la acción principal */
+/* CAJA DEL TERCER PUESTO: Abajo y aislada de cables */
 .center-match-card-wrapper.third-place {
     background: #1f242c !important;
     border: 2px solid #ff5722 !important;
@@ -740,7 +740,7 @@ body {
     height: 52px !important;
 }
 
-/* Aseguramos que las tarjetas internas se acoplen perfectamente */
+/* Acople interno de tarjetas */
 .center-match-card-wrapper .bracket-match-box {
     border: none !important;
     background: transparent !important;
@@ -748,7 +748,7 @@ body {
     height: 100% !important;
 }
 
-/* BLINDAJE DE LÍNEAS EXCLUSIVAS DE LA FINAL */
+/* CONEXIONES HORIZONTALES EXCLUSIVAS DE LA GRAN FINAL */
 .center-match-card-wrapper.final-box::before,
 .center-match-card-wrapper.final-box::after {
     content: "" !important;
@@ -762,7 +762,7 @@ body {
 .center-match-card-wrapper.final-box::before { left: -25px !important; }
 .center-match-card-wrapper.final-box::after { right: -25px !important; }
 
-/* El Tercer Puesto no tiene conectores */
+/* El Tercer Puesto ignora cables */
 .center-match-card-wrapper.third-place::before,
 .center-match-card-wrapper.third-place::after {
     display: none !important;
