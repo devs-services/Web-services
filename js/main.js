@@ -7,7 +7,6 @@ let selectedTeamId = null;
 // 1. CARGA INICIAL DE DATOS
 // ==========================================================================
 document.addEventListener('DOMContentLoaded', () => {
-    // Leemos el archivo JSON que creamos en la carpeta data
     fetch('./data/mundial_data.json')
         .then(response => response.json())
         .then(data => {
@@ -36,10 +35,10 @@ function configurarIdiomas() {
         langSelect.addEventListener('change', (e) => {
             currentLanguage = e.target.value;
             traducirInterfaz(currentLanguage);
-            renderizarListaEquipos(); // Recargar nombres de países en su idioma
-            renderizarGrupos();       // Recargar nombres en los grupos
-            renderizarPartidos();     // Actualizar el formato de idioma de las fechas
-            renderizarBracket();      // Traduce el árbol eliminatorio
+            renderizarListaEquipos(); 
+            renderizarGrupos();       
+            renderizarPartidos();     
+            renderizarBracket();      
             
             if (selectedTeamId) {
                 actualizarPanelDetalle(selectedTeamId);
@@ -65,9 +64,8 @@ function traducirInterfaz(lang) {
 }
 
 // ==========================================================================
-// 3. SECCIÓN PARTIDOS (EN VIVO / PRÓXIMOS AUTOMATIZADOS POR HORA LOCAL)
+// 3. SECCIÓN PARTIDOS (EN VIVO / PRÓXIMOS DE 4 EN 4)
 // ==========================================================================
-// Contadores globales para controlar cuántos partidos mostrar (empiezan en 4)
 let visibleLiveCount = 4;
 let visibleUpcomingCount = 4;
 
@@ -77,11 +75,9 @@ function renderizarPartidos() {
     
     if (!liveContainer || !upcomingContainer) return;
     
-    // Limpiamos los contenedores de tarjetas
     liveContainer.innerHTML = '';
     upcomingContainer.innerHTML = '';
 
-    // Diccionario de traducciones para los botones dinámicos
     const toggleTexts = {
         es: { showMore: "Mostrar más 🔽" },
         en: { showMore: "Show more 🔽" },
@@ -91,7 +87,6 @@ function renderizarPartidos() {
     };
     const currentToggleText = toggleTexts[currentLanguage] || toggleTexts['es'];
 
-    // Listas para almacenar el HTML de cada tarjeta generada
     let partidosVivoHtml = [];
     let partidosProximosHtml = [];
 
@@ -145,20 +140,15 @@ function renderizarPartidos() {
         }
     });
 
-    // ==========================================
-    // SECCIÓN A: RENDERIZAR EN VIVO (DE 4 EN 4)
-    // ==========================================
     const totalVivo = partidosVivoHtml.length;
     const mostrarVivo = partidosVivoHtml.slice(0, visibleLiveCount);
     liveContainer.innerHTML = mostrarVivo.join('');
 
-    // Control del botón de "Mostrar más" para EN VIVO
     let existingLiveToggle = liveContainer.nextElementSibling;
     if (existingLiveToggle && existingLiveToggle.classList.contains('toggle-live-container')) {
         existingLiveToggle.remove();
     }
 
-    // El botón solo aparece si el total de partidos en vivo supera los que estamos mostrando actualmente
     if (totalVivo > visibleLiveCount) {
         const btnContainerLive = document.createElement('div');
         btnContainerLive.className = 'toggle-matches-container toggle-live-container';
@@ -166,19 +156,15 @@ function renderizarPartidos() {
         
         liveContainer.parentNode.insertBefore(btnContainerLive, liveContainer.nextSibling);
         btnContainerLive.querySelector('button').addEventListener('click', () => {
-            visibleLiveCount += 4; // Aumentamos 4 más a la cuenta
-            renderizarPartidos();  // Re-renderizamos de inmediato
+            visibleLiveCount += 4;
+            renderizarPartidos();
         });
     }
 
-    // ==========================================
-    // SECCIÓN B: RENDERIZAR PRÓXIMOS (DE 4 EN 4)
-    // ==========================================
     const totalProximos = partidosProximosHtml.length;
     const mostrarProximos = partidosProximosHtml.slice(0, visibleUpcomingCount);
     upcomingContainer.innerHTML = mostrarProximos.join('');
 
-    // Control del botón de "Mostrar más" para PRÓXIMOS
     let existingUpcomingToggle = upcomingContainer.nextElementSibling;
     if (existingUpcomingToggle && existingUpcomingToggle.classList.contains('toggle-upcoming-container')) {
         existingUpcomingToggle.remove();
@@ -191,8 +177,8 @@ function renderizarPartidos() {
         
         upcomingContainer.parentNode.insertBefore(btnContainerUpcoming, upcomingContainer.nextSibling);
         btnContainerUpcoming.querySelector('button').addEventListener('click', () => {
-            visibleUpcomingCount += 4; // Aumentamos 4 más a la cuenta
-            renderizarPartidos();      // Re-renderizamos de inmediato
+            visibleUpcomingCount += 4;
+            renderizarPartidos();
         });
     }
 }
@@ -221,7 +207,6 @@ function renderizarListaEquipos() {
         row.addEventListener('click', () => {
             document.querySelectorAll('.team-row-item').forEach(r => r.classList.remove('active'));
             row.classList.add('active');
-            
             selectedTeamId = id;
             actualizarPanelDetalle(id);
         });
@@ -231,7 +216,7 @@ function renderizarListaEquipos() {
 }
 
 // ==========================================================================
-// 5. DETALLE DEL EQUIPO (SQUAD CON 4 SILUETAS ASIGNADAS DINÁMICAMENTE)
+// 5. DETALLE DEL EQUIPO (SQUAD CON FILTRO DE SILUETAS)
 // ==========================================================================
 function actualizarPanelDetalle(id) {
     const emptyMsg = document.getElementById('panel-empty-msg');
@@ -273,7 +258,6 @@ function renderizarCanchaOLista(equipo) {
         pt: { gk: "Goleiros", df: "Defensores", md: "Meias", fw: "Atacantes" },
         de: { gk: "Torhüter", df: "Verteidiger", md: "Mittelfeld", fw: "Stürmer" }
     };
-
     const currentTitles = titulosPosiciones[currentLanguage] || titulosPosiciones['es'];
 
     gkContainer.innerHTML = `<div class="position-title"><span>🧤 ${currentTitles.gk}</span></div>`;
@@ -285,7 +269,7 @@ function renderizarCanchaOLista(equipo) {
 
     if (todosLosJugadores.length === 0) {
         stadiumPanel.style.display = 'block';
-        gkContainer.innerHTML = `<p style="color: var(--text-secondary); text-align:center; padding:20px;">No hay jugadores registrados para este equipo.</p>`;
+        gkContainer.innerHTML = `<p style="color: var(--text-secondary); text-align:center; padding:20px;">No hay jugadores registrados.</p>`;
         dfContainer.innerHTML = ''; mdContainer.innerHTML = ''; fwContainer.innerHTML = '';
         return;
     } else {
@@ -294,8 +278,6 @@ function renderizarCanchaOLista(equipo) {
 
     todosLosJugadores.forEach(jugador => {
         const pos = (jugador.posicion || '').toUpperCase();
-        
-        // Mapeo dinámico de las 4 siluetas personalizadas cuadradas de 240px
         let rutaSilueta = 'img/jugadores/silueta_fw.png';
         
         if (pos === 'GK' || pos === 'POR' || pos === 'ARQ') {
@@ -338,16 +320,11 @@ function renderizarCalendarioEquipo(equipo) {
 
     equipo.proximos_partidos.forEach(partido => {
         const rivalName = mundialData.equipos[partido.rival_id]?.nombres[currentLanguage] || partido.rival_id;
-        
-        // Conversión del calendario individual a huso horario local
         let horaFormateada = "";
         if (partido.fecha_utc) {
             const fechaLocal = new Date(partido.fecha_utc);
             horaFormateada = fechaLocal.toLocaleString(currentLanguage, {
-                month: 'long',
-                day: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit'
+                month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit'
             });
         }
 
@@ -361,13 +338,12 @@ function renderizarCalendarioEquipo(equipo) {
 }
 
 // ==========================================================================
-// 6. FASE DE GRUPOS - SISTEMA DE FILAS SIMÉTRICAS ADAPTATIVAS (4 EN 4)
+// 6. FASE DE GRUPOS - ACORDEÓN
 // ==========================================================================
 function renderizarGrupos() {
     const container = document.getElementById('groups-accordion-container');
     if (!container) return;
     container.innerHTML = '';
-
     container.style.display = 'block';
     container.style.width = '100%';
 
@@ -381,13 +357,9 @@ function renderizarGrupos() {
         const filaDiv = document.createElement('div');
         filaDiv.className = `group-row-block fila-${i}`;
         filaDiv.id = `bloque-fila-${i}`;
-        
         filaDiv.style.display = 'grid';
         filaDiv.style.gridTemplateColumns = 'repeat(auto-fill, minmax(280px, 1fr))';
-        filaDiv.style.gap = '20px';
-        filaDiv.style.marginBottom = '25px';
-        filaDiv.style.width = '100%';
-        
+        filaDiv.style.gap = '20px'; filaDiv.style.marginBottom = '25px'; filaDiv.style.width = '100%';
         container.appendChild(filaDiv);
     }
 
@@ -395,13 +367,10 @@ function renderizarGrupos() {
         const grupo = mundialData.grupos[grupoId];
         const numeroFila = mapaFilas[grupoId] || 1;
         const contenedorFila = document.getElementById(`bloque-fila-${numeroFila}`);
-        
         if (!contenedorFila) return;
 
         const card = document.createElement('div');
-        card.className = 'group-card';
-        card.style.width = '100%';
-        
+        card.className = 'group-card'; card.style.width = '100%';
         card.innerHTML = `
             <button class="group-header-btn" data-grupo="${grupoId}" data-fila="${numeroFila}">
                 <span>GRUPO ${grupoId}</span>
@@ -415,16 +384,13 @@ function renderizarGrupos() {
                         const flag = eqData?.bandera ? `<img src="${eqData.bandera}" class="flag-circle" style="width:18px; height:18px; margin-right:8px;" alt="">` : '';
                         return `
                             <div style="display: flex; align-items: center; padding: 6px 0; font-size: 0.95rem; border-bottom: 1px solid rgba(48,54,61,0.2);">
-                                ${flag} 
-                                <strong style="margin-right: 8px; color: var(--accent-neon); font-size: 0.85rem; width: 30px;">${eqId}</strong> 
-                                <span>${name}</span>
+                                ${flag} <strong style="margin-right: 8px; color: var(--accent-neon); font-size: 0.85rem; width: 30px;">${eqId}</strong> <span>${name}</span>
                             </div>
                         `;
                     }).join('')}
                 </div>
             </div>
         `;
-
         contenedorFila.appendChild(card);
     });
 
@@ -432,7 +398,6 @@ function renderizarGrupos() {
         btn.addEventListener('click', (e) => {
             e.preventDefault();
             const filaSeleccionada = btn.getAttribute('data-fila');
-            
             const primerGrupoDeFila = container.querySelector(`[data-fila="${filaSeleccionada}"]`);
             const idGrupo = primerGrupoDeFila.getAttribute('data-grupo');
             const estaAbiertaActualmente = !document.getElementById(`content-grupo-${idGrupo}`).classList.contains('hidden');
@@ -440,12 +405,8 @@ function renderizarGrupos() {
             Object.keys(mundialData.grupos).forEach(id => {
                 const content = document.getElementById(`content-grupo-${id}`);
                 if (content) content.classList.add('hidden');
-                
                 const botonIndividual = container.querySelector(`[data-grupo="${id}"]`);
-                if (botonIndividual) {
-                    const icon = botonIndividual.querySelector('i');
-                    if (icon) icon.className = 'fa-solid fa-chevron-down';
-                }
+                if (botonIndividual && botonIndividual.querySelector('i')) botonIndividual.querySelector('i').className = 'fa-solid fa-chevron-down';
             });
 
             if (!estaAbiertaActualmente) {
@@ -453,12 +414,8 @@ function renderizarGrupos() {
                     if (mapaFilas[id] == filaSeleccionada) {
                         const content = document.getElementById(`content-grupo-${id}`);
                         if (content) content.classList.remove('hidden');
-                        
                         const botonIndividual = container.querySelector(`[data-grupo="${id}"]`);
-                        if (botonIndividual) {
-                            const icon = botonIndividual.querySelector('i');
-                            if (icon) icon.className = 'fa-solid fa-chevron-up';
-                        }
+                        if (botonIndividual && botonIndividual.querySelector('i')) botonIndividual.querySelector('i').className = 'fa-solid fa-chevron-up';
                     }
                 });
             }
@@ -467,43 +424,28 @@ function renderizarGrupos() {
 }
 
 // ==========================================================================
-// 7. BOTÓN DE DONACIÓN CRYPTO & COPIADO RÁPIDO
+// 7. DONACIONES CRYPTO
 // ==========================================================================
 function configurarDonaciones() {
     const btnTrigger = document.getElementById('donation-btn');
     const modal = document.getElementById('donation-modal');
-
     if (!btnTrigger || !modal) return;
 
-    btnTrigger.addEventListener('click', (e) => {
-        e.stopPropagation();
-        modal.classList.toggle('hidden');
-    });
-
-    document.addEventListener('click', (e) => {
-        if (!document.getElementById('donation-box').contains(e.target)) {
-            modal.classList.add('hidden');
-        }
-    });
+    btnTrigger.addEventListener('click', (e) => { e.stopPropagation(); modal.classList.toggle('hidden'); });
+    document.addEventListener('click', (e) => { if (!document.getElementById('donation-box').contains(e.target)) modal.classList.add('hidden'); });
 
     document.querySelectorAll('.wallet-item').forEach(item => {
         const input = item.querySelector('input');
         const btnCopy = item.querySelector('.btn-copy');
-
         if (btnCopy && input) {
             btnCopy.addEventListener('click', () => {
-                input.select();
-                input.setSelectionRange(0, 99999);
+                input.select(); input.setSelectionRange(0, 99999);
                 navigator.clipboard.writeText(input.value).then(() => {
                     const originalText = btnCopy.innerHTML;
                     const translatedCopied = mundialData.ui_translations[currentLanguage].copied;
                     btnCopy.innerHTML = `<span style="font-size: 0.75rem; font-weight: bold;">${translatedCopied}</span>`;
                     btnCopy.style.background = 'var(--accent-neon)';
-                    
-                    setTimeout(() => {
-                        btnCopy.innerHTML = originalText;
-                        btnCopy.style.background = '';
-                    }, 2000);
+                    setTimeout(() => { btnCopy.innerHTML = originalText; btnCopy.style.background = ''; }, 2000);
                 });
             });
         }
@@ -511,7 +453,7 @@ function configurarDonaciones() {
 }
 
 // ==========================================================================
-// 8. MOTOR DEL BRACKET INMUNE: MODELADO POR DISTRIBUCIÓN VERTICAL FLEX FLUIDA
+// 8. MOTOR DEL BRACKET INMUNE (FLEXBOX PLANO)
 // ==========================================================================
 function renderizarBracket() {
     const leftWing = document.getElementById('bracket-left-wing');
@@ -520,9 +462,7 @@ function renderizarBracket() {
 
     if (!leftWing || !rightWing || !centerFinals || !mundialData || !mundialData.bracket) return;
 
-    leftWing.innerHTML = '';
-    rightWing.innerHTML = '';
-    centerFinals.innerHTML = '';
+    leftWing.innerHTML = ''; rightWing.innerHTML = ''; centerFinals.innerHTML = '';
 
     const roundTitles = {
         es: { r32: "16avos", r16: "8avos", r8: "4tos", r4: "Semis", r2: "FINAL", r3: "3ER PUESTO" },
@@ -574,9 +514,7 @@ function renderizarBracket() {
 
     function crearColumnaEjeRigido(titulo, claveRonda, dataRondaAttr, listaIndices) {
         const col = document.createElement('div');
-        col.className = 'bracket-column-fluid';
-        col.setAttribute('data-ronda', dataRondaAttr);
-        
+        col.className = 'bracket-column-fluid'; col.setAttribute('data-ronda', dataRondaAttr);
         let html = `<div class="round-title-fluid">${titulo}</div>`;
         listaIndices.forEach((globalIdx) => {
             html += `
@@ -585,12 +523,9 @@ function renderizarBracket() {
                 </div>
             `;
         });
-        
-        col.innerHTML = html;
-        return col;
+        col.innerHTML = html; return col;
     }
 
-    // Inyección de las columnas elásticas
     leftWing.appendChild(crearColumnaEjeRigido(titles.r32, 'dieciseisavos', 'r32', [0, 1, 2, 3, 4, 5, 6, 7]));
     leftWing.appendChild(crearColumnaEjeRigido(titles.r16, 'octavos', 'r16', [0, 1, 2, 3]));
     leftWing.appendChild(crearColumnaEjeRigido(titles.r8, 'cuartos', 'r8', [0, 1]));
@@ -601,7 +536,6 @@ function renderizarBracket() {
     rightWing.appendChild(crearColumnaEjeRigido(titles.r8, 'cuartos', 'r8', [2, 3]));
     rightWing.appendChild(crearColumnaEjeRigido(titles.r4, 'semis', 'semis', [1]));
 
-    // Bloque central con títulos incrustados como componentes adheridos al techo de las tarjetas
     let htmlCentro = `
         <div class="center-match-card-wrapper final-box" data-round="final" data-index="0">
             <div class="center-top-zone">
@@ -612,7 +546,6 @@ function renderizarBracket() {
                 ${generarHtmlLlaveEje('final', 0)}
             </div>
         </div>
-
         <div class="center-match-card-wrapper third-place" data-round="terceros" data-index="0">
             <div class="center-bottom-zone">
                 <div class="center-title-box" style="background:#ff5722 !important; color:#ffffff !important;">🥉 ${titles.r3}</div>
@@ -622,13 +555,9 @@ function renderizarBracket() {
             </div>
         </div>
     `;
-
     centerFinals.innerHTML = htmlCentro;
 
-    // Disparamos el renderizado inicial de líneas una vez cargado el DOM
-    requestAnimationFrame(() => {
-        setTimeout(dibujarLineasBracket, 200);
-    });
+    requestAnimationFrame(() => { setTimeout(dibujarLineasBracket, 200); });
 }
 
 // ==========================================================================
@@ -637,17 +566,12 @@ function renderizarBracket() {
 function dibujarLineasBracket() {
     const svg = document.getElementById('bracket-svg-canvas');
     if (!svg) return;
-    
     const container = document.querySelector('.bracket-scroll-container');
     if (!container) return;
 
     svg.style.zIndex = "2";
-
-    const anchoTotal = container.scrollWidth;
-    const altoTotal = container.scrollHeight;
-
-    svg.setAttribute('width', anchoTotal);
-    svg.setAttribute('height', altoTotal);
+    svg.setAttribute('width', container.scrollWidth);
+    svg.setAttribute('height', container.scrollHeight);
     svg.innerHTML = ''; 
 
     const colorLinea = getComputedStyle(document.documentElement).getPropertyValue('--accent-neon').trim() || '#00df89';
@@ -655,14 +579,11 @@ function dibujarLineasBracket() {
     function obtenerCoordenadas(ronda, index, borde) {
         const el = document.querySelector(`[data-round="${ronda}"][data-index="${index}"]`);
         if (!el) return null;
-        
         const containerRect = container.getBoundingClientRect();
         const rect = el.getBoundingClientRect();
-        
         const xLeft = (rect.left - containerRect.left) + container.scrollLeft;
         const xRight = (rect.right - containerRect.left) + container.scrollLeft;
         const yCenter = ((rect.top + rect.bottom) / 2 - containerRect.top) + container.scrollTop;
-        
         if (borde === 'left') return { x: xLeft, y: yCenter };
         if (borde === 'right') return { x: xRight, y: yCenter };
         return { x: (xLeft + xRight) / 2, y: yCenter };
@@ -670,12 +591,8 @@ function dibujarLineasBracket() {
 
     function crearPathSVG(d) {
         const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-        path.setAttribute('d', d);
-        path.setAttribute('stroke', colorLinea);
-        path.setAttribute('stroke-width', '3');
-        path.setAttribute('fill', 'none');
-        path.setAttribute('stroke-linecap', 'round');
-        path.setAttribute('stroke-linejoin', 'round');
+        path.setAttribute('d', d); path.setAttribute('stroke', colorLinea); path.setAttribute('stroke-width', '3');
+        path.setAttribute('fill', 'none'); path.setAttribute('stroke-linecap', 'round'); path.setAttribute('stroke-linejoin', 'round');
         svg.appendChild(path);
     }
 
@@ -699,37 +616,30 @@ function dibujarLineasBracket() {
         { desde: [2, 3], rondaDesde: 'cuartos', hacia: 1, rondaHacia: 'semis' }
     ];
 
-    // Cables del Ala Izquierda
     conexionesIzquierda.forEach(con => {
         const p1 = obtenerCoordenadas(con.rondaDesde, con.desde[0], 'right');
         const p2 = obtenerCoordenadas(con.rondaDesde, con.desde[1], 'right');
         const pDestino = obtenerCoordenadas(con.rondaHacia, con.hacia, 'left');
-
         if (p1 && p2 && pDestino) {
             const midX = (p1.x + pDestino.x) / 2;
             const d1 = `M ${p1.x} ${p1.y} L ${midX} ${p1.y} L ${midX} ${pDestino.y} L ${pDestino.x} ${pDestino.y}`;
             const d2 = `M ${p2.x} ${p2.y} L ${midX} ${p2.y} L ${midX} ${pDestino.y}`;
-            crearPathSVG(d1);
-            crearPathSVG(d2);
+            crearPathSVG(d1); crearPathSVG(d2);
         }
     });
 
-    // Cables del Ala Derecha
     conexionesDerecha.forEach(con => {
         const p1 = obtenerCoordenadas(con.rondaDesde, con.desde[0], 'left');
         const p2 = obtenerCoordenadas(con.rondaDesde, con.desde[1], 'left');
         const pDestino = obtenerCoordenadas(con.rondaHacia, con.hacia, 'right');
-
         if (p1 && p2 && pDestino) {
             const midX = (p1.x + pDestino.x) / 2;
             const d1 = `M ${p1.x} ${p1.y} L ${midX} ${p1.y} L ${midX} ${pDestino.y} L ${pDestino.x} ${pDestino.y}`;
             const d2 = `M ${p2.x} ${p2.y} L ${midX} ${p2.y} L ${midX} ${pDestino.y}`;
-            crearPathSVG(d1);
-            crearPathSVG(d2);
+            crearPathSVG(d1); crearPathSVG(d2);
         }
     });
 
-    // Conexiones de Semifinales directas a la Gran Final
     const pSemiIzq = obtenerCoordenadas('semis', 0, 'right');
     const pSemiDer = obtenerCoordenadas('semis', 1, 'left');
     const pFinalIzq = obtenerCoordenadas('final', 0, 'left');
@@ -748,7 +658,7 @@ function dibujarLineasBracket() {
 }
 
 // ==========================================================================
-// 10. PASO 3: OPTIMIZACIÓN DE RENDIMIENTO (DEBOUNCE PROTECTOR)
+// 10. OPTIMIZACIÓN DE RENDIMIENTO (DEBOUNCE PROTECTOR)
 // ==========================================================================
 function debounce(func, wait) {
     let timeout;
@@ -758,7 +668,6 @@ function debounce(func, wait) {
     };
 }
 
-// Escuchador inteligente que evita Layout Thrashing al redimensionar la ventana
 window.addEventListener('resize', debounce(() => {
     requestAnimationFrame(dibujarLineasBracket);
 }, 100));
