@@ -521,33 +521,33 @@ body {
 }
 
 /* ==========================================================================
-   BRACKET DE PRECISIÓN GEOMÉTRICA FINAL: VERSÍON SANEADA Y BLINDADA
+   BRACKET DE PRECISIÓN GEOMÉTRICA FINAL: ENLACE RIGIDO ANTIDEFORMACIONES
    ========================================================================== */
 
 .bracket-scroll-container {
     width: 100% !important;
-    overflow: hidden !important; /* Pantalla limpia sin scrollbars */
+    overflow-x: auto !important; /* Habilita scroll horizontal limpio si la pantalla es muy chica */
+    overflow-y: hidden !important;
     padding: 20px 0;
 }
 
 .bracket-mirror-layout {
     display: grid !important;
-    grid-template-columns: 1fr 200px 1fr !important; /* Mantenemos tus distancias de oro */
-    gap: 15px !important; /* Regresamos al gap de 15px que alineaba el ala derecha a la perfección */
-    width: 100% !important;
-    max-width: 1350px;
-    margin: 0 auto;
+    grid-template-columns: 520px 200px 520px !important; /* Anchos fijos exactos para bloquear movimientos */
+    gap: 20px !important;
+    width: 1260px !important; /* Suma matemática exacta de la estructura */
+    margin: 0 auto !important;
     align-items: center !important;
 }
 
 /* Las alas laterales actúan como el eje de suspensión horizontal */
 .bracket-side-wing {
     display: flex !important;
-    justify-content: space-between !important;
+    gap: 24px !important; /* Clave: Distancia fija idéntica a la longitud de tus cables */
     align-items: center !important;
-    width: 100% !important;
+    width: 520px !important;
     height: 640px !important;
-    padding-top: 35px !important; /* Mantiene tus títulos 100% visibles y enteros */
+    padding-top: 35px !important; 
 }
 
 /* Espejo físico del ala derecha */
@@ -587,16 +587,15 @@ body {
 .bracket-match-pair-block {
     display: flex !important;
     flex-direction: column !important;
-    justify-content: center !important; /* Junta los dos cuadros hacia el centro */
-    height: 100% !important;
+    justify-content: center !important; 
     position: relative !important;
     width: 100% !important; 
 }
 
-/* Distancias de oro verticales (Gaps) por ronda que calzan milimétricamente */
-.bracket-column-fluid[data-ronda="r32"] .bracket-match-pair-block { max-height: 140px !important; gap: 24px !important; }
-.bracket-column-fluid[data-ronda="r16"] .bracket-match-pair-block { max-height: 290px !important; gap: 110px !important; }
-.bracket-column-fluid[data-ronda="r8"] .bracket-match-pair-block { max-height: 540px !important; gap: 280px !important; }
+/* Alturas rígidas en lugar de max-height para centrar milimétricamente las líneas intermedias */
+.bracket-column-fluid[data-ronda="r32"] .bracket-match-pair-block { height: 140px !important; gap: 24px !important; }
+.bracket-column-fluid[data-ronda="r16"] .bracket-match-pair-block { height: 290px !important; gap: 110px !important; }
+.bracket-column-fluid[data-ronda="r8"] .bracket-match-pair-block { height: 540px !important; gap: 280px !important; }
 
 .bracket-single-block {
     display: flex !important;
@@ -624,10 +623,10 @@ body {
 }
 
 /* ==========================================================================
-   CABLEADO DE CODOS ARQUEADOS (GROSOR 3PX) - RESTAURADO
+   CABLEADO DE CODOS ARQUEADOS CENTRADOS
    ========================================================================== */
 
-/* El codo base vertical se posiciona y centra en el medio de la pareja */
+/* El codo base vertical se posiciona y centra en el medio exacto de la pareja */
 .bracket-match-pair-block::after {
     content: "" !important;
     position: absolute !important;
@@ -641,12 +640,12 @@ body {
     z-index: 1 !important;
 }
 
-/* Alturas físicas de codos por ronda que calzan de forma exacta */
+/* Alturas físicas de codos por ronda */
 .bracket-column-fluid[data-ronda="r32"] .bracket-match-pair-block::after { height: 78px !important; }
 .bracket-column-fluid[data-ronda="r16"] .bracket-match-pair-block::after { height: 164px !important; }
 .bracket-column-fluid[data-ronda="r8"] .bracket-match-pair-block::after { height: 334px !important; }
 
-/* Línea única extendida que viaja el canal intermedio */
+/* Línea única extendida que viaja el canal intermedio fijo de 24px */
 .bracket-match-pair-block::before {
     content: "" !important;
     position: absolute !important;
@@ -656,26 +655,22 @@ body {
     width: 12px !important; 
     border-top: 3px solid var(--accent-neon, #00f2fe) !important;
     z-index: 1 !important;
-    clip-path: inset(0 0 0 0) !important;
 }
 
-/* 🌟 CONEXIÓN EXCLUSIVA DESDE LA GRAN FINAL HACIA LAS SEMIFINALES */
+/* 🌟 CONEXIÓN DESDE LA GRAN FINAL HACIA LAS SEMIFINALES */
 .center-match-card-wrapper.final-box::before,
 .center-match-card-wrapper.final-box::after {
     content: "" !important;
     position: absolute !important;
     top: 50% !important;
     transform: translateY(-50%) !important;
-    width: 25px !important; /* Longitud fija que cubre la separación de Semis sin desajustes */
+    width: 20px !important; /* Cruza el gap exacto del grid */
     border-top: 3px solid var(--accent-neon, #00f2fe) !important;
     z-index: 1 !important;
 }
-/* Brazo izquierdo conecta Semis A */
-.center-match-card-wrapper.final-box::before { left: -25px !important; }
-/* Brazo derecho conecta Semis B */
-.center-match-card-wrapper.final-box::after { right: -25px !important; }
+.center-match-card-wrapper.final-box::before { left: -20px !important; }
+.center-match-card-wrapper.final-box::after { right: -20px !important; }
 
-/* Anulamos las líneas antiguas del bloque de Semis para que no compitan */
 .bracket-single-block::after { display: none !important; }
 
 /* Inversión geométrica de arcos para el ala derecha (Espejo Perfecto) */
@@ -692,16 +687,28 @@ body {
 }
 
 /* ==========================================================================
-   MÓDULO CENTRAL COMPACTO SEGURO
+   MÓDULO CENTRAL CON SIMETRÍA VERTICAL ABSOLUTA
    ========================================================================== */
 .bracket-center-core {
     display: flex !important;
     flex-direction: column !important;
     align-items: center !important;
-    justify-content: center !important;
-    gap: 10px !important;
-    height: 100% !important;
+    justify-content: space-between !important; /* Reparte arriba, centro y abajo equitativamente */
+    height: 640px !important; /* Mismo alto exacto que las alas laterales */
+    padding: 30px 0 !important;
 }
+
+/* Forzamos que las zonas superior e inferior midan exactamente lo mismo para centrar la Final en el pixel central */
+.center-top-zone, .center-bottom-zone {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 6px !important;
+    height: 110px !important; 
+    width: 100% !important;
+}
+.center-top-zone { justify-content: flex-end !important; }
+.center-bottom-zone { justify-content: flex-start !important; }
 
 .center-title-box {
     background: #ffc107 !important;
@@ -722,23 +729,16 @@ body {
     max-width: 180px !important;
     padding: 2px !important;
     position: relative !important;
+    flex-shrink: 0 !important;
 }
 .center-match-card-wrapper.third-place {
     border-color: #ff5722 !important;
 }
 
-/* 🛑 BLINDAJE EXTRA: El Tercer Puesto ignora por completo cualquier pseudo-elemento horizontal */
 .center-match-card-wrapper.third-place::before,
 .center-match-card-wrapper.third-place::after {
     display: none !important;
     content: none !important;
-}
-
-.center-match-card-wrapper .bracket-match-box {
-    border: none !important;
-    background: transparent !important;
-    box-shadow: none !important;
-    height: 50px !important;
 }
 
 .bracket-team-row {
