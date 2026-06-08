@@ -621,19 +621,53 @@ body {
 }
 
 /* ==========================================================================
-   MÓDULO CENTRAL COMPACTO AUTOCENTRADO
+   MÓDULO CENTRAL: CONFIGURACIÓN DE SIMETRÍA FLUIDA ABSOLUTA (50% EJE)
    ========================================================================== */
 .bracket-center-core {
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-    justify-content: center !important;
-    gap: 20px !important;
+    display: block !important;
+    position: relative !important;
     height: 620px !important;
     width: 100% !important;
 }
 
-.center-top-zone, .center-bottom-zone {
+/* Forzamos que la Gran Final se clave matemáticamente en el centro vertical perfecto */
+.center-match-card-wrapper.final-box {
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important; /* Centrado absoluto exacto */
+    width: 180px !important;
+    height: 54px !important;
+    z-index: 5 !important;
+    background: #1f242c !important;
+    border: 2px solid #ffc107 !important;
+    border-radius: 8px !important;
+    padding: 2px !important;
+    display: flex !important;
+    align-items: center !important;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.4) !important;
+}
+
+/* La copa y el título flotan de manera segura arriba de la final */
+.center-top-zone {
+    position: absolute !important;
+    bottom: calc(50% + 42px) !important; 
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 4px !important;
+    width: 100% !important;
+    white-space: nowrap !important;
+}
+
+/* El Tercer Puesto flota de manera segura abajo de la final sin empujarla */
+.center-bottom-zone {
+    position: absolute !important;
+    top: calc(50% + 42px) !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
     display: flex !important;
     flex-direction: column !important;
     align-items: center !important;
@@ -652,9 +686,9 @@ body {
     letter-spacing: 1px !important;
 }
 
-.center-match-card-wrapper {
+.center-match-card-wrapper.third-place {
     background: #1f242c !important;
-    border: 2px solid #ffc107 !important;
+    border: 2px solid #ff5722 !important;
     border-radius: 8px !important;
     width: 180px !important;
     height: 54px !important;
@@ -664,8 +698,11 @@ body {
     box-shadow: 0 4px 20px rgba(0,0,0,0.4) !important;
 }
 
-.center-match-card-wrapper.third-place {
-    border-color: #ff5722 !important;
+.center-match-card-wrapper .bracket-match-box {
+    border: none !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    height: 50px !important;
 }
 
 .bracket-team-row {
