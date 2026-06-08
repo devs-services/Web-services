@@ -748,6 +748,20 @@ function dibujarLineasBracket() {
     }
 }
 
-window.addEventListener('resize', () => {
+// ==========================================================================
+// 10. OPTIMIZACIÓN DE RENDIMIENTO (DEBOUNCE PROTECTOR)
+// ==========================================================================
+
+// Función auxiliar Debounce: evita que un evento pesado se ejecute demasiadas veces por segundo
+function debounce(func, wait) {
+    let timeout;
+    return function(...args) {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func.apply(this, args), wait);
+    };
+}
+
+// Escuchador dinámico inteligente: espera a que el usuario termine de mover la ventana antes de recalcular
+window.addEventListener('resize', debounce(() => {
     requestAnimationFrame(dibujarLineasBracket);
-});
+}, 100)); // Espera 100 milisegundos de calma antes de redibujar las líneas vectoriales
