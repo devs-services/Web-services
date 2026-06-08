@@ -622,10 +622,11 @@ function renderizarBracket() {
 
     // Sección de la Gran Final
     htmlCentro += '<div class="center-title-box">🏅 ' + titles.r2 + '</div>';
-    htmlCentro += '<div class="center-match-card-wrapper final-box">' + generarHtmlLlaveItem('final', 0) + '</div>';
+    htmlCentro += '<div class="center-match-card-wrapper final-box">' + generarHtmlLlaveInner('final', 0) + '</div>';
 
     // Sección del Tercer Puesto
     htmlCentro += '<div class="center-title-box" style="background:#ff5722; color:#fff; margin-top:15px;">🥉 ' + titles.r3 + '</div>';
-    htmlCentro += '<div class="center-match-card-wrapper third-place">' + generarHtmlLlaveItem('final', 1) + '</div>';
+    htmlCentro += '<div class="center-match-card-wrapper third-place">' + generarHtmlLlaveInner('final', 1) + '</div>';
 
     centerFinals.innerHTML = htmlCentro;
+}
