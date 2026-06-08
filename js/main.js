@@ -1,4 +1,4 @@
-// Variables globales de control de estado
+// Variables globales de control de estado de la plataforma
 let mundialData = null;
 let currentLanguage = 'es';
 let selectedTeamId = null;
@@ -6,12 +6,12 @@ let visibleLiveCount = 4;
 let visibleUpcomingCount = 4;
 
 // ==========================================================================
-// 1. CARGA INICIAL DE DATOS
+// 1. CARGA INICIAL DE DATOS (MUNDIAL JSON)
 // ==========================================================================
 document.addEventListener('DOMContentLoaded', () => {
     fetch('./data/mundial_data.json')
         .then(response => {
-            if (!response.ok) throw new Error("Error al cargar el archivo JSON");
+            if (!response.ok) throw new Error("Error al procesar la base de datos JSON");
             return response.json();
         })
         .then(data => {
@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
         .catch(error => {
             console.error('Error cargando los datos del Mundial:', error);
             if (window.location.protocol === 'file:') {
-                alert("⚠️ RESTRICCIÓN LOCAL (CORS):\n\nEstás abriendo la web directamente desde tus archivos locales (file://). Los navegadores bloquean las peticiones en este modo.\n\nUsa la extensión 'Live Server' de VS Code o súbelo a GitHub Pages para que los datos carguen de forma nativa.");
+                alert("⚠️ RESTRICCIÓN DE SEGURIDAD LOCAL (CORS):\n\nEstás abriendo la web directamente desde tus archivos locales (file://). Los navegadores bloquean las peticiones dinámicas en este modo.\n\nPor favor, usa la extensión 'Live Server' de VS Code o sube los cambios a GitHub Pages para que funcione perfectamente.");
             }
         });
 });
@@ -222,7 +222,7 @@ function renderizarListaEquipos() {
 }
 
 // ==========================================================================
-// 5. DETALLE DEL EQUIPO Y CONVOCADOS
+// 5. DETALLE DEL EQUIPO Y CONVOCADOS EN LA CANCHA
 // ==========================================================================
 function actualizarPanelDetalle(id) {
     const emptyMsg = document.getElementById('panel-empty-msg');
@@ -344,7 +344,7 @@ function renderizarCalendarioEquipo(equipo) {
 }
 
 // ==========================================================================
-// 6. FASE DE GRUPOS - ACORDEÓN
+// 6. FASE DE GRUPOS - ACORDEÓN COMPATIBLE
 // ==========================================================================
 function renderizarGrupos() {
     const container = document.getElementById('groups-accordion-container');
@@ -457,7 +457,7 @@ function configurarDonaciones() {
 }
 
 // ==========================================================================
-// 8. MOTOR DEL BRACKET INMUNE (FLEXBOX PLANO)
+// 8. MOTOR DEL BRACKET INMUNE VECTORIAL (FLEXBOX PLANO)
 // ==========================================================================
 function renderizarBracket() {
     const leftWing = document.getElementById('bracket-left-wing');
@@ -550,6 +550,7 @@ function renderizarBracket() {
                 ${generarHtmlLlaveEje('final', 0)}
             </div>
         </div>
+
         <div class="center-match-card-wrapper third-place" data-round="terceros" data-index="0">
             <div class="center-bottom-zone">
                 <div class="center-title-box" style="background:#ff5722 !important; color:#ffffff !important;">🥉 ${titles.r3}</div>
