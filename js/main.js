@@ -6,15 +6,12 @@ let visibleLiveCount = 4;
 let visibleUpcomingCount = 4;
 
 // ==========================================================================
-// 1. CARGA DE DATOS CON SISTEMA DE SEGURIDAD (CORS / LOCAL PATHS)
+// 1. CARGA INICIAL DE DATOS
 // ==========================================================================
 document.addEventListener('DOMContentLoaded', () => {
-    // Usamos una ruta relativa limpia compatible con servidores locales y GitHub Pages
-    fetch('data/mundial_data.json')
+    fetch('./data/mundial_data.json')
         .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
+            if (!response.ok) throw new Error("Error al cargar el archivo JSON");
             return response.json();
         })
         .then(data => {
@@ -23,25 +20,20 @@ document.addEventListener('DOMContentLoaded', () => {
         })
         .catch(error => {
             console.error('Error cargando los datos del Mundial:', error);
-            // Alerta amigable si el usuario ejecuta el archivo mediante doble clic local sin servidor
             if (window.location.protocol === 'file:') {
-                alert("⚠️ RESTRICCIÓN DE NAVIGACIÓN LOCAL (CORS):\n\nEstás abriendo la web directamente desde tus archivos locales (file://). Los navegadores bloquean la carga de datos dinámicos en este modo.\n\nPor favor, abre el proyecto usando un servidor local (como la extensión 'Live Server' de VS Code) o súbelo a GitHub Pages para verlo funcionar.");
+                alert("⚠️ RESTRICCIÓN LOCAL (CORS):\n\nEstás abriendo la web directamente desde tus archivos locales (file://). Los navegadores bloquean las peticiones en este modo.\n\nUsa la extensión 'Live Server' de VS Code o súbelo a GitHub Pages para que los datos carguen de forma nativa.");
             }
         });
 });
 
 function inicializarWeb() {
-    try {
-        configurarIdiomas();
-        configurarDonaciones();
-        renderizarPartidos();
-        renderizarListaEquipos();
-        renderizarGrupos();
-        renderizarBracket();
-        traducirInterfaz(currentLanguage);
-    } catch (e) {
-        console.error("Error crítico durante la inicialización de los componentes de la interfaz:", e);
-    }
+    configurarIdiomas();
+    configurarDonaciones();
+    renderizarPartidos();
+    renderizarListaEquipos();
+    renderizarGrupos();
+    renderizarBracket();
+    traducirInterfaz(currentLanguage);
 }
 
 // ==========================================================================
@@ -84,7 +76,7 @@ function traducirInterfaz(lang) {
 }
 
 // ==========================================================================
-// 3. SECCIÓN PARTIDOS (EN VIVO / PRÓXIMOS DE 4 EN 4)
+// 3. SECCIÓN PARTIDOS (EN VIVO / PRÓXIMOS AUTOMATIZADOS)
 // ==========================================================================
 function renderizarPartidos() {
     const liveContainer = document.getElementById('live-matches-container');
@@ -436,7 +428,7 @@ function renderizarGrupos() {
 }
 
 // ==========================================================================
-// 7. CONFIGURACIÓN DEL BOTÓN DE DONACIONES CRYPTO
+// 7. DONACIONES CRYPTO
 // ==========================================================================
 function configurarDonaciones() {
     const btnTrigger = document.getElementById('donation-btn');
@@ -465,7 +457,7 @@ function configurarDonaciones() {
 }
 
 // ==========================================================================
-// 8. MOTOR DEL BRACKET INMUNE VECTORIAL (FLEXBOX PLANO)
+// 8. MOTOR DEL BRACKET INMUNE (FLEXBOX PLANO)
 // ==========================================================================
 function renderizarBracket() {
     const leftWing = document.getElementById('bracket-left-wing');
@@ -558,7 +550,6 @@ function renderizarBracket() {
                 ${generarHtmlLlaveEje('final', 0)}
             </div>
         </div>
-
         <div class="center-match-card-wrapper third-place" data-round="terceros" data-index="0">
             <div class="center-bottom-zone">
                 <div class="center-title-box" style="background:#ff5722 !important; color:#ffffff !important;">🥉 ${titles.r3}</div>
@@ -671,7 +662,7 @@ function dibujarLineasBracket() {
 }
 
 // ==========================================================================
-// 10. DEBOUNCE PROTECTOR DE RENDIMIENTO (WINDOW RESIZE)
+// 10. OPTIMIZACIÓN DE RENDIMIENTO (DEBOUNCE PROTECTOR)
 // ==========================================================================
 function debounce(func, wait) {
     let timeout;
