@@ -533,17 +533,12 @@ function renderizarBracket() {
     };
     const titles = roundTitles[currentLanguage] || roundTitles['es'];
 
-    // Función interna adaptada para leer tanto Arrays (rondas de llaves) como Objetos directos (final / terceros)
     function generarHtmlLlaveEje(claveRonda, indiceLlave) {
         let rondaData = mundialData.bracket[claveRonda];
         let partido = null;
         
         if (rondaData) {
-            if (Array.isArray(rondaData)) {
-                partido = rondaData[indiceLlave] || null;
-            } else {
-                partido = rondaData; // Caso de 'final' o 'terceros' que son objetos directos
-            }
+            partido = Array.isArray(rondaData) ? rondaData[indiceLlave] : rondaData;
         }
 
         let eq1Name = "&nbsp;", eq2Name = "&nbsp;", eq1Flag = "", eq2Flag = "";
@@ -578,7 +573,6 @@ function renderizarBracket() {
         `;
     }
 
-    // Reconstrucción del generador de columnas inyectando el contenedor de codos de conexión CSS
     function crearColumnaEjeRigido(titulo, claveRonda, dataRondaAttr, listaIndices, clasePosicionPrefijo) {
         const col = document.createElement('div');
         col.className = 'bracket-column-fluid';
@@ -586,36 +580,24 @@ function renderizarBracket() {
         
         let html = `<div class="round-title-fluid">${titulo}</div>`;
         
-        // Si la ronda requiere cables de conexión (16avos, 8avos, 4tos), los agrupamos de 2 en 2
         if (dataRondaAttr === 'r32' || dataRondaAttr === 'r16' || dataRondaAttr === 'r8') {
             for (let i = 0; i < listaIndices.length; i += 2) {
                 html += `<div class="bracket-match-pair-block">`;
-                
-                const idx1 = listaIndices[i];
-                const claseCoordenada1 = `${clasePosicionPrefijo}-${i + 1}`;
                 html += `
-                    <div class="bracket-match-box ${claseCoordenada1}">
-                        ${generarHtmlLlaveEje(claveRonda, idx1)}
+                    <div class="bracket-match-box ${clasePosicionPrefijo}-${i + 1}">
+                        ${generarHtmlLlaveEje(claveRonda, listaIndices[i])}
+                    </div>
+                    <div class="bracket-match-box ${clasePosicionPrefijo}-${i + 2}">
+                        ${generarHtmlLlaveEje(claveRonda, listaIndices[i + 1])}
                     </div>
                 `;
-                
-                const idx2 = listaIndices[i + 1];
-                const claseCoordenada2 = `${clasePosicionPrefijo}-${i + 2}`;
-                html += `
-                    <div class="bracket-match-box ${claseCoordenada2}">
-                        ${generarHtmlLlaveEje(claveRonda, idx2)}
-                    </div>
-                `;
-                
                 html += `</div>`;
             }
         } else {
-            // Para las Semifinales (no se agrupan en pares con codos salientes)
             listaIndices.forEach((idx, num) => {
-                const claseCoordenada = `${clasePosicionPrefijo}-${num + 1}`;
                 html += `
                     <div class="bracket-single-block">
-                        <div class="bracket-match-box ${claseCoordenada}">
+                        <div class="bracket-match-box ${clasePosicionPrefijo}-${num + 1}">
                             ${generarHtmlLlaveEje(claveRonda, idx)}
                         </div>
                     </div>
@@ -627,19 +609,18 @@ function renderizarBracket() {
         return col;
     }
 
-    // ENSAMBLADO GEOMÉTRICO ALA IZQUIERDA
+    // INYECCIÓN DE COLUMNAS
     leftWing.appendChild(crearColumnaEjeRigido(titles.r32, 'dieciseisavos', 'r32', [0, 1, 2, 3, 4, 5, 6, 7], 'pos-r32'));
     leftWing.appendChild(crearColumnaEjeRigido(titles.r16, 'octavos', 'r16', [0, 1, 2, 3], 'pos-r16'));
     leftWing.appendChild(crearColumnaEjeRigido(titles.r8, 'cuartos', 'r8', [0, 1], 'pos-r8'));
     leftWing.appendChild(crearColumnaEjeRigido(titles.r4, 'semis', 'semi', [0], 'pos-semi'));
 
-    // ENSAMBLADO GEOMÉTRICO ALA DERECHA
     rightWing.appendChild(crearColumnaEjeRigido(titles.r32, 'dieciseisavos', 'r32', [8, 9, 10, 11, 12, 13, 14, 15], 'pos-r32'));
     rightWing.appendChild(crearColumnaEjeRigido(titles.r16, 'octavos', 'r16', [4, 5, 6, 7], 'pos-r16'));
     rightWing.appendChild(crearColumnaEjeRigido(titles.r8, 'cuartos', 'r8', [2, 3], 'pos-r8'));
     rightWing.appendChild(crearColumnaEjeRigido(titles.r4, 'semis', 'semi', [1], 'pos-semi'));
 
-    // CONSTRUCCIÓN DEL NÚCLEO CENTRAL CON COORDENADAS REALES AJUSTADAS
+    // COORDENADAS DEL NÚCLEO CENTRAL
     let htmlCentro = `
         <div class="center-top-zone">
             <div style="font-size: 2.1rem; filter: drop-shadow(0 2px 6px rgba(0,0,0,0.5));">🏆</div>
