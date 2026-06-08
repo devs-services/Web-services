@@ -34,6 +34,17 @@ function inicializarWeb() {
     renderizarGrupos();
     renderizarBracket();
     traducirInterfaz(currentLanguage);
+
+    // NUEVO: Observador estructural que garantiza que las conexiones sigan a las cajas
+    const bracketContainer = document.querySelector('.bracket-scroll-container');
+    if (bracketContainer) {
+        const observer = new ResizeObserver(() => {
+            requestAnimationFrame(dibujarLineasBracket);
+        });
+        observer.observe(bracketContainer);
+
+        window.addEventListener('load', dibujarLineasBracket);
+    }
 }
 
 // ==========================================================================
