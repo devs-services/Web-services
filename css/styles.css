@@ -521,7 +521,7 @@ body {
 }
 
 /* ==========================================================================
-   BRACKET DE PRECISIÓN GEOMÉTRICA: MOTOR INMUNE VECTORIAL (FLUIDO 100%)
+   BRACKET DE PRECISIÓN GEOMÉTRICA: MOTOR INMUNE CON REJILLA DE REY (32-ROWS)
    ========================================================================== */
 
 .bracket-scroll-container {
@@ -538,44 +538,43 @@ body {
     width: 100% !important;
     height: 100% !important;
     pointer-events: none !important;
-    z-index: 1 !important;
+    z-index: 3 !important; /* Capa intermedia: pasa sobre las columnas, bajo el texto */
 }
 
 .bracket-mirror-layout {
     display: grid !important;
-    grid-template-columns: 1fr 220px 1fr !important; /* Distribución elástica pura */
-    gap: 25px !important; /* CALCE PERFECTO: Mismo gap que el wrapper de partidos inferior */
-    width: 100% !important; /* Se expande al 100% para respetar los márgenes laterales */
+    grid-template-columns: 1fr 220px 1fr !important; /* Distribución simétrica */
+    gap: 25px !important; /* CALCE PERFECTO: Iguala los márgenes con las cajas inferiores */
+    width: 100% !important;
     margin: 0 auto !important;
     align-items: center !important;
     position: relative !important;
-    z-index: 2 !important;
+    z-index: 4 !important;
 }
 
-/* Las alas laterales son flexibles y ocupan de manera fluida el espacio del grid */
 .bracket-side-wing {
-    display: flex !important;
-    justify-content: space-between !important; /* Separa las columnas proporcionalmente */
-    align-items: center !important;
+    display: grid !important;
+    grid-template-columns: repeat(4, 1fr) !important; /* Cuatro columnas limpias por ala */
+    gap: 20px !important;
     width: 100% !important;
-    height: 620px !important;
+    height: 640px !important; /* Altura de referencia rígida para el canvas */
 }
 
 .bracket-side-wing.right-wing {
-    flex-direction: row-reverse !important; /* Efecto espejo impecable */
+    direction: rtl !important; /* Invierte el orden de las columnas en el ala derecha */
 }
 
-/* Flexbox se encarga de la distribución vertical simétrica de forma automática */
+/* 🌟 CADA COLUMNA CONTIENE UNA REJILLA MATEMÁTICA DE 32 DIVISIONES */
 .bracket-column-fluid {
-    display: flex !important;
-    flex-direction: column !important;
-    justify-content: space-around !important; 
+    display: grid !important;
+    grid-template-rows: repeat(32, 1fr) !important;
     height: 100% !important;
-    width: 115px !important;
+    width: 100% !important;
     position: relative !important;
+    direction: ltr !important; /* Restaura la dirección del texto interna */
 }
 
-/* Títulos superiores de ronda adaptados al motor dinámico */
+/* Títulos superiores de ronda alineados al inicio */
 .round-title-fluid {
     position: absolute !important;
     top: -30px !important;        
@@ -589,23 +588,7 @@ body {
     white-space: nowrap !important;
 }
 
-.bracket-match-pair-block {
-    display: flex !important;
-    flex-direction: column !important;
-    gap: 16px !important; /* Separación interna fija entre tarjetas de la misma pareja */
-    justify-content: center !important;
-    align-items: center !important;
-    width: 100% !important;
-}
-
-.bracket-single-block {
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    width: 100% !important;
-}
-
-/* Dimensiones base de las tarjetas del árbol */
+/* Las cajas ya no necesitan contenedores hermanos; se posicionan solas en la celda */
 .bracket-match-box {
     background: #15171b !important;
     border: 1px solid #30363d !important;
@@ -617,62 +600,47 @@ body {
     box-shadow: 0 4px 15px rgba(0,0,0,0.6) !important;
     height: 52px !important;
     width: 100% !important;
-    position: relative !important;
+    align-self: center !important; /* Centrado vertical estricto dentro de su fila asignada */
 }
 
 /* ==========================================================================
-   MÓDULO CENTRAL: CONFIGURACIÓN DE SIMETRÍA FLUIDA ABSOLUTA (50% EJE)
+   MÓDULO CENTRAL CON REJILLA DE INTERCONEXIÓN HORIZONTAL
    ========================================================================== */
 .bracket-center-core {
-    display: block !important;
+    display: grid !important;
+    grid-template-rows: repeat(32, 1fr) !important;
+    height: 100% !important;
+    width: 100% !important;
     position: relative !important;
-    height: 620px !important;
-    width: 100% !important;
 }
 
-/* Forzamos que la Gran Final se clave matemáticamente en el centro vertical perfecto */
 .center-match-card-wrapper.final-box {
-    position: absolute !important;
-    top: 50% !important;
-    left: 50% !important;
-    transform: translate(-50%, -50%) !important; /* Centrado absoluto exacto */
-    width: 180px !important;
-    height: 54px !important;
-    z-index: 5 !important;
-    background: #1f242c !important;
-    border: 2px solid #ffc107 !important;
-    border-radius: 8px !important;
-    padding: 2px !important;
-    display: flex !important;
-    align-items: center !important;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.4) !important;
+    grid-row: 16 !important; /* Clavada en la fila 16: línea recta perfecta con las Semis */
+    align-self: center !important;
+    margin: 0 auto !important;
 }
 
-/* La copa y el título flotan de manera segura arriba de la final */
 .center-top-zone {
-    position: absolute !important;
-    bottom: calc(50% + 42px) !important; 
-    left: 50% !important;
-    transform: translateX(-50%) !important;
+    grid-row: 9 / 15 !important; /* Flota de manera segura arriba de la final */
     display: flex !important;
     flex-direction: column !important;
     align-items: center !important;
+    justify-content: flex-end !important;
     gap: 4px !important;
-    width: 100% !important;
-    white-space: nowrap !important;
 }
 
-/* El Tercer Puesto flota de manera segura abajo de la final sin empujarla */
 .center-bottom-zone {
-    position: absolute !important;
-    top: calc(50% + 42px) !important;
-    left: 50% !important;
-    transform: translateX(-50%) !important;
+    grid-row: 20 / 22 !important; /* Título del 3er puesto */
     display: flex !important;
     flex-direction: column !important;
     align-items: center !important;
-    gap: 6px !important;
-    width: 100% !important;
+    justify-content: center !important;
+}
+
+.center-match-card-wrapper.third-place {
+    grid-row: 24 !important; /* Caja del 3er puesto centrada más abajo */
+    align-self: center !important;
+    margin: 0 auto !important;
 }
 
 .center-title-box {
@@ -686,9 +654,9 @@ body {
     letter-spacing: 1px !important;
 }
 
-.center-match-card-wrapper.third-place {
+.center-match-card-wrapper {
     background: #1f242c !important;
-    border: 2px solid #ff5722 !important;
+    border: 2px solid #ffc107 !important;
     border-radius: 8px !important;
     width: 180px !important;
     height: 54px !important;
@@ -696,6 +664,10 @@ body {
     display: flex !important;
     align-items: center !important;
     box-shadow: 0 4px 20px rgba(0,0,0,0.4) !important;
+}
+
+.center-match-card-wrapper.third-place {
+    border-color: #ff5722 !important;
 }
 
 .center-match-card-wrapper .bracket-match-box {
