@@ -565,16 +565,24 @@ body {
 }
 
 /* Títulos superiores de ronda */
+.bracket-side-wing {
+    padding-top: 35px !important; /* Genera el espacio físico para que quepan los textos enteros */
+    height: 675px !important;     /* Compensamos la altura total para mantener la simetría exacta */
+}
+
+/* Reajuste de posición para las cabeceras (Más abajo y 100% visibles) */
 .round-title-fluid {
     position: absolute !important;
-    top: -25px !important;
+    top: -12px !important;        /* CAMBIO: Bajamos el texto (antes estaba en -25px) para alejarlo del corte */
     width: 100% !important;
     text-align: center !important;
-    font-size: 0.75rem !important;
+    font-size: 0.78rem !important;
     font-weight: 800 !important;
     text-transform: uppercase !important;
-    color: var(--accent-neon, #00f2fe) !important;
+    color: var(--accent-neon, #00f2fe) !important; /* Mantenemos tu color verde neón original */
     letter-spacing: 1px !important;
+    line-height: 1.2 !important;  /* Forzamos que el alto de línea no corte las letras */
+    white-space: nowrap !important;
 }
 
 /* ==========================================================================
