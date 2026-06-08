@@ -639,29 +639,25 @@ function renderizarBracket() {
     rightWing.appendChild(crearColumnaEjeRigido(titles.r8, 'cuartos', 'r8', [2, 3], 'pos-r8'));
     rightWing.appendChild(crearColumnaEjeRigido(titles.r4, 'semis', 'semi', [1], 'pos-semi'));
 
-    // CONSTRUCCIÓN DEL NÚCLEO CENTRAL (FINAL Y 3ER PUESTO RESTAURADO)
+    // CONSTRUCCIÓN DEL NÚCLEO CENTRAL CON SIMETRÍA VERTICAL CONTROLADA
     let htmlCentro = `
-        <div style="text-align:center; margin-bottom:5px; margin-top:10px;">
-            <span style="font-size:2.5rem;">🏆</span>
+        <div class="center-top-zone">
+            <div style="font-size: 2.3rem; margin-bottom: 2px; filter: drop-shadow(0 2px 8px rgba(0,0,0,0.5));">🏆</div>
+            <div class="center-title-box">🏅 ${titles.r2}</div>
         </div>
-    `;
 
-    // Renderizar la Final
-    htmlCentro += `<div class="center-title-box">🏅 ${titles.r2}</div>`;
-    htmlCentro += `
-        <div class="center-match-card-wrapper final-box" style="height:54px; display:flex; align-items:center; margin-bottom:20px;">
-            <div class="bracket-match-box" style="width:100%; border:none; background:transparent; box-shadow:none;">
+        <div class="center-match-card-wrapper final-box" style="height:54px; display:flex; align-items:center;">
+            <div class="bracket-match-box" style="width:100%; border:none; background:transparent; box-shadow:none; padding:0 !important;">
                 ${generarHtmlLlaveEje('final', 0)}
             </div>
         </div>
-    `;
 
-    // Renderizar el Tercer Puesto
-    htmlCentro += `<div class="center-title-box" style="background:#ff5722 !important; color:#ffffff !important;">🥉 ${titles.r3}</div>`;
-    htmlCentro += `
-        <div class="center-match-card-wrapper third-place" style="height:54px; display:flex; align-items:center;">
-            <div class="bracket-match-box" style="width:100%; border:none; background:transparent; box-shadow:none;">
-                ${generarHtmlLlaveEje('terceros', 0)}
+        <div class="center-bottom-zone">
+            <div class="center-title-box" style="background:#ff5722 !important; color:#ffffff !important;">🥉 ${titles.r3}</div>
+            <div class="center-match-card-wrapper third-place" style="height:54px; display:flex; align-items:center;">
+                <div class="bracket-match-box" style="width:100%; border:none; background:transparent; box-shadow:none; padding:0 !important;">
+                    ${generarHtmlLlaveEje('terceros', 0)}
+                </div>
             </div>
         </div>
     `;
