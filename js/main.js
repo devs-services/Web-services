@@ -650,7 +650,25 @@ function renderizarBracket() {
 }
 
 // ==========================================================================
-// 9. LIENZO VECTORIAL INTERACTIVO PARA CABLEADO DE PRECISIÓN ABSOLUTA
+// 1. MODIFICACIÓN DEL CARGADOR DE INICIALIZACIÓN SEGURO
+// ==========================================================================
+function inicializarWeb() {
+    configurarIdiomas();
+    configurarDonaciones();
+    renderizarPartidos();
+    renderizarListaEquipos();
+    renderizarGrupos();
+    renderizarBracket();
+    traducirInterfaz(currentLanguage);
+    
+    // Forzamos al navegador a esperar que termine de calcular el árbol antes de pintar las líneas
+    requestAnimationFrame(() => {
+        setTimeout(dibujarLineasBracket, 150);
+    });
+}
+
+// ==========================================================================
+// 9. LIENZO VECTORIAL INTERACTIVO CON AMPLIACIÓN POR ESCALA DE LIENZO (INMUNE)
 // ==========================================================================
 function dibujarLineasBracket() {
     const svg = document.getElementById('bracket-svg-canvas');
@@ -659,13 +677,20 @@ function dibujarLineasBracket() {
     const container = document.querySelector('.bracket-scroll-container');
     if (!container) return;
 
-    // Sincronizar el tamaño nativo del lienzo SVG al contenedor padre
-    svg.setAttribute('width', container.clientWidth);
-    svg.setAttribute('height', container.clientHeight);
-    svg.innerHTML = ''; // Limpiamos cables obsoletos
+    // Subimos el z-index del lienzo para que las líneas pasen sobre las columnas pero bajo los cuadros
+    svg.style.zIndex = "3";
+
+    // Usamos el tamaño total real del scroll para evitar cortes
+    const anchoTotal = container.scrollWidth;
+    const altoTotal = container.scrollHeight;
+
+    svg.setAttribute('width', anchoTotal);
+    svg.setAttribute('height', altoTotal);
+    svg.innerHTML = ''; // Limpieza de cables antiguos
 
     const colorLinea = getComputedStyle(document.documentElement).getPropertyValue('--accent-neon').trim() || '#00df89';
 
+    // Función matemática de mapeo absoluto con inyección de Scroll Offsets
     function obtenerCoordenadas(ronda, index, borde) {
         const el = document.querySelector(`[data-round="${ronda}"][data-index="${index}"]`);
         if (!el) return null;
@@ -673,9 +698,10 @@ function dibujarLineasBracket() {
         const containerRect = container.getBoundingClientRect();
         const rect = el.getBoundingClientRect();
         
-        const xLeft = rect.left - containerRect.left;
-        const xRight = rect.right - containerRect.left;
-        const yCenter = (rect.top + rect.bottom) / 2 - containerRect.top;
+        // Sumamos el scroll interno para blindar la posición real de las cajas
+        const xLeft = (rect.left - containerRect.left) + container.scrollLeft;
+        const xRight = (rect.right - containerRect.left) + container.scrollLeft;
+        const yCenter = ((rect.top + rect.bottom) / 2 - containerRect.top) + container.scrollTop;
         
         if (borde === 'left') return { x: xLeft, y: yCenter };
         if (borde === 'right') return { x: xRight, y: yCenter };
@@ -693,7 +719,6 @@ function dibujarLineasBracket() {
         svg.appendChild(path);
     }
 
-    // Listas lógicas de conexión del torneo
     const conexionesIzquierda = [
         { desde: [0, 1], rondaDesde: 'dieciseisavos', hacia: 0, rondaHacia: 'octavos' },
         { desde: [2, 3], rondaDesde: 'dieciseisavos', hacia: 1, rondaHacia: 'octavos' },
@@ -714,7 +739,7 @@ function dibujarLineasBracket() {
         { desde: [2, 3], rondaDesde: 'cuartos', hacia: 1, rondaHacia: 'semis' }
     ];
 
-    // 1. Ala Izquierda (Codos orientados a la derecha)
+    // Ala Izquierda
     conexionesIzquierda.forEach(con => {
         const p1 = obtenerCoordenadas(con.rondaDesde, con.desde[0], 'right');
         const p2 = obtenerCoordenadas(con.rondaDesde, con.desde[1], 'right');
@@ -729,7 +754,7 @@ function dibujarLineasBracket() {
         }
     });
 
-    // 2. Ala Derecha (Codos orientados a la izquierda)
+    // Ala Derecha
     conexionesDerecha.forEach(con => {
         const p1 = obtenerCoordenadas(con.rondaDesde, con.desde[0], 'left');
         const p2 = obtenerCoordenadas(con.rondaDesde, con.desde[1], 'left');
@@ -744,7 +769,7 @@ function dibujarLineasBracket() {
         }
     });
 
-    // 3. Conexiones centrales hacia la Final
+    // Conexiones de Semifinales al Bloque Central de la Final (Alineación recta horizontal absoluta)
     const pSemiIzq = obtenerCoordenadas('semis', 0, 'right');
     const pSemiDer = obtenerCoordenadas('semis', 1, 'left');
     const pFinalIzq = obtenerCoordenadas('final', 0, 'left');
@@ -762,5 +787,7 @@ function dibujarLineasBracket() {
     }
 }
 
-// Escuchador global de redimensión para recalcular cables al vuelo sin deformar
-window.addEventListener('resize', dibujarLineasBracket);
+// Escuchador dinámico de redimensión
+window.addEventListener('resize', () => {
+    requestAnimationFrame(dibujarLineasBracket);
+});
