@@ -692,15 +692,15 @@ body {
 }
 
 /* ==========================================================================
-   MÓDULO CENTRAL COMPACTO SEGURO
+   MÓDULO CENTRAL COMPACTO SEGURO Y ALINEADO CON SEMIFINALES
    ========================================================================== */
 .bracket-center-core {
     display: flex !important;
     flex-direction: column !important;
     align-items: center !important;
     justify-content: center !important;
-    gap: 10px !important;
     height: 100% !important;
+    position: relative !important;
 }
 
 .center-title-box {
@@ -712,9 +712,11 @@ body {
     font-size: 0.75rem !important;
     text-transform: uppercase !important;
     letter-spacing: 1px !important;
+    margin-top: 40px !important; /* Genera el colchón debajo del trofeo */
 }
 
-.center-match-card-wrapper {
+/* CAJA DE LA GRAN FINAL: Centrada y nivelada con las Semis */
+.center-match-card-wrapper.final-box {
     background: #1f242c !important;
     border: 2px solid #ffc107 !important;
     border-radius: 8px !important;
@@ -722,43 +724,47 @@ body {
     max-width: 180px !important;
     padding: 2px !important;
     position: relative !important;
+    height: 52px !important; /* Misma altura exacta que las tarjetas laterales */
+    margin-bottom: 90px !important; /* CLAVE: Empuja el Tercer Puesto hacia abajo y centra la Final con las Semis */
 }
+
+/* CAJA DEL TERCER PUESTO: Separada de la acción principal */
 .center-match-card-wrapper.third-place {
-    border-color: #ff5722 !important;
+    background: #1f242c !important;
+    border: 2px solid #ff5722 !important;
+    border-radius: 8px !important;
+    width: 100% !important;
+    max-width: 180px !important;
+    padding: 2px !important;
+    position: relative !important;
+    height: 52px !important;
 }
 
-/* 🛑 BLINDAJE EXTRA: El Tercer Puesto ignora por completo cualquier pseudo-elemento horizontal */
-.center-match-card-wrapper.third-place::before,
-.center-match-card-wrapper.third-place::after {
-    display: none !important;
-    content: none !important;
-}
-
+/* Aseguramos que las tarjetas internas se acoplen perfectamente */
 .center-match-card-wrapper .bracket-match-box {
     border: none !important;
     background: transparent !important;
     box-shadow: none !important;
-    height: 50px !important;
+    height: 100% !important;
 }
 
-.bracket-team-row {
-    display: flex !important;
-    align-items: center !important;
-    justify-content: space-between !important;
-    padding: 2px 4px !important;
-    font-size: 0.8rem !important;
-    height: 20px !important;
-    color: #ffffff;
+/* BLINDAJE DE LÍNEAS EXCLUSIVAS DE LA FINAL */
+.center-match-card-wrapper.final-box::before,
+.center-match-card-wrapper.final-box::after {
+    content: "" !important;
+    position: absolute !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    width: 25px !important;
+    border-top: 3px solid var(--accent-neon, #00f2fe) !important;
+    z-index: 1 !important;
 }
-.bracket-team-empty {
-    height: 20px !important;
-    width: 100% !important;
-}
-.bracket-score {
-    font-weight: bold !important;
-    color: var(--accent-neon, #00f2fe) !important;
-    background: #0d1117 !important;
-    padding: 1px 5px !important;
-    border-radius: 4px;
-    font-size: 0.75rem;
+.center-match-card-wrapper.final-box::before { left: -25px !important; }
+.center-match-card-wrapper.final-box::after { right: -25px !important; }
+
+/* El Tercer Puesto no tiene conectores */
+.center-match-card-wrapper.third-place::before,
+.center-match-card-wrapper.third-place::after {
+    display: none !important;
+    content: none !important;
 }
