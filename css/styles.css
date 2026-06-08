@@ -702,7 +702,7 @@ body {
     justify-content: flex-start !important;
     height: 100% !important;
     position: relative !important;
-    padding-top: 130px !important; /* 🌟 ALINEACIÓN LÁSER: Baja todo el bloque central para congelar la Final con las Semis */
+    padding-top: 15px !important; /* 🌟 CALIBRACIÓN: Sube el trofeo y la Final al horizonte exacto de las Semis */
 }
 
 .center-title-box {
@@ -713,24 +713,27 @@ body {
     border-radius: 4px !important;
     font-size: 0.75rem !important;
     text-transform: uppercase !important;
-    letter-spacing: 1px !important;
+    letter-spacing: 1px;
+    margin-top: 10px !important;
+    z-index: 10 !important;
 }
 
-/* CONTENEDORES EXCLUSIVOS DE LA FINAL (SIN LÍNEAS BLANCAS NI VERDES EXTRAS) */
+/* CONTENEDORES DE LA FINAL Y TERCER PUESTO */
 .center-match-card-wrapper {
-    background: #15171b !important;
+    background: #15171b !important; /* Mismo color oscuro mate de las tarjetas laterales */
     border: 1px solid #ffc107 !important; /* Borde dorado limpio */
     border-radius: 6px !important;
     width: 100% !important;
     max-width: 180px !important;
-    padding: 6px !important;
+    padding: 4px !important;
     position: relative !important;
-    height: 52px !important; /* Altura exacta idéntica a las laterales */
+    height: 52px !important; /* Altura idéntica exacta a las laterales */
     display: flex !important;
     flex-direction: column !important;
     justify-content: center !important;
     box-shadow: 0 4px 15px rgba(0,0,0,0.6) !important;
-    margin-bottom: 90px !important; /* Colchón exacto para separar el Tercer Puesto */
+    margin-bottom: 95px !important; /* Mantiene la separación con el Tercer Puesto */
+    z-index: 5 !important;
 }
 
 .center-match-card-wrapper.third-place {
@@ -738,28 +741,23 @@ body {
     margin-bottom: 0px !important;
 }
 
-/* Eliminamos los palitos o decoraciones internas fantasmas de las finales */
-.center-match-card-wrapper .bracket-match-box {
-    position: static !important;
-    border: none !important;
-    background: transparent !important;
-    box-shadow: none !important;
-    padding: 0 !important;
-    height: auto !important;
-}
-
-/* Filas internas del partido limpias */
-.bracket-team-row {
+/* 🛑 RESETEO ULTRAESTRICTO DEL INTERIOR (ELIMINA LÍNEAS BLANCAS Y GRISES) */
+.center-match-card-wrapper .bracket-team-row {
     display: flex !important;
     align-items: center !important;
     justify-content: space-between !important;
-    padding: 2px 4px !important;
+    padding: 0px 6px !important;
     font-size: 0.8rem !important;
     height: 20px !important;
+    line-height: 20px !important;
     color: #ffffff !important;
+    background: transparent !important; /* Forzamos la eliminación de fondos grises o blancos extra */
+    border: none !important; /* Rompe cualquier borde fantasma interno */
+    box-shadow: none !important;
+    width: 100% !important;
 }
 
-.bracket-score {
+.center-match-card-wrapper .bracket-score {
     font-weight: bold !important;
     color: var(--accent-neon, #00f2fe) !important;
     background: #0d1117 !important;
@@ -768,22 +766,16 @@ body {
     font-size: 0.75rem !important;
 }
 
-/* BRAZOS NEÓN QUE SALEN DE LA FINAL PARA ABROCHAR LAS SEMIFINALES */
+/* BRAZOS NEÓN QUE MANDAN LA CONEXIÓN DESDE LA FINAL HACIA LAS SEMIFINALES */
 .center-match-card-wrapper.final-box::before,
 .center-match-card-wrapper.final-box::after {
     content: "" !important;
     position: absolute !important;
     top: 50% !important;
     transform: translateY(-50%) !important;
-    width: 15px !important; /* Longitud justa que abraza la columna de Semis */
+    width: 15px !important; /* Longitud exacta para unirse al ras de Semis */
     border-top: 3px solid var(--accent-neon, #00f2fe) !important;
     z-index: 1 !important;
 }
 .center-match-card-wrapper.final-box::before { left: -15px !important; }
 .center-match-card-wrapper.final-box::after { right: -15px !important; }
-
-/* El ala derecha invierte la dirección de entrada en codos de 16avos */
-.bracket-side-wing.right-wing .bracket-match-box::before {
-    right: -12px !important;
-    left: auto !important;
-}
