@@ -1,29 +1,47 @@
-// Variable global para almacenar los datos del JSON
+// Variables globales de control de estado
 let mundialData = null;
 let currentLanguage = 'es';
 let selectedTeamId = null;
+let visibleLiveCount = 4;
+let visibleUpcomingCount = 4;
 
 // ==========================================================================
-// 1. CARGA INICIAL DE DATOS
+// 1. CARGA DE DATOS CON SISTEMA DE SEGURIDAD (CORS / LOCAL PATHS)
 // ==========================================================================
 document.addEventListener('DOMContentLoaded', () => {
-    fetch('./data/mundial_data.json')
-        .then(response => response.json())
+    // Usamos una ruta relativa limpia compatible con servidores locales y GitHub Pages
+    fetch('data/mundial_data.json')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
         .then(data => {
             mundialData = data;
             inicializarWeb();
         })
-        .catch(error => console.error('Error cargando los datos del Mundial:', error));
+        .catch(error => {
+            console.error('Error cargando los datos del Mundial:', error);
+            // Alerta amigable si el usuario ejecuta el archivo mediante doble clic local sin servidor
+            if (window.location.protocol === 'file:') {
+                alert("⚠️ RESTRICCIÓN DE NAVIGACIÓN LOCAL (CORS):\n\nEstás abriendo la web directamente desde tus archivos locales (file://). Los navegadores bloquean la carga de datos dinámicos en este modo.\n\nPor favor, abre el proyecto usando un servidor local (como la extensión 'Live Server' de VS Code) o súbelo a GitHub Pages para verlo funcionar.");
+            }
+        });
 });
 
 function inicializarWeb() {
-    configurarIdiomas();
-    configurarDonaciones();
-    renderizarPartidos();
-    renderizarListaEquipos();
-    renderizarGrupos();
-    renderizarBracket();
-    traducirInterfaz(currentLanguage);
+    try {
+        configurarIdiomas();
+        configurarDonaciones();
+        renderizarPartidos();
+        renderizarListaEquipos();
+        renderizarGrupos();
+        renderizarBracket();
+        traducirInterfaz(currentLanguage);
+    } catch (e) {
+        console.error("Error crítico durante la inicialización de los componentes de la interfaz:", e);
+    }
 }
 
 // ==========================================================================
@@ -48,7 +66,9 @@ function configurarIdiomas() {
 }
 
 function traducirInterfaz(lang) {
+    if (!mundialData || !mundialData.ui_translations) return;
     const texts = mundialData.ui_translations[lang];
+    if (!texts) return;
     
     document.getElementById('main-title').textContent = texts.title;
     document.getElementById('txt-bracket').textContent = texts.bracket_title;
@@ -66,14 +86,11 @@ function traducirInterfaz(lang) {
 // ==========================================================================
 // 3. SECCIÓN PARTIDOS (EN VIVO / PRÓXIMOS DE 4 EN 4)
 // ==========================================================================
-let visibleLiveCount = 4;
-let visibleUpcomingCount = 4;
-
 function renderizarPartidos() {
     const liveContainer = document.getElementById('live-matches-container');
     const upcomingContainer = document.getElementById('upcoming-matches-container');
     
-    if (!liveContainer || !upcomingContainer) return;
+    if (!liveContainer || !upcomingContainer || !mundialData || !mundialData.partidos) return;
     
     liveContainer.innerHTML = '';
     upcomingContainer.innerHTML = '';
@@ -104,10 +121,7 @@ function renderizarPartidos() {
         if (partido.fecha_utc) {
             const fechaLocal = new Date(partido.fecha_utc);
             horaFormateada = fechaLocal.toLocaleString(currentLanguage, {
-                month: 'short',
-                day: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit'
+                month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
             });
         }
 
@@ -188,13 +202,13 @@ function renderizarPartidos() {
 // ==========================================================================
 function renderizarListaEquipos() {
     const container = document.getElementById('vertical-teams-container');
-    if (!container) return;
+    if (!container || !mundialData || !mundialData.equipos) return;
     container.innerHTML = '';
 
     Object.keys(mundialData.equipos).forEach(id => {
         const equipo = mundialData.equipos[id];
         const name = equipo.nombres[currentLanguage];
-        const flagHtml = equipo.bandera ? `<img src="${equipo.bandera}" class="flag-circle" alt="" onerror="this.style.display='none'">` : '';
+        const flagHtml = equipo.bandera ? `<img src="${equipo.bandera}" class="flag-circle" alt="">` : '';
 
         const row = document.createElement('div');
         row.className = `team-row-item ${selectedTeamId === id ? 'active' : ''}`;
@@ -216,7 +230,7 @@ function renderizarListaEquipos() {
 }
 
 // ==========================================================================
-// 5. DETALLE DEL EQUIPO (SQUAD CON FILTRO DE SILUETAS)
+// 5. DETALLE DEL EQUIPO Y CONVOCADOS
 // ==========================================================================
 function actualizarPanelDetalle(id) {
     const emptyMsg = document.getElementById('panel-empty-msg');
@@ -291,7 +305,7 @@ function renderizarCanchaOLista(equipo) {
         const filaHtml = `
             <div class="player-squad-row">
                 <div class="player-squad-number">${jugador.dorsal}</div>
-                <img src="${rutaSilueta}" class="player-squad-avatar" alt="${pos}">
+                <img src="${rutaSilueta}" class="player-squad-avatar" alt="">
                 <span class="player-squad-name">${jugador.nombre}</span>
             </div>
         `;
@@ -342,15 +356,13 @@ function renderizarCalendarioEquipo(equipo) {
 // ==========================================================================
 function renderizarGrupos() {
     const container = document.getElementById('groups-accordion-container');
-    if (!container) return;
+    if (!container || !mundialData || !mundialData.grupos) return;
     container.innerHTML = '';
     container.style.display = 'block';
     container.style.width = '100%';
 
     const mapaFilas = {
-        'A': 1, 'B': 1, 'C': 1, 'D': 1,
-        'E': 2, 'F': 2, 'G': 2, 'H': 2,
-        'I': 3, 'J': 3, 'K': 3, 'L': 3
+        'A': 1, 'B': 1, 'C': 1, 'D': 1, 'E': 2, 'F': 2, 'G': 2, 'H': 2, 'I': 3, 'J': 3, 'K': 3, 'L': 3
     };
 
     for (let i = 1; i <= 3; i++) {
@@ -424,7 +436,7 @@ function renderizarGrupos() {
 }
 
 // ==========================================================================
-// 7. DONACIONES CRYPTO
+// 7. CONFIGURACIÓN DEL BOTÓN DE DONACIONES CRYPTO
 // ==========================================================================
 function configurarDonaciones() {
     const btnTrigger = document.getElementById('donation-btn');
@@ -453,7 +465,7 @@ function configurarDonaciones() {
 }
 
 // ==========================================================================
-// 8. MOTOR DEL BRACKET INMUNE (FLEXBOX PLANO)
+// 8. MOTOR DEL BRACKET INMUNE VECTORIAL (FLEXBOX PLANO)
 // ==========================================================================
 function renderizarBracket() {
     const leftWing = document.getElementById('bracket-left-wing');
@@ -546,6 +558,7 @@ function renderizarBracket() {
                 ${generarHtmlLlaveEje('final', 0)}
             </div>
         </div>
+
         <div class="center-match-card-wrapper third-place" data-round="terceros" data-index="0">
             <div class="center-bottom-zone">
                 <div class="center-title-box" style="background:#ff5722 !important; color:#ffffff !important;">🥉 ${titles.r3}</div>
@@ -658,7 +671,7 @@ function dibujarLineasBracket() {
 }
 
 // ==========================================================================
-// 10. OPTIMIZACIÓN DE RENDIMIENTO (DEBOUNCE PROTECTOR)
+// 10. DEBOUNCE PROTECTOR DE RENDIMIENTO (WINDOW RESIZE)
 // ==========================================================================
 function debounce(func, wait) {
     let timeout;
