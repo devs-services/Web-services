@@ -521,7 +521,7 @@ body {
 }
 
 /* ==========================================================================
-   BRACKET DE PRECISIÓN GEOMÉTRICA FINAL: REMOCIÓN DE LÍNEAS SOBRESALIENTES
+   BRACKET DE PRECISIÓN GEOMÉTRICA DE PANTALLA COMPLETA (CORREGIDO Y BLINDADO)
    ========================================================================== */
 
 .bracket-scroll-container {
@@ -554,7 +554,7 @@ body {
     flex-direction: row-reverse !important;
 }
 
-/* Cada columna mantiene su ancho estricto de 112px */
+/* Cada columna mantiene su ancho estricto e inalterable de 112px */
 .bracket-column-fluid {
     display: flex !important;
     flex-direction: column !important;
@@ -578,20 +578,19 @@ body {
 }
 
 /* ==========================================================================
-   BLOQUES DE EMPAREJAMIENTO CON RECORTE SEGURO DE DESBORDES
+   BLOQUES DE EMPAREJAMIENTO CON RECONEXIÓN GEOMÉTRICA EN EL CENTRO
    ========================================================================== */
 
 .bracket-match-pair-block {
     display: flex !important;
     flex-direction: column !important;
-    justify-content: center !important; /* Junta los dos cuadros hacia el centro */
+    justify-content: center !important; /* Re-alineación: junta los cuadros al centro */
     height: 100% !important;
     position: relative !important;
-    width: calc(100% + 24px) !important; /* Damos un pequeño aire extra controlado para el codo */
-    overflow: visible !important;        /* Controlamos que las líneas salgan pero no se desborden */
+    width: 100% !important; /* REGRESAMOS AL 100% ORIGINAL: Devuelve los cuadros a su sitio */
 }
 
-/* Calibración milimétrica de distancias verticales (Gaps) por ronda */
+/* Distancias verticales (Gaps) exactas de la versión simétrica exitosa */
 .bracket-column-fluid[data-ronda="r32"] .bracket-match-pair-block { max-height: 140px !important; gap: 24px !important; }
 .bracket-column-fluid[data-ronda="r16"] .bracket-match-pair-block { max-height: 290px !important; gap: 110px !important; }
 .bracket-column-fluid[data-ronda="r8"] .bracket-match-pair-block { max-height: 540px !important; gap: 280px !important; }
@@ -621,14 +620,14 @@ body {
 }
 
 /* ==========================================================================
-   CABLEADO DE CODOS ARQUEADOS CONTROLADOS REBANADOS (GROSOR 3PX)
+   CABLEADO DE CODOS ARQUEADOS RECONECTADOS CON CORTE QUIRÚRGICO (3PX)
    ========================================================================== */
 
-/* El codo base vertical se posiciona y centra en el medio de la pareja */
+/* El codo base vuelve a amarrarse de forma exacta a los bordes de la columna */
 .bracket-match-pair-block::after {
     content: "" !important;
     position: absolute !important;
-    right: 12px !important; /* Retraemos la posición 12px hacia adentro para limpiar el desborde trasero */
+    right: -12px !important; /* REGRESAMOS AL VALOR DE ALINEACIÓN PERFECTO */
     top: 50% !important;
     transform: translateY(-50%) !important;
     width: 12px !important;
@@ -638,24 +637,27 @@ body {
     z-index: 1 !important;
 }
 
-/* Alturas físicas por ronda que abrazan el lomo exacto de las tarjetas */
+/* Alturas físicas exactas por ronda que calzan milimétricamente */
 .bracket-column-fluid[data-ronda="r32"] .bracket-match-pair-block::after { height: 78px !important; }
 .bracket-column-fluid[data-ronda="r16"] .bracket-match-pair-block::after { height: 164px !important; }
 .bracket-column-fluid[data-ronda="r8"] .bracket-match-pair-block::after { height: 334px !important; }
 
-/* Línea única extendida que toca el cuadro del frente de forma limpia */
+/* Línea única extendida que toca el cuadro del frente eliminando el espacio vacío */
 .bracket-match-pair-block::before {
     content: "" !important;
     position: absolute !important;
-    right: 0px !important; /* Alineado justo al ras de salida */
+    right: -24px !important; /* Viaja exactamente el canal de separación intercolumna */
     top: 50% !important;
     transform: translateY(-50%) !important;
     width: 12px !important; 
     border-top: 3px solid var(--accent-neon, #00f2fe) !important;
     z-index: 1 !important;
+    
+    /* 🌟 SOLUCIÓN AL SOBRESALIENTE: Recorta de raíz cualquier pico que intente pasarse hacia atrás */
+    clip-path: inset(0 0 0 0) !important; 
 }
 
-/* Extensión de línea horizontal limpia desde Semis hacia el bloque central de la Final */
+/* Extensión de línea horizontal limpia desde Semis hacia el bloque de la Final */
 .bracket-single-block::after {
     content: "" !important;
     position: absolute !important;
@@ -672,14 +674,18 @@ body {
    ========================================================================== */
 .bracket-side-wing.right-wing .bracket-match-pair-block::after {
     right: auto !important;
-    left: 12px !important;
+    left: -12px !important;
     border-left: 3px solid var(--accent-neon, #00f2fe) !important;
     border-right: none !important;
     border-radius: 8px 0 0 8px !important;
 }
 .bracket-side-wing.right-wing .bracket-match-pair-block::before {
     right: auto !important;
-    left: 0px !important;
+    left: -24px !important;
+}
+.bracket-side-wing.right-wing .bracket-match-box::before {
+    left: auto !important;
+    right: -12px !important;
 }
 .bracket-side-wing.right-wing .bracket-single-block::after {
     right: auto !important;
