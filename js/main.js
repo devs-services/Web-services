@@ -578,7 +578,6 @@ function renderizarBracket() {
         col.setAttribute('data-ronda', dataRondaAttr);
         
         let html = `<div class="round-title-fluid">${titulo}</div>`;
-        
         listaIndices.forEach((globalIdx) => {
             html += `
                 <div class="bracket-match-box" data-round="${claveRonda}" data-index="${globalIdx}">
@@ -591,7 +590,7 @@ function renderizarBracket() {
         return col;
     }
 
-    // Inyección ordenada de alas en formato plano elástico
+    // Inyección de las columnas elásticas
     leftWing.appendChild(crearColumnaEjeRigido(titles.r32, 'dieciseisavos', 'r32', [0, 1, 2, 3, 4, 5, 6, 7]));
     leftWing.appendChild(crearColumnaEjeRigido(titles.r16, 'octavos', 'r16', [0, 1, 2, 3]));
     leftWing.appendChild(crearColumnaEjeRigido(titles.r8, 'cuartos', 'r8', [0, 1]));
@@ -602,7 +601,7 @@ function renderizarBracket() {
     rightWing.appendChild(crearColumnaEjeRigido(titles.r8, 'cuartos', 'r8', [2, 3]));
     rightWing.appendChild(crearColumnaEjeRigido(titles.r4, 'semis', 'semis', [1]));
 
-    // CONSTRUCCIÓN DEL NÚCLEO CENTRAL CON TITULOS ADHERIDOS A SUS RESPECTIVAS CAJAS
+    // Bloque central con títulos incrustados como componentes adheridos al techo de las tarjetas
     let htmlCentro = `
         <div class="center-match-card-wrapper final-box" data-round="final" data-index="0">
             <div class="center-top-zone">
@@ -626,14 +625,14 @@ function renderizarBracket() {
 
     centerFinals.innerHTML = htmlCentro;
 
-    // Disparamos el cálculo vectorial una vez inyectado y estabilizado el DOM
+    // Disparamos el renderizado inicial de líneas una vez cargado el DOM
     requestAnimationFrame(() => {
         setTimeout(dibujarLineasBracket, 200);
     });
 }
 
 // ==========================================================================
-// 9. LIENZO VECTORIAL INTERACTIVO AUTOMÁTICO RECALCULADO POR FRAMES
+// 9. LIENZO VECTORIAL INTERACTIVO PARA CABLEADO DE PRECISIÓN ABSOLUTA
 // ==========================================================================
 function dibujarLineasBracket() {
     const svg = document.getElementById('bracket-svg-canvas');
@@ -700,7 +699,7 @@ function dibujarLineasBracket() {
         { desde: [2, 3], rondaDesde: 'cuartos', hacia: 1, rondaHacia: 'semis' }
     ];
 
-    // Pintar cables Ala Izquierda
+    // Cables del Ala Izquierda
     conexionesIzquierda.forEach(con => {
         const p1 = obtenerCoordenadas(con.rondaDesde, con.desde[0], 'right');
         const p2 = obtenerCoordenadas(con.rondaDesde, con.desde[1], 'right');
@@ -715,7 +714,7 @@ function dibujarLineasBracket() {
         }
     });
 
-    // Pintar cables Ala Derecha
+    // Cables del Ala Derecha
     conexionesDerecha.forEach(con => {
         const p1 = obtenerCoordenadas(con.rondaDesde, con.desde[0], 'left');
         const p2 = obtenerCoordenadas(con.rondaDesde, con.desde[1], 'left');
@@ -730,7 +729,7 @@ function dibujarLineasBracket() {
         }
     });
 
-    // Conexiones Horizontales Directas a la Final Central
+    // Conexiones de Semifinales directas a la Gran Final
     const pSemiIzq = obtenerCoordenadas('semis', 0, 'right');
     const pSemiDer = obtenerCoordenadas('semis', 1, 'left');
     const pFinalIzq = obtenerCoordenadas('final', 0, 'left');
@@ -749,10 +748,8 @@ function dibujarLineasBracket() {
 }
 
 // ==========================================================================
-// 10. OPTIMIZACIÓN DE RENDIMIENTO (DEBOUNCE PROTECTOR)
+// 10. PASO 3: OPTIMIZACIÓN DE RENDIMIENTO (DEBOUNCE PROTECTOR)
 // ==========================================================================
-
-// Función auxiliar Debounce: evita que un evento pesado se ejecute demasiadas veces por segundo
 function debounce(func, wait) {
     let timeout;
     return function(...args) {
@@ -761,7 +758,7 @@ function debounce(func, wait) {
     };
 }
 
-// Escuchador dinámico inteligente: espera a que el usuario termine de mover la ventana antes de recalcular
+// Escuchador inteligente que evita Layout Thrashing al redimensionar la ventana
 window.addEventListener('resize', debounce(() => {
     requestAnimationFrame(dibujarLineasBracket);
-}, 100)); // Espera 100 milisegundos de calma antes de redibujar las líneas vectoriales
+}, 100));
