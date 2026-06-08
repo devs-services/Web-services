@@ -620,7 +620,7 @@ function renderizarBracket() {
     // Bloque Central alineado con las Semis (Inyección de HTML Directo Protegido)
     let htmlCentro = '<div style="text-align:center; margin-bottom:5px; margin-top:20px;"><span style="font-size:2.8rem;">🏆</span></div>';
 
-    // Sección de la Gran Final (HTML Estático para evitar conflictos de funciones)
+    // Sección de la Gran Final con estructura exacta de clases nativas
     htmlCentro += '<div class="center-title-box">🏅 ' + titles.r2 + '</div>';
     htmlCentro += '<div class="center-match-card-wrapper final-box">';
     htmlCentro += '  <div class="bracket-match-box">';
@@ -629,7 +629,7 @@ function renderizarBracket() {
     htmlCentro += '  </div>';
     htmlCentro += '</div>';
 
-    // Sección del Tercer Puesto (HTML Estático para evitar conflictos de funciones)
+    // Sección del Tercer Puesto con estructura exacta de clases nativas
     htmlCentro += '<div class="center-title-box" style="background:#ff5722; color:#fff; margin-top:15px;">🥉 ' + titles.r3 + '</div>';
     htmlCentro += '<div class="center-match-card-wrapper third-place">';
     htmlCentro += '  <div class="bracket-match-box">';
