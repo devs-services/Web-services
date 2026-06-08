@@ -511,7 +511,7 @@ function configurarDonaciones() {
 }
 
 // ==========================================================================
-// 8. MOTOR DEL BRACKET INMUNE CON RE-RENDERIZADO VECTORIAL ASINCRÓNICO
+// 8. MOTOR DEL BRACKET INMUNE: DISTRIBUCIÓN POR REJILLA INTEGRAL DE 32 FILAS
 // ==========================================================================
 function renderizarBracket() {
     const leftWing = document.getElementById('bracket-left-wing');
@@ -536,7 +536,6 @@ function renderizarBracket() {
     function generarHtmlLlaveEje(claveRonda, indiceLlave) {
         let rondaData = mundialData.bracket[claveRonda];
         let partido = null;
-        
         if (rondaData) {
             partido = Array.isArray(rondaData) ? rondaData[indiceLlave] : rondaData;
         }
@@ -580,36 +579,26 @@ function renderizarBracket() {
         
         let html = `<div class="round-title-fluid">${titulo}</div>`;
         
-        if (dataRondaAttr === 'r32' || dataRondaAttr === 'r16' || dataRondaAttr === 'r8') {
-            for (let i = 0; i < listaIndices.length; i += 2) {
-                html += `<div class="bracket-match-pair-block">`;
-                html += `
-                    <div class="bracket-match-box" data-round="${claveRonda}" data-index="${listaIndices[i]}">
-                        ${generarHtmlLlaveEje(claveRonda, listaIndices[i])}
-                    </div>
-                    <div class="bracket-match-box" data-round="${claveRonda}" data-index="${listaIndices[i + 1]}">
-                        ${generarHtmlLlaveEje(claveRonda, listaIndices[i + 1])}
-                    </div>
-                `;
-                html += `</div>`;
-            }
-        } else {
-            listaIndices.forEach((idx) => {
-                html += `
-                    <div class="bracket-single-block">
-                        <div class="bracket-match-box" data-round="${claveRonda}" data-index="${idx}">
-                            ${generarHtmlLlaveEje(claveRonda, idx)}
-                        </div>
-                    </div>
-                `;
-            });
-        }
+        listaIndices.forEach((globalIdx, localIdx) => {
+            // Mapeo matemático estricto sobre las 32 filas para garantizar centros perfectos
+            let rowNumber = 1;
+            if (dataRondaAttr === 'r32') rowNumber = 2 + (localIdx * 4);
+            else if (dataRondaAttr === 'r16') rowNumber = 4 + (localIdx * 8);
+            else if (dataRondaAttr === 'r8') rowNumber = 8 + (localIdx * 16);
+            else if (dataRondaAttr === 'r4') rowNumber = 16;
+            
+            html += `
+                <div class="bracket-match-box" data-round="${claveRonda}" data-index="${globalIdx}" style="grid-row: ${rowNumber};">
+                    ${generarHtmlLlaveEje(claveRonda, globalIdx)}
+                </div>
+            `;
+        });
         
         col.innerHTML = html;
         return col;
     }
 
-    // ENSAMBLADO DE COLUMNAS SIMÉTRICAS POR FLEXBOX
+    // Inyección ordenada de alas
     leftWing.appendChild(crearColumnaEjeRigido(titles.r32, 'dieciseisavos', 'r32', [0, 1, 2, 3, 4, 5, 6, 7]));
     leftWing.appendChild(crearColumnaEjeRigido(titles.r16, 'octavos', 'r16', [0, 1, 2, 3]));
     leftWing.appendChild(crearColumnaEjeRigido(titles.r8, 'cuartos', 'r8', [0, 1]));
@@ -620,7 +609,7 @@ function renderizarBracket() {
     rightWing.appendChild(crearColumnaEjeRigido(titles.r8, 'cuartos', 'r8', [2, 3]));
     rightWing.appendChild(crearColumnaEjeRigido(titles.r4, 'semis', 'semi', [1]));
 
-    // CONSTRUCCIÓN DEL NÚCLEO CENTRAL CON ATRIBUTOS DE PRECISIÓN DE DATOS
+    // Reconstrucción del Módulo Central con Grid
     let htmlCentro = `
         <div class="center-top-zone">
             <div style="font-size: 2.1rem; filter: drop-shadow(0 2px 6px rgba(0,0,0,0.5));">🏆</div>
@@ -634,41 +623,26 @@ function renderizarBracket() {
         </div>
 
         <div class="center-bottom-zone">
-            <div class="center-title-box" style="background:#ff5722 !important; color:#ffffff !important;">🥉 ${titles.txt_third || titles.r3}</div>
-            <div class="center-match-card-wrapper third-place" data-round="terceros" data-index="0">
-                <div class="bracket-match-box" style="width:100%; border:none; background:transparent; box-shadow:none; padding:0 !important;">
-                    ${generarHtmlLlaveEje('terceros', 0)}
-                </div>
+            <div class="center-title-box" style="background:#ff5722 !important; color:#ffffff !important;">🥉 ${titles.r3}</div>
+        </div>
+        
+        <div class="center-match-card-wrapper third-place" data-round="terceros" data-index="0">
+            <div class="bracket-match-box" style="width:100%; border:none; background:transparent; box-shadow:none; padding:0 !important;">
+                ${generarHtmlLlaveEje('terceros', 0)}
             </div>
         </div>
     `;
 
     centerFinals.innerHTML = htmlCentro;
 
-    // Disparamos el cálculo matemático del lienzo una vez inyectado el DOM
-    setTimeout(dibujarLineasBracket, 50);
-}
-
-// ==========================================================================
-// 1. MODIFICACIÓN DEL CARGADOR DE INICIALIZACIÓN SEGURO
-// ==========================================================================
-function inicializarWeb() {
-    configurarIdiomas();
-    configurarDonaciones();
-    renderizarPartidos();
-    renderizarListaEquipos();
-    renderizarGrupos();
-    renderizarBracket();
-    traducirInterfaz(currentLanguage);
-    
-    // Forzamos al navegador a esperar que termine de calcular el árbol antes de pintar las líneas
+    // Ejecución del cálculo vectorial asincrónico por frames
     requestAnimationFrame(() => {
-        setTimeout(dibujarLineasBracket, 150);
+        setTimeout(dibujarLineasBracket, 100);
     });
 }
 
 // ==========================================================================
-// 9. LIENZO VECTORIAL INTERACTIVO CON AMPLIACIÓN POR ESCALA DE LIENZO (INMUNE)
+// 9. LIENZO VECTORIAL INTERACTIVO AUTOMÁTICO (CALCULA EN BASE A CENTROS REALES)
 // ==========================================================================
 function dibujarLineasBracket() {
     const svg = document.getElementById('bracket-svg-canvas');
@@ -677,20 +651,15 @@ function dibujarLineasBracket() {
     const container = document.querySelector('.bracket-scroll-container');
     if (!container) return;
 
-    // Subimos el z-index del lienzo para que las líneas pasen sobre las columnas pero bajo los cuadros
-    svg.style.zIndex = "3";
-
-    // Usamos el tamaño total real del scroll para evitar cortes
     const anchoTotal = container.scrollWidth;
     const altoTotal = container.scrollHeight;
 
     svg.setAttribute('width', anchoTotal);
     svg.setAttribute('height', altoTotal);
-    svg.innerHTML = ''; // Limpieza de cables antiguos
+    svg.innerHTML = ''; 
 
     const colorLinea = getComputedStyle(document.documentElement).getPropertyValue('--accent-neon').trim() || '#00df89';
 
-    // Función matemática de mapeo absoluto con inyección de Scroll Offsets
     function obtenerCoordenadas(ronda, index, borde) {
         const el = document.querySelector(`[data-round="${ronda}"][data-index="${index}"]`);
         if (!el) return null;
@@ -698,7 +667,6 @@ function dibujarLineasBracket() {
         const containerRect = container.getBoundingClientRect();
         const rect = el.getBoundingClientRect();
         
-        // Sumamos el scroll interno para blindar la posición real de las cajas
         const xLeft = (rect.left - containerRect.left) + container.scrollLeft;
         const xRight = (rect.right - containerRect.left) + container.scrollLeft;
         const yCenter = ((rect.top + rect.bottom) / 2 - containerRect.top) + container.scrollTop;
@@ -739,7 +707,7 @@ function dibujarLineasBracket() {
         { desde: [2, 3], rondaDesde: 'cuartos', hacia: 1, rondaHacia: 'semis' }
     ];
 
-    // Ala Izquierda
+    // Pintar Ala Izquierda
     conexionesIzquierda.forEach(con => {
         const p1 = obtenerCoordenadas(con.rondaDesde, con.desde[0], 'right');
         const p2 = obtenerCoordenadas(con.rondaDesde, con.desde[1], 'right');
@@ -754,7 +722,7 @@ function dibujarLineasBracket() {
         }
     });
 
-    // Ala Derecha
+    // Pintar Alaexport Derecha
     conexionesDerecha.forEach(con => {
         const p1 = obtenerCoordenadas(con.rondaDesde, con.desde[0], 'left');
         const p2 = obtenerCoordenadas(con.rondaDesde, con.desde[1], 'left');
@@ -769,7 +737,7 @@ function dibujarLineasBracket() {
         }
     });
 
-    // Conexiones de Semifinales al Bloque Central de la Final (Alineación recta horizontal absoluta)
+    // Conexiones Horizontales hacia la Gran Final Central
     const pSemiIzq = obtenerCoordenadas('semis', 0, 'right');
     const pSemiDer = obtenerCoordenadas('semis', 1, 'left');
     const pFinalIzq = obtenerCoordenadas('final', 0, 'left');
@@ -787,7 +755,7 @@ function dibujarLineasBracket() {
     }
 }
 
-// Escuchador dinámico de redimensión
+// Escuchador global de ventana para redibujar cables sin perder centros
 window.addEventListener('resize', () => {
     requestAnimationFrame(dibujarLineasBracket);
 });
