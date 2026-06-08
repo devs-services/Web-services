@@ -598,18 +598,17 @@ function renderizarBracket() {
     rightWing.appendChild(crearColumnaEjeRigido(titles.r8, 'cuartos', 'r8', [2, 3], 'pos-r8'));
     rightWing.appendChild(crearColumnaEjeRigido(titles.r4, 'semis', 'semi', [1], 'pos-semi'));
 
-    // ENSAMBLADO EJE CENTRAL DE LAS FINALES
+    // Bloque Central alineado con las Semis
     let htmlCentro = `
-        <div style="text-align:center; margin-bottom:5px;">
+        <div style="text-align:center; margin-bottom:5px; margin-top:20px;">
             <span style="font-size:2.8rem;">🏆</span>
         </div>
-        <div class="center-title-box">🏅 ${titles.r2}</div>
-        <div class="center-match-card-wrapper final-box">
-            ${generarHtmlLlaveEje('final', 0)}
-        </div>
-        <div class="center-title-box" style="background:#ff5722; color:#fff;">🥉 ${titles.r3}</div>
-        <div class="center-match-card-wrapper third-place">
-            ${generarHtmlLlaveEje('final', 1)}
+    `;
+
+    htmlCentro += `<div class="center-title-box">🏅 ${titles.r2}</div>`;
+    htmlCentro += `
+        <div class="center-match-card-wrapper final-box" style="height:54px; display:flex; align-items:center;">
+            ${generarHtmlLlaveItem('final', 0)}
         </div>
     `;
 
