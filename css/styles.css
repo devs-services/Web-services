@@ -606,7 +606,7 @@ body {
 }
 
 /* ==========================================================================
-   MÓDULO CENTRAL CON COORDENADAS PLANAS ABSOLUTAS
+   MÓDULO CENTRAL COMPACTO SEGURO (CON AJUSTE DE PROXIMIDAD DE COPA Y 3ER PUESTO)
    ========================================================================== */
 .bracket-center-core {
     display: flex !important;
@@ -634,22 +634,24 @@ body {
     box-shadow: 0 4px 20px rgba(0,0,0,0.4) !important;
 }
 
-/* La copa y el título flotan de manera segura arriba de la final */
+/* 🌟 LA COPA Y EL TÍTULO FINAL BAJAN: Se aproximan estéticamente a la tarjeta de la final */
 .center-top-zone {
     position: absolute !important;
-    top: 18% !important;
+    bottom: calc(50% + 32px) !important; /* Reducido de 42px a 32px para bajarlo */
     left: 50% !important;
     transform: translateX(-50%) !important;
     display: flex !important;
     flex-direction: column !important;
     align-items: center !important;
     gap: 4px !important;
+    width: 100% !important;
+    white-space: nowrap !important;
 }
 
-/* El Tercer Puesto flota de manera segura abajo de la final sin empujarla */
+/* 🌟 EL TERCER PUESTO SUBE: Se aproxima estéticamente a la tarjeta de la final */
 .center-bottom-zone {
     position: absolute !important;
-    bottom: 12% !important;
+    top: calc(50% + 32px) !important; /* Reducido de 42px a 32px para subirlo */
     left: 50% !important;
     transform: translateX(-50%) !important;
     display: flex !important;
@@ -670,17 +672,26 @@ body {
     letter-spacing: 1px !important;
 }
 
-.center-match-card-wrapper.third-place {
+.center-match-card-wrapper {
     background: #1f242c !important;
-    border: 2px solid #ff5722 !important;
+    border: 2px solid #ffc107 !important;
     border-radius: 8px !important;
-    width: 180px !important;
-    height: 54px !important;
+    width: 100% !important;
+    max-width: 180px !important;
     padding: 2px !important;
-    display: flex !important;
-    align-items: center !important;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.4) !important;
+    position: relative !important;
+}
+
+.center-match-card-wrapper.third-place {
+    border-color: #ff5722 !important;
     margin-top: 4px !important;
+}
+
+/* 🛑 BLINDAJE EXTRA: El Tercer Puesto ignora por completo cualquier pseudo-elemento horizontal */
+.center-match-card-wrapper.third-place::before,
+.center-match-card-wrapper.third-place::after {
+    display: none !important;
+    content: none !important;
 }
 
 .center-match-card-wrapper .bracket-match-box {
