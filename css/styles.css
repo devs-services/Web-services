@@ -521,32 +521,33 @@ body {
 }
 
 /* ==========================================================================
-   BRACKET DE PRECISIÓN GEOMÉTRICA DE PANTALLA COMPLETA (CORREGIDO Y BLINDADO)
+   BRACKET DE PRECISIÓN GEOMÉTRICA RESPONSIVO (BLINDADO CONTRA CAMBIOS DE VENTANA)
    ========================================================================== */
 
 .bracket-scroll-container {
     width: 100% !important;
-    overflow: hidden !important; /* Pantalla limpia sin scrollbars */
+    overflow-x: auto !important; /* Si la pantalla es muy enana, saca scroll limpio en vez de deformar */
     padding: 20px 0;
 }
 
 .bracket-mirror-layout {
     display: grid !important;
-    grid-template-columns: 1fr 200px 1fr !important; /* Centro estrecho para las finales */
-    gap: 15px !important;
+    grid-template-columns: 1fr 180px 1fr !important; /* Ancho fijo estricto en el centro */
+    gap: 0px !important; /* El gap en 0 evita desfases al encoger la ventana */
     width: 100% !important;
     max-width: 1350px;
     margin: 0 auto;
     align-items: center !important;
 }
 
-/* Las alas laterales actúan como el eje de suspensión horizontal */
+/* Espaciado superior para que las cabeceras se vean enteras y perfectas */
 .bracket-side-wing {
     display: flex !important;
     justify-content: space-between !important;
     align-items: center !important;
     width: 100% !important;
-    height: 640px !important;
+    height: 675px !important;
+    padding-top: 35px !important; 
 }
 
 /* Espejo físico del ala derecha */
@@ -564,41 +565,35 @@ body {
     position: relative !important;
 }
 
-/* Títulos superiores de ronda */
-.bracket-side-wing {
-    padding-top: 35px !important; /* Genera el espacio físico para que quepan los textos enteros */
-    height: 675px !important;     /* Compensamos la altura total para mantener la simetría exacta */
-}
-
-/* Reajuste de posición para las cabeceras (Más abajo y 100% visibles) */
+/* Títulos superiores de ronda 100% visibles y corregidos */
 .round-title-fluid {
     position: absolute !important;
-    top: -12px !important;        /* CAMBIO: Bajamos el texto (antes estaba en -25px) para alejarlo del corte */
+    top: -12px !important;        
     width: 100% !important;
     text-align: center !important;
     font-size: 0.78rem !important;
     font-weight: 800 !important;
     text-transform: uppercase !important;
-    color: var(--accent-neon, #00f2fe) !important; /* Mantenemos tu color verde neón original */
+    color: var(--accent-neon, #00f2fe) !important;
     letter-spacing: 1px !important;
-    line-height: 1.2 !important;  /* Forzamos que el alto de línea no corte las letras */
+    line-height: 1.2 !important;
     white-space: nowrap !important;
 }
 
 /* ==========================================================================
-   BLOQUES DE EMPAREJAMIENTO CON RECONEXIÓN GEOMÉTRICA EN EL CENTRO
+   BLOQUES DE EMPAREJAMIENTO CON CONTENIDO CENTRADO Y GAPS FIJOS
    ========================================================================== */
 
 .bracket-match-pair-block {
     display: flex !important;
     flex-direction: column !important;
-    justify-content: center !important; /* Re-alineación: junta los cuadros al centro */
+    justify-content: center !important;
     height: 100% !important;
     position: relative !important;
-    width: 100% !important; /* REGRESAMOS AL 100% ORIGINAL: Devuelve los cuadros a su sitio */
+    width: 100% !important;
 }
 
-/* Distancias verticales (Gaps) exactas de la versión simétrica exitosa */
+/* Distancias verticales (Gaps) por ronda */
 .bracket-column-fluid[data-ronda="r32"] .bracket-match-pair-block { max-height: 140px !important; gap: 24px !important; }
 .bracket-column-fluid[data-ronda="r16"] .bracket-match-pair-block { max-height: 290px !important; gap: 110px !important; }
 .bracket-column-fluid[data-ronda="r8"] .bracket-match-pair-block { max-height: 540px !important; gap: 280px !important; }
@@ -609,9 +604,10 @@ body {
     justify-content: center !important;
     height: 100% !important;
     width: 100% !important;
+    position: relative !important;
 }
 
-/* Dimensiones fijas e inalterables de las tarjetas compactas */
+/* Dimensiones fijas de las tarjetas compactas */
 .bracket-match-box {
     background: #15171b !important;
     border: 1px solid #30363d !important;
@@ -628,14 +624,13 @@ body {
 }
 
 /* ==========================================================================
-   CABLEADO DE CODOS ARQUEADOS RECONECTADOS CON CORTE QUIRÚRGICO (3PX)
+   CABLEADO DE CODOS ARQUEADOS CONTROLADOS (GROSOR 3PX)
    ========================================================================== */
 
-/* El codo base vuelve a amarrarse de forma exacta a los bordes de la columna */
 .bracket-match-pair-block::after {
     content: "" !important;
     position: absolute !important;
-    right: -12px !important; /* REGRESAMOS AL VALOR DE ALINEACIÓN PERFECTO */
+    right: -12px !important;
     top: 50% !important;
     transform: translateY(-50%) !important;
     width: 12px !important;
@@ -645,41 +640,58 @@ body {
     z-index: 1 !important;
 }
 
-/* Alturas físicas exactas por ronda que calzan milimétricamente */
+/* Alturas físicas de codos por ronda */
 .bracket-column-fluid[data-ronda="r32"] .bracket-match-pair-block::after { height: 78px !important; }
 .bracket-column-fluid[data-ronda="r16"] .bracket-match-pair-block::after { height: 164px !important; }
 .bracket-column-fluid[data-ronda="r8"] .bracket-match-pair-block::after { height: 334px !important; }
 
-/* Línea única extendida que toca el cuadro del frente eliminando el espacio vacío */
+/* Línea horizontal central que viaja el canal intermedio */
 .bracket-match-pair-block::before {
     content: "" !important;
     position: absolute !important;
-    right: -24px !important; /* Viaja exactamente el canal de separación intercolumna */
+    right: -24px !important;
     top: 50% !important;
     transform: translateY(-50%) !important;
-    width: 12px !important; 
+    width: 12px !important;
     border-top: 3px solid var(--accent-neon, #00f2fe) !important;
     z-index: 1 !important;
-    
-    /* 🌟 SOLUCIÓN AL SOBRESALIENTE: Recorta de raíz cualquier pico que intente pasarse hacia atrás */
-    clip-path: inset(0 0 0 0) !important; 
-}
-
-/* Extensión de línea horizontal limpia desde Semis hacia el bloque de la Final */
-.bracket-single-block::after {
-    content: "" !important;
-    position: absolute !important;
-    right: -15px !important;
-    top: 50% !important;
-    transform: translateY(-50%) !important;
-    width: 15px !important;
-    border-top: 3px solid var(--accent-neon, #00f2fe) !important;
-    z-index: 1 !important;
+    clip-path: inset(0 0 0 0) !important;
 }
 
 /* ==========================================================================
-   INVERSIÓN GEOMÉTRICA DE ARCOS PARA EL ALA DERECHA (ESPEJO TOTAL)
+   SOLUCIÓN RESPONSIVA: EL CENTRAL ENRAÍZA LAS LÍNEAS DE SEMIS HACIA LOS LADOS
    ========================================================================== */
+
+.bracket-center-core {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 10px !important;
+    height: 100% !important;
+    position: relative !important;
+}
+
+/* 🌟 Líneas de conexión que nacen desde los costados de la caja central hacia las Semis */
+.center-match-card-wrapper::before,
+.center-match-card-wrapper::after {
+    content: "" !important;
+    position: absolute !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    width: 38px !important; /* Longitud elástica exacta para besar el cuadro de Semis */
+    border-top: 3px solid var(--accent-neon, #00f2fe) !important;
+    z-index: 1 !important;
+}
+/* Brazo izquierdo hacia Semis A */
+.center-match-card-wrapper::before { left: -38px !important; }
+/* Brazo derecho hacia Semis B */
+.center-match-card-wrapper::after { right: -38px !important; }
+
+/* Eliminamos la línea antigua de Semis que flotaba al encoger la ventana */
+.bracket-single-block::after { display: none !important; }
+
+/* Inversión de arcos del ala derecha */
 .bracket-side-wing.right-wing .bracket-match-pair-block::after {
     right: auto !important;
     left: -12px !important;
@@ -691,27 +703,10 @@ body {
     right: auto !important;
     left: -24px !important;
 }
-.bracket-side-wing.right-wing .bracket-match-box::before {
-    left: auto !important;
-    right: -12px !important;
-}
-.bracket-side-wing.right-wing .bracket-single-block::after {
-    right: auto !important;
-    left: -15px !important;
-}
 
 /* ==========================================================================
-   MÓDULO CENTRAL COMPACTO (FINAL Y TERCER PUESTO)
+   MÓDULO CENTRAL COMPACTO REAJUSTADO
    ========================================================================== */
-.bracket-center-core {
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-    justify-content: center !important;
-    gap: 10px !important;
-    height: 100% !important;
-}
-
 .center-title-box {
     background: #ffc107 !important;
     color: #000000 !important;
@@ -730,10 +725,14 @@ body {
     width: 100% !important;
     max-width: 180px !important;
     padding: 2px !important;
+    position: relative !important; /* Permite enganchar las líneas de Semis */
 }
 .center-match-card-wrapper.third-place {
     border-color: #ff5722 !important;
 }
+/* Quitamos las líneas extras del tercer puesto para no ensuciar */
+.center-match-card-wrapper.third-place::before,
+.center-match-card-wrapper.third-place::after { display: none !important; }
 
 .center-match-card-wrapper .bracket-match-box {
     border: none !important;
