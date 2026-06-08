@@ -625,10 +625,9 @@ function renderizarBracket() {
     `;
 
     htmlCentro += `<div class="center-title-box">🏅 ${titles.r2}</div>`;
-    htmlCentro += `
-        <div class="center-match-card-wrapper final-box" style="height:54px; display:flex; align-items:center;">
-            ${generarHtmlLlaveItem('final', 0)}
-        </div>
+    htmlCentro += `<div class="center-match-card-wrapper final-box">
+        ${generarHtmlLlaveItem('final', 0)}
+    </div>`;
     `;
     
     htmlCentro += `<div class="center-title-box" style="background:#ff5722; color:#fff; margin-top:15px;">🥉 ${titles.r3}</div>`;
