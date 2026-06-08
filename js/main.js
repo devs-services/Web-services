@@ -639,7 +639,7 @@ function renderizarBracket() {
     rightWing.appendChild(crearColumnaEjeRigido(titles.r8, 'cuartos', 'r8', [2, 3], 'pos-r8'));
     rightWing.appendChild(crearColumnaEjeRigido(titles.r4, 'semis', 'semi', [1], 'pos-semi'));
 
-    // CONSTRUCCIÓN DEL NÚCLEO CENTRAL CON COORDENADAS FIJAS COMPACTAS
+    // CONSTRUCCIÓN DEL NÚCLEO CENTRAL CON COORDENADAS REALES AJUSTADAS
     let htmlCentro = `
         <div class="center-top-zone">
             <div style="font-size: 2.1rem; filter: drop-shadow(0 2px 6px rgba(0,0,0,0.5));">🏆</div>
