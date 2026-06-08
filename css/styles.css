@@ -246,10 +246,11 @@ body {
    BRACKET DE PRECISIÓN GEOMÉTRICA: MOTOR INMUNE VECTORIAL (FLEXBOX PLANO)
    ========================================================================== */
 .bracket-scroll-container {
-    width: 100% !important;
-    overflow: hidden !important;
-    padding: 40px 0 20px 0 !important;
-    position: relative !important;
+    width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 40px 0 20px 0;
+    position: relative;
 }
 
 #bracket-svg-canvas {
