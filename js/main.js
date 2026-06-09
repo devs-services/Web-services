@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
         .catch(error => {
             console.error('Error cargando los datos del Mundial:', error);
             if (window.location.protocol === 'file:') {
-                alert("⚠️ RESTRICCIÓN DE SEGURIDAD LOCAL (CORS):\n\nEstás abriendo la web directamente desde tus archivos locales (file://). Los navegadores bloquean las peticiones dinámicas en este modo.\n\nPor favor, usa la extensión 'Live Server' de VS Code o sube los cambios a GitHub Pages para que funcione perfectamente.");
+                alert("⚠️ RESTRICCIÓN DE SEGURIDAD LOCAL (CORS):\n\nEstás abriendo la web directamente desde tus archivos locales (file://). Usa un servidor local (Live Server) para que los datos carguen.");
             }
         });
 });
@@ -35,14 +35,12 @@ function inicializarWeb() {
     renderizarBracket();
     traducirInterfaz(currentLanguage);
 
-    // NUEVO: Observador estructural que garantiza que las conexiones sigan a las cajas
     const bracketContainer = document.querySelector('.bracket-scroll-container');
     if (bracketContainer) {
         const observer = new ResizeObserver(() => {
             requestAnimationFrame(dibujarLineasBracket);
         });
         observer.observe(bracketContainer);
-
         window.addEventListener('load', dibujarLineasBracket);
     }
 }
@@ -201,7 +199,7 @@ function renderizarPartidos() {
 }
 
 // ==========================================================================
-// 4. LISTADO VERTICAL DE 48 EQUIPOS
+// 4. LISTADO VERTICAL DE EQUIPOS
 // ==========================================================================
 function renderizarListaEquipos() {
     const container = document.getElementById('vertical-teams-container');
@@ -233,7 +231,7 @@ function renderizarListaEquipos() {
 }
 
 // ==========================================================================
-// 5. DETALLE DEL EQUIPO Y CONVOCADOS EN LA CANCHA
+// 5. DETALLE DEL EQUIPO Y CONVOCADOS EN LA CANCHA (OPTIMIZADO)
 // ==========================================================================
 function actualizarPanelDetalle(id) {
     const emptyMsg = document.getElementById('panel-empty-msg');
@@ -277,7 +275,6 @@ function renderizarCanchaOLista(equipo) {
     };
     const currentTitles = titulosPosiciones[currentLanguage] || titulosPosiciones['es'];
 
-    // Variables de almacenamiento temporal (Buffer)
     let htmlGK = `<div class="position-title"><span>🧤 ${currentTitles.gk}</span></div>`;
     let htmlDF = `<div class="position-title"><span>🛡️ ${currentTitles.df}</span></div>`;
     let htmlMD = `<div class="position-title"><span>🎯 ${currentTitles.md}</span></div>`;
@@ -296,7 +293,6 @@ function renderizarCanchaOLista(equipo) {
         stadiumPanel.style.display = 'grid';
     }
 
-    // Iteración lógica en memoria, no en el DOM
     todosLosJugadores.forEach(jugador => {
         const pos = (jugador.posicion || '').toUpperCase();
         let rutaSilueta = 'img/jugadores/silueta_fw.png';
@@ -317,7 +313,6 @@ function renderizarCanchaOLista(equipo) {
             </div>
         `;
 
-        // Acumulación en el buffer
         if (pos === 'GK' || pos === 'POR' || pos === 'ARQ') {
             htmlGK += filaHtml;
         } else if (['CB', 'LB', 'RB', 'DF', 'DTD', 'DTI'].includes(pos)) {
@@ -329,7 +324,6 @@ function renderizarCanchaOLista(equipo) {
         }
     });
 
-    // Inyección única, drástica reducción de repaints
     gkContainer.innerHTML = htmlGK;
     dfContainer.innerHTML = htmlDF;
     mdContainer.innerHTML = htmlMD;
@@ -450,7 +444,7 @@ function renderizarGrupos() {
 }
 
 // ==========================================================================
-// 7. DONACIONES CRYPTO
+// 7. DONACIONES CRYPTO (ESTRUCTURA CERRADA)
 // ==========================================================================
 function configurarDonaciones() {
     const btnTrigger = document.getElementById('donation-btn');
@@ -463,34 +457,33 @@ function configurarDonaciones() {
     document.querySelectorAll('.wallet-item').forEach(item => {
         const input = item.querySelector('input');
         const btnCopy = item.querySelector('.btn-copy');
+        
         if (btnCopy && input) {
             btnCopy.addEventListener('click', () => {
-    // Validación estricta: Si ya se está copiando, ignoramos el clic adicional
-    if (btnCopy.dataset.copied === "true") return; 
+                if (btnCopy.dataset.copied === "true") return; 
 
-    input.select(); 
-    input.setSelectionRange(0, 99999);
-    navigator.clipboard.writeText(input.value).then(() => {
-        btnCopy.dataset.copied = "true"; // Bloqueo de estado
+                input.select(); 
+                input.setSelectionRange(0, 99999);
+                navigator.clipboard.writeText(input.value).then(() => {
+                    btnCopy.dataset.copied = "true"; 
 
-        // Salvaguarda del HTML original
-        const originalHtml = btnCopy.dataset.originalHtml || btnCopy.innerHTML;
-        btnCopy.dataset.originalHtml = originalHtml; 
+                    const originalHtml = btnCopy.dataset.originalHtml || btnCopy.innerHTML;
+                    btnCopy.dataset.originalHtml = originalHtml; 
 
-        const translatedCopied = mundialData.ui_translations[currentLanguage].copied;
-        btnCopy.innerHTML = `<span style="font-size: 0.75rem; font-weight: bold;">${translatedCopied}</span>`;
-        btnCopy.style.background = 'var(--accent-neon)';
+                    const translatedCopied = mundialData.ui_translations[currentLanguage].copied;
+                    btnCopy.innerHTML = `<span style="font-size: 0.75rem; font-weight: bold;">${translatedCopied}</span>`;
+                    btnCopy.style.background = 'var(--accent-neon)';
 
-        setTimeout(() => { 
-                    btnCopy.innerHTML = originalHtml; 
-                    btnCopy.style.background = ''; 
-                    btnCopy.dataset.copied = "false"; // Liberación de estado
-                }, 2000);
+                    setTimeout(() => { 
+                        btnCopy.innerHTML = originalHtml; 
+                        btnCopy.style.background = ''; 
+                        btnCopy.dataset.copied = "false"; 
+                    }, 2000);
+                });
             });
-        });
-        } // Cierra el if (btnCopy && input)
-    }); // Cierra el forEach
-} // Cierra la función configurarDonaciones()
+        }
+    });
+}
 
 // ==========================================================================
 // 8. MOTOR DEL BRACKET INMUNE VECTORIAL (FLEXBOX PLANO)
