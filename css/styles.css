@@ -243,7 +243,7 @@ body {
 .btn-toggle-matches:hover { background: transparent; border-color: var(--accent-neon); box-shadow: 0 0 12px rgba(0, 223, 137, 0.3); color: var(--accent-neon); }
 
 /* ==========================================================================
-   BRACKET DE PRECISIÓN GEOMÉTRICA: MOTOR INMUNE VECTORIAL (FLEXBOX PLANO)
+   BRACKET DE PRECISIÓN GEOMÉTRICA (CORREGIDO)
    ========================================================================== */
 .bracket-scroll-container {
     width: 100%;
@@ -254,162 +254,183 @@ body {
 }
 
 #bracket-svg-canvas {
-    position: absolute !important;
-    top: 0 !important;
-    left: 0 !important;
-    width: 100% !important;
-    height: 100% !important;
-    pointer-events: none !important;
-    z-index: 2 !important; 
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 2; 
 }
 
 .bracket-mirror-layout {
-    display: grid !important;
-    grid-template-columns: 1fr 220px 1fr !important;
-    gap: 25px !important; 
-    width: 100% !important;
-    margin: 0 auto !important;
-    align-items: center !important;
-    position: relative !important;
-    z-index: 4 !important;
+    display: grid;
+    grid-template-columns: 1fr 220px 1fr;
+    gap: 25px; 
+    width: 100%;
+    margin: 0 auto;
+    align-items: center;
+    position: relative;
+    z-index: 4;
 }
 
-.bracket-side-wing {
-    display: flex !important;
-    justify-content: space-between !important;
-    align-items: center !important;
-    width: 100% !important;
-    height: 600px !important; 
+.bracket-mirror-layout .bracket-side-wing {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    height: 600px; 
 }
 
-.bracket-side-wing.right-wing {
-    flex-direction: row-reverse !important;
+.bracket-mirror-layout .bracket-side-wing.right-wing {
+    flex-direction: row-reverse;
 }
 
-.bracket-column-fluid {
-    display: flex !important;
-    flex-direction: column !important;
-    justify-content: space-around !important; 
-    align-items: center !important;
-    height: 100% !important;
-    width: 115px !important;
-    position: relative !important;
+.bracket-mirror-layout .bracket-column-fluid {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around; 
+    align-items: center;
+    height: 100%;
+    width: 115px;
+    position: relative;
 }
 
-.round-title-fluid {
-    position: absolute !important;
-    top: -30px !important;        
-    width: 100% !important;
-    text-align: center !important;
-    font-size: 0.78rem !important;
-    font-weight: 800 !important;
-    text-transform: uppercase !important;
-    color: var(--accent-neon, #00df89) !important;
-    letter-spacing: 1px !important;
-    white-space: nowrap !important;
+.bracket-column-fluid .round-title-fluid {
+    position: absolute;
+    top: -30px;        
+    width: 100%;
+    text-align: center;
+    font-size: 0.78rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: var(--accent-neon, #00df89);
+    letter-spacing: 1px;
+    white-space: nowrap;
 }
 
-.bracket-match-box {
-    background: #15171b !important;
-    border: 1px solid #30363d !important;
-    border-radius: 6px !important;
-    padding: 6px !important;
-    display: flex !important;
-    flex-direction: column !important;
-    justify-content: center !important;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.6) !important;
-    height: 52px !important;
-    width: 100% !important;
-    position: relative !important;
+.bracket-column-fluid .bracket-match-box {
+    background: #15171b;
+    border: 1px solid #30363d;
+    border-radius: 6px;
+    padding: 6px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.6);
+    height: 52px;
+    width: 100%;
+    position: relative;
 }
 
 /* ==========================================================================
-   MÓDULO CENTRAL COMPACTO SEGURO (COMPONENTES ADHERIDOS)
+   MÓDULO CENTRAL COMPACTO SEGURO
    ========================================================================== */
-.bracket-center-core {
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-    height: 600px !important; 
-    position: relative !important;
+.bracket-mirror-layout .bracket-center-core {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 600px; 
+    position: relative;
 }
 
-.center-match-card-wrapper.final-box {
-    position: absolute !important;
-    top: 50% !important;
-    left: 50% !important;
-    transform: translate(-50%, -50%) !important;
-    width: 180px !important;
-    height: 54px !important;
-    z-index: 5 !important;
-    background: #1f242c !important;
-    border: 2px solid #ffc107 !important;
-    border-radius: 8px !important;
-    padding: 2px !important;
-    display: flex !important;
-    align-items: center !important;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.4) !important;
+.bracket-center-core .center-match-card-wrapper {
+    position: absolute;
+    width: 180px;
+    height: 54px;
+    z-index: 5;
+    background: #1f242c;
+    border-radius: 8px;
+    padding: 2px;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.4);
 }
 
-.center-match-card-wrapper.final-box .center-top-zone {
-    position: absolute !important;
-    bottom: 100% !important; 
-    left: 50% !important;
-    transform: translateX(-50%) !important;
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-    gap: 2px !important;
-    margin-bottom: 4px !important;
-    width: auto !important;
-    white-space: nowrap !important;
+.bracket-center-core .final-box {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border: 2px solid #ffc107;
 }
 
-.center-match-card-wrapper.third-place {
-    position: absolute !important;
-    top: calc(50% + 95px) !important; 
-    left: 50% !important;
-    transform: translateX(-50%) !important;
-    width: 180px !important;
-    height: 54px !important;
-    z-index: 5 !important;
-    background: #1f242c !important;
-    border: 2px solid #ff5722 !important;
-    border-radius: 8px !important;
-    padding: 2px !important;
-    display: flex !important;
-    align-items: center !important;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.4) !important;
+.final-box .center-top-zone {
+    position: absolute;
+    bottom: 100%; 
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    margin-bottom: 4px;
+    width: auto;
+    white-space: nowrap;
 }
 
-.center-match-card-wrapper.third-place .center-bottom-zone {
-    position: absolute !important;
-    bottom: 100% !important; 
-    left: 50% !important;
-    transform: translateX(-50%) !important;
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-    margin-bottom: 4px !important;
-    width: auto !important;
-    white-space: nowrap !important;
+.bracket-center-core .third-place {
+    top: calc(50% + 95px); 
+    left: 50%;
+    transform: translateX(-50%);
+    border: 2px solid #ff5722;
+}
+
+.third-place .center-bottom-zone {
+    position: absolute;
+    bottom: 100%; 
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 4px;
+    width: auto;
+    white-space: nowrap;
 }
 
 .center-title-box {
-    background: #ffc107 !important;
-    color: #000000 !important;
-    font-weight: bold !important;
-    padding: 4px 14px !important;
-    border-radius: 4px !important;
-    font-size: 0.75rem !important;
-    text-transform: uppercase !important;
-    letter-spacing: 1px !important;
+    background: #ffc107;
+    color: #000000;
+    font-weight: bold;
+    padding: 4px 14px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
-.center-match-card-wrapper.third-place { border-color: #ff5722 !important; }
-.center-match-card-wrapper.third-place::before, .center-match-card-wrapper.third-place::after { display: none !important; content: none !important; }
-.center-match-card-wrapper .bracket-match-box { border: none !important; background: transparent !important; box-shadow: none !important; height: 50px !important; }
+.third-place .center-title-box {
+    background: #ff5722;
+    color: #ffffff;
+}
 
-.bracket-team-row { display: flex !important; align-items: center !important; justify-content: space-between !important; padding: 2px 4px !important; font-size: 0.8rem !important; height: 20px !important; color: #ffffff; }
-.bracket-team-empty { height: 20px !important; width: 100% !important; }
-.bracket-score { font-weight: bold !important; color: var(--accent-neon, #00df89) !important; background: #0d1117 !important; padding: 1px 5px !important; border-radius: 4px; font-size: 0.75rem; }
+.center-match-card-wrapper .bracket-match-box { 
+    border: none; 
+    background: transparent; 
+    box-shadow: none; 
+    height: 50px; 
+}
+
+.bracket-team-row { 
+    display: flex; 
+    align-items: center; 
+    justify-content: space-between; 
+    padding: 2px 4px; 
+    font-size: 0.8rem; 
+    height: 20px; 
+    color: #ffffff; 
+}
+
+.bracket-team-empty { 
+    height: 20px; 
+    width: 100%; 
+}
+
+.bracket-score { 
+    font-weight: bold; 
+    color: var(--accent-neon, #00df89); 
+    background: #0d1117; 
+    padding: 1px 5px; 
+    border-radius: 4px; 
+    font-size: 0.75rem; 
+}
