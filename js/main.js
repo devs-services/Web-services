@@ -277,31 +277,35 @@ function renderizarCanchaOLista(equipo) {
     };
     const currentTitles = titulosPosiciones[currentLanguage] || titulosPosiciones['es'];
 
-    gkContainer.innerHTML = `<div class="position-title"><span>🧤 ${currentTitles.gk}</span></div>`;
-    dfContainer.innerHTML = `<div class="position-title"><span>🛡️ ${currentTitles.df}</span></div>`;
-    mdContainer.innerHTML = `<div class="position-title"><span>🎯 ${currentTitles.md}</span></div>`;
-    fwContainer.innerHTML = `<div class="position-title"><span>⚽ ${currentTitles.fw}</span></div>`;
+    // Variables de almacenamiento temporal (Buffer)
+    let htmlGK = `<div class="position-title"><span>🧤 ${currentTitles.gk}</span></div>`;
+    let htmlDF = `<div class="position-title"><span>🛡️ ${currentTitles.df}</span></div>`;
+    let htmlMD = `<div class="position-title"><span>🎯 ${currentTitles.md}</span></div>`;
+    let htmlFW = `<div class="position-title"><span>⚽ ${currentTitles.fw}</span></div>`;
 
     const todosLosJugadores = [...(equipo.titulares || []), ...(equipo.suplentes || [])];
 
     if (todosLosJugadores.length === 0) {
         stadiumPanel.style.display = 'block';
         gkContainer.innerHTML = `<p style="color: var(--text-secondary); text-align:center; padding:20px;">No hay jugadores registrados.</p>`;
-        dfContainer.innerHTML = ''; mdContainer.innerHTML = ''; fwContainer.innerHTML = '';
+        dfContainer.innerHTML = ''; 
+        mdContainer.innerHTML = ''; 
+        fwContainer.innerHTML = '';
         return;
     } else {
         stadiumPanel.style.display = 'grid';
     }
 
+    // Iteración lógica en memoria, no en el DOM
     todosLosJugadores.forEach(jugador => {
         const pos = (jugador.posicion || '').toUpperCase();
         let rutaSilueta = 'img/jugadores/silueta_fw.png';
         
         if (pos === 'GK' || pos === 'POR' || pos === 'ARQ') {
             rutaSilueta = 'img/jugadores/silueta_gk.png';
-        } else if (pos === 'CB' || pos === 'LB' || pos === 'RB' || pos === 'DF' || pos === 'DTD' || pos === 'DTI') {
+        } else if (['CB', 'LB', 'RB', 'DF', 'DTD', 'DTI'].includes(pos)) {
             rutaSilueta = 'img/jugadores/silueta_df.png';
-        } else if (pos === 'CM' || pos === 'CDM' || pos === 'CAM' || pos === 'LM' || pos === 'RM' || pos === 'MC' || pos === 'MCO' || pos === 'MCD') {
+        } else if (['CM', 'CDM', 'CAM', 'LM', 'RM', 'MC', 'MCO', 'MCD'].includes(pos)) {
             rutaSilueta = 'img/jugadores/silueta_md.png';
         }
 
@@ -313,16 +317,23 @@ function renderizarCanchaOLista(equipo) {
             </div>
         `;
 
+        // Acumulación en el buffer
         if (pos === 'GK' || pos === 'POR' || pos === 'ARQ') {
-            gkContainer.innerHTML += filaHtml;
-        } else if (pos === 'CB' || pos === 'LB' || pos === 'RB' || pos === 'DF' || pos === 'DTD' || pos === 'DTI') {
-            dfContainer.innerHTML += filaHtml;
-        } else if (pos === 'CM' || pos === 'CDM' || pos === 'CAM' || pos === 'LM' || pos === 'RM' || pos === 'MC' || pos === 'MCO' || pos === 'MCD') {
-            mdContainer.innerHTML += filaHtml;
+            htmlGK += filaHtml;
+        } else if (['CB', 'LB', 'RB', 'DF', 'DTD', 'DTI'].includes(pos)) {
+            htmlDF += filaHtml;
+        } else if (['CM', 'CDM', 'CAM', 'LM', 'RM', 'MC', 'MCO', 'MCD'].includes(pos)) {
+            htmlMD += filaHtml;
         } else {
-            fwContainer.innerHTML += filaHtml;
+            htmlFW += filaHtml;
         }
     });
+
+    // Inyección única, drástica reducción de repaints
+    gkContainer.innerHTML = htmlGK;
+    dfContainer.innerHTML = htmlDF;
+    mdContainer.innerHTML = htmlMD;
+    fwContainer.innerHTML = htmlFW;
 }
 
 function renderizarCalendarioEquipo(equipo) {
