@@ -471,12 +471,15 @@ function configurarDonaciones() {
         btnCopy.style.background = 'var(--accent-neon)';
 
         setTimeout(() => { 
-            btnCopy.innerHTML = originalHtml; 
-            btnCopy.style.background = ''; 
-            btnCopy.dataset.copied = "false"; // Liberación de estado
-        }, 2000);
-    });
-});
+                    btnCopy.innerHTML = originalHtml; 
+                    btnCopy.style.background = ''; 
+                    btnCopy.dataset.copied = "false"; // Liberación de estado
+                }, 2000);
+            });
+        });
+        } // Cierra el if (btnCopy && input)
+    }); // Cierra el forEach
+} // Cierra la función configurarDonaciones()
 
 // ==========================================================================
 // 8. MOTOR DEL BRACKET INMUNE VECTORIAL (FLEXBOX PLANO)
